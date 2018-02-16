@@ -101,7 +101,7 @@ def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
 
 def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None):
     '''
-    Reads data from the filenames
+    Reads data from the excel files
 
     :param filenames: List of Excel filenames (List of strings)
     :param data_cols: List of location of data columns in each file  (List of int or int)
@@ -121,6 +121,9 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
 
     count = 0
     for file_num, filename in enumerate(filenames):
+        if limit is not None and count == limit:
+            break
+
         workbook = openpyxl.load_workbook(filename, data_only=True, read_only=False)
         sheet_names = workbook.get_sheet_names()
         for sheet_name in sheet_names:
@@ -128,12 +131,51 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
             cur_ws = workbook[sheet_name].rows
             for i, row in enumerate(cur_ws):
                 if i >= first_row:
-
-                    if limit is not None and count == limit:
-                        break
-
-                    #If label column is empty don't include it
+                   #If label column is empty don't include it
                     if row[label_cols[file_num]].value is None:
+                        continue
+                    count += 1
+                    #getting data, label and ids from each row and concatenating it
+                    data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
+                                                 data, labels, ids, repeat_ids, lambda col: str(row[col].value))
+
+    if preprocess_func is not None:
+        for i in range(len(data)):
+            data[i] = preprocess_func(data[i])
+
+    return data, labels, ids
+
+
+def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None):
+    '''
+    Reads data from the csv files
+
+    :param filenames: List of Excel filenames (List of strings)
+    :param data_cols: List of location of data columns in each file  (List of int or int)
+    :param label_cols: List of location of label columns in each file  (List of int or int)
+    :param id_cols: List of location of id columns in each file  (List of int or int)
+    :param repeat_ids: If False, data corresponding to already existing ids are concatenated (Boolean)
+    :param first_row: Starts reading from specified row number (int)
+    :param limit: Stops reading after specified number of lines have been read (int)
+    :param preprocess_func: Applies preprocess_func to each row in a file
+
+    :return: list of data, list of labels, list of ids
+    '''
+
+    data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
+
+    print("Reading data from csv file")
+
+    count = 0
+    for file_num, filename in enumerate(filenames):
+        if limit is not None and count == limit:
+            break
+        with open(filename, 'r', encoding='utf8') as csv_file:
+            rows = csv.reader(csv_file, delimiter=',', quotechar='"')
+            for i, row in enumerate(rows):
+                if i >= first_row:
+                    #If label column is empty don't include it
+                    if row[label_cols[file_num]] is None:
                         continue
 
                     count += 1
@@ -147,5 +189,3 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
             data[i] = preprocess_func(data[i])
 
     return data, labels, ids
-
-
