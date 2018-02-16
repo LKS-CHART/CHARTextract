@@ -1,5 +1,5 @@
-from classifier import tb
+from classifier.tb import TB
 
 if __name__ == "__main__":
-    print("Running X Classifier")
-    tb.run_classifier("data_loc")
+    tb = TB("data_loc")
+    tb.run_classifier()
