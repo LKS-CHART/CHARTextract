@@ -4,8 +4,8 @@ class Ngram(object):
     def __init__(self, text, n, normalize_frequency=False, distance_weighting=False):
         self.text = text
         self.n = n
-        self.ngram_to_frequency = None
-        self.ngram_to_matches = None
+        self.ngram_to_frequency = {}
+        self.ngram_to_matches = {}
         self._normalize_frequency = normalize_frequency
         self._distance_weighting = distance_weighting
         self.words = split_string_into_words(self.text)
