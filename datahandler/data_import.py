@@ -12,7 +12,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
     :param id_cols: List of location of id columns in each file  (List of int)
     :param repeat_ids: If True, data corresponding to already existing ids are concatenated (Boolean)
     :param first_row: Starts reading from specified row number (int)
-    :param limit: Stops reading at specified row number (limit)
+    :param limit: Stops reading after specified number of lines have been read (int)
 
     :return: list of data, list of labels, list of ids
     '''
@@ -22,6 +22,9 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
     ids = None
 
     print("Reading data from excel file")
+
+    count = 0
+
 
     return data, labels, ids
 
