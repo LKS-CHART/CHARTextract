@@ -2,6 +2,9 @@ import re
 import openpyxl
 import csv
 
+def get_data():
+    pass
+
 def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None):
     '''
     Reads data from the filenames
@@ -24,7 +27,18 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
     print("Reading data from excel file")
 
     count = 0
+    for file_num, filename in enumerate(filenames):
+        workbook = openpyxl.load_workbook(filename, data_only=True, read_only=False)
+        sheet_names = workbook.get_sheet_names()
+        for sheet_name in sheet_names:
+            #getting rows in worksheet
+            cur_ws = workbook[sheet_name].rows
+            for i, row in enumerate(cur_ws):
+                if i >= first_row:
+                    count += 1
+                    data, labels, ids = get_data()
 
 
     return data, labels, ids
+
 
