@@ -1,7 +1,7 @@
 from .base_classifier import BaseClassifier
 
 class TB(BaseClassifier):
-    def __init__(self, classifier_name, data, labels, ids):
+    def __init__(self, classifier_name="TB Classifier", data=None, labels=None, ids=None):
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
 
     # def _read_data_from_folders(self, folders=None):
@@ -17,4 +17,4 @@ class TB(BaseClassifier):
         self.ids = ids
 
     def run_classifier(self):
-        print("Running Classifier")
+        print("Running Classifier:", self.name)
