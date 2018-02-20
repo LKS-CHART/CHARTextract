@@ -1,5 +1,6 @@
 from util.string_functions import split_string_into_sentences, split_string_into_words
 from copy import deepcopy
+from ngram.ngram_functions import get_top_k
 
 class Ngram(object):
     '''
@@ -34,10 +35,10 @@ class Ngram(object):
 
         :param k: The number of ngrams you wish to return (int)
 
-        :return: Returns a list of sorted pairs of format (ngram, frequency)
+        :return: Returns a list of sorted pairs of format (str, int)
         '''
 
-        return sorted(self.ngram_to_frequency.items(), key=lambda i: i[1], reverse=True)[:k]
+        return get_top_k(self.ngram_to_frequency, k)
 
     def remove_n_grams(self, ngrams):
         '''
@@ -127,6 +128,15 @@ class Ngram(object):
                 del and_ngram_dict[ngram]
 
         return and_ngram_dict
+
+    def __str__(self):
+        '''
+        Returns stringified ngram->freq
+
+        :return: string representation of Ngram object
+        '''
+
+        return str(self.ngram_to_frequency)
 
     def get_frequencies(self, key_list):
         '''
