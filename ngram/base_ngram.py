@@ -128,6 +128,16 @@ class Ngram(object):
 
         return and_ngram_dict
 
+    def get_frequencies(self, key_list):
+        '''
+        Returns the word->frequency dictionary for all the requested keys
+
+        :param key_list: list of keys that you want from the dictionary
+
+        :return: word->frequency dictionary
+        '''
+
+        return {key: self.ngram_to_frequency[key] for key in key_list if key in self.ngram_to_frequency}
 
     def get_normalized_frequency(self):
         '''

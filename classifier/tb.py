@@ -74,3 +74,13 @@ class TB(BaseClassifier):
         print("\nBigram: Intersection between positive and negative examples: \n", pos_bigram & neg_bigram)
 
         # print(set((pos_trigram & neg_trigram).keys()) == set((neg_trigram & pos_trigram).keys()))
+
+        #Keys that appear in pos_trigram but not in neg_trigram
+        print("\nPos trigram exclusive keys: ")
+        pos_keys = set(pos_trigram.ngram_to_frequency.keys()) - set(neg_trigram.ngram_to_frequency.keys())
+        print(pos_trigram.get_frequencies(list(pos_keys)))
+
+        #Keys that appear in pos unigram but not in neg unigram
+        print("\nPos unigram exclusive keys: ")
+        pos_keys = set(pos_unigram.ngram_to_frequency.keys()) - set(neg_unigram.ngram_to_frequency.keys())
+        print(pos_unigram.get_frequencies(list(pos_keys)))
