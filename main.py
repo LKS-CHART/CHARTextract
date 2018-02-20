@@ -23,5 +23,6 @@ if __name__ == "__main__":
     train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
     ids = {"train": train_ids, "valid": valid_ids}
 
+
     #Running TB Classifier
     tb.run_classifier()

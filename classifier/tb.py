@@ -1,4 +1,5 @@
 from .base_classifier import BaseClassifier
+from ngram.base_ngram import *
 
 class TB(BaseClassifier):
     '''
@@ -16,3 +17,15 @@ class TB(BaseClassifier):
 
     def run_classifier(self):
         print("\nRunning Classifier:", self.name)
+
+        #Just calculating some summary ngrams
+
+        full_text = " ".join(self.data)
+        unigram = Ngram(full_text, 1)
+        bigram = Ngram(full_text, 2)
+        trigram = Ngram(full_text, 3)
+
+        for ngram in [unigram, bigram, trigram]:
+            print(ngram.n)
+            ngram.get_ngram_logistics()
+            print(ngram.ngram_to_frequency)

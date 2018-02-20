@@ -50,6 +50,9 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
 
         if data_col is not None:
             datum = row_process_func(data_col)
+            # print("-"*100)
+            # print('NoneType has been found' if datum is None else datum)
+
             if concat_index is not None:
                 data[concat_index] += "{}\n".format(datum)
             else:

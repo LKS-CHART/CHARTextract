@@ -19,8 +19,8 @@ class Ngram(object):
 
         self.text = text
         self.n = n
-        self.ngram_to_frequency = freq_dict
-        self.ngram_to_matches = match_dict
+        self.ngram_to_frequency = {}
+        self.ngram_to_matches = {}
         self._normalize_frequency = normalize_frequency
         self._distance_weighting = distance_weighting
         self.words = split_string_into_words(self.text)
@@ -150,7 +150,7 @@ class Ngram(object):
                     self.ngram_to_frequency[ngram] += 1
                     self.ngram_to_matches[ngram].append(i)
                 else:
-                    self.ngram_to_frequency = 1
+                    self.ngram_to_frequency[ngram] = 1
                     self.ngram_to_matches[ngram] = [i]
 
         if self._normalize_frequency:
