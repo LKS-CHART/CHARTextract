@@ -27,10 +27,19 @@ class Ngram(object):
     def __and__(self, other):
         pass
 
-    def calculate_logistics(self):
-        pass
+    def get_normalized_frequency(self):
+        '''
+        Returns the normalized frequency as a dictionary of ngram -> normalized_frequency
 
-    def _calculate_frequency(self):
+        :return: Returns a ngram->normalized_frequency dictionary
+        '''
+        num_ngrams = sum(self.ngram_to_frequency.values())
+        return {k: v/num_ngrams for k, v in self.ngram_to_frequency.items()}
+
+    def calculate_logistics(self):
+        '''
+        Computes the ngram_to_frequency dictionary and the ngram_to_matches dictionary
+        '''
         if self._distance_weighting:
             pass
         else:
@@ -38,16 +47,13 @@ class Ngram(object):
                 ngram = " ".join(self.words[i:i+self.n])
                 if ngram in self.ngram_to_frequency:
                     self.ngram_to_frequency[ngram] += 1
+                    self.ngram_to_matches[ngram].append(i)
                 else:
                     self.ngram_to_frequency = 1
+                    self.ngram_to_matches[ngram] = [i]
 
         if self._normalize_frequency:
-            num_ngrams = sum(self.ngram_to_frequency.values())
-            self.ngram_to_frequency = {k: v/num_ngrams for k, v in self.ngram_to_frequency.items()}
-
-    def _determine_match_locs(self):
-        pass
-
+            self.ngram_to_frequency = self.get_normalized_frequency()
 
 class InvalidNgramOp(Exception):
     def __init__(self, value):
