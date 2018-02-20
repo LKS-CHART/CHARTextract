@@ -14,6 +14,5 @@ class TB(BaseClassifier):
     #     for folder in folders:
     #         print(folder)
 
-
     def run_classifier(self):
         print("\nRunning Classifier:", self.name)
