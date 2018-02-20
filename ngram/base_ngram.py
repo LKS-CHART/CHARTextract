@@ -5,7 +5,7 @@ class Ngram(object):
     '''
     Ngram object which calculates ngram frequencies and matches from text.
     '''
-    def __init__(self, text="", n=1, normalize_frequency=False, distance_weighting=False, freq_dict={}, match_dict={}):
+    def __init__(self, text="", n=1, normalize_frequency=False, distance_weighting=False, freq_dict={}, match_dict={}, name="Ngram"):
         '''
         Initializes the Ngram object
 
@@ -26,6 +26,7 @@ class Ngram(object):
         self.words = split_string_into_words(self.text)
         self.sentences = split_string_into_sentences(self.text)
         self._textlen = len(self.words)
+        self.name = name
 
     def top_k_ngrams(self, k):
         '''

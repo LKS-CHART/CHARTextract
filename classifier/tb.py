@@ -45,17 +45,17 @@ class TB(BaseClassifier):
         print("Number of positive examples : {0}\n".format(len(pos_data)))
         print("Number of negative examples : {0}\n".format(len(neg_data)))
 
-        pos_unigram = Ngram(pos_text, 1)
-        pos_bigram  = Ngram(pos_text, 2)
-        pos_trigram = Ngram(pos_text, 3)
+        pos_unigram = Ngram(pos_text, 1, name="pos_1_gram")
+        pos_bigram  = Ngram(pos_text, 2, name="pos_2_gram")
+        pos_trigram = Ngram(pos_text, 3, name="pos_3_gram")
 
-        neg_unigram = Ngram(neg_text, 1)
-        neg_bigram  = Ngram(neg_text, 2)
-        neg_trigram = Ngram(neg_text, 3)
+        neg_unigram = Ngram(neg_text, 1, name="neg_1_gram")
+        neg_bigram  = Ngram(neg_text, 2, name="neg_2_gram")
+        neg_trigram = Ngram(neg_text, 3, name="neg_3_gram")
 
-        unigram = Ngram(full_text, 1)
-        bigram  = Ngram(full_text, 2)
-        trigram = Ngram(full_text, 3)
+        unigram = Ngram(full_text, 1, name="1_gram")
+        bigram  = Ngram(full_text, 2, name="2_gram")
+        trigram = Ngram(full_text, 3, name="3_gram")
 
         #Information does not seem to be useful in distinct classification
         #Trigrams are somewhat promising
@@ -70,5 +70,7 @@ class TB(BaseClassifier):
         for ngram in [neg_unigram, neg_bigram, neg_trigram]:
             print(ngram.top_k_ngrams(10))
 
-        print("Trigram: Intersection between positive and negative examples: \n", pos_trigram & neg_trigram)
+        print("\nTrigram: Intersection between positive and negative examples: \n", pos_trigram & neg_trigram)
+        print("\nBigram: Intersection between positive and negative examples: \n", pos_bigram & neg_bigram)
 
+        # print(set((pos_trigram & neg_trigram).keys()) == set((neg_trigram & pos_trigram).keys()))
