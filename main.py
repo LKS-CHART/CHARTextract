@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
     #Creating TB Classifier
     tb = TB("TB Classifier 1")
+    print(labels)
     tb.import_data(data, labels, ids)
     train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
     ids = {"train": train_ids, "valid": valid_ids}

@@ -1,3 +1,4 @@
+import numpy as np
 from .base_classifier import BaseClassifier
 from ngram.base_ngram import *
 
@@ -19,13 +20,55 @@ class TB(BaseClassifier):
         print("\nRunning Classifier:", self.name)
 
         #Just calculating some summary ngrams
-
         full_text = " ".join(self.data)
+
+        #Setting all positive examples to 1
+        self.labels[self.labels == 'y'] = 1
+        self.labels[self.labels == 'n'] = 0
+
+        #Removing that one example which has value 10 in the labels
+        self.labels = self.labels[:-1]
+        self.data = self.data[:-1]
+        self.ids = self.ids[:-1]
+
+        self.labels = self.labels.astype(np.float)
+
+        pos_indices = self.labels == 1
+        pos_data = self.data[pos_indices]
+        neg_data = self.data[~pos_indices]
+        pos_ids = self.data[pos_indices]
+        neg_ids = self.data[~pos_indices]
+
+        pos_text = " ".join(pos_data)
+        neg_text = " ".join(neg_data)
+
+        print("Number of positive examples : {0}\n".format(len(pos_data)))
+        print("Number of negative examples : {0}\n".format(len(neg_data)))
+
+        pos_unigram = Ngram(pos_text, 1)
+        pos_bigram  = Ngram(pos_text, 2)
+        pos_trigram = Ngram(pos_text, 3)
+
+        neg_unigram = Ngram(neg_text, 1)
+        neg_bigram  = Ngram(neg_text, 2)
+        neg_trigram = Ngram(neg_text, 3)
+
         unigram = Ngram(full_text, 1)
-        bigram = Ngram(full_text, 2)
+        bigram  = Ngram(full_text, 2)
         trigram = Ngram(full_text, 3)
 
-        for ngram in [unigram, bigram, trigram]:
-            print(ngram.n)
+        #Information does not seem to be useful in distinct classification
+        #Trigrams are somewhat promising
+        for ngram in [pos_unigram, pos_bigram, pos_trigram, neg_unigram, neg_bigram, neg_trigram, unigram, bigram, trigram]:
             ngram.get_ngram_logistics()
-            print(ngram.ngram_to_frequency)
+
+        print("Positive: TOP {0} ngrams".format(20))
+        for ngram in [pos_unigram, pos_bigram, pos_trigram]:
+            print(ngram.top_k_ngrams(10))
+
+        print("\nNegative: TOP {0} ngrams".format(10))
+        for ngram in [neg_unigram, neg_bigram, neg_trigram]:
+            print(ngram.top_k_ngrams(10))
+
+        print("Trigram: Intersection between positive and negative examples: \n", pos_trigram & neg_trigram)
+

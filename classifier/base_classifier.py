@@ -9,7 +9,9 @@ class BaseClassifier(object):
         self.data = data
         self.labels = labels
         self.ids = ids
-        self.dataset = None
+        self.dataset = {"train": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []},
+                           "valid": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []},
+                           "test": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []}}
 
     def import_data(self, data=None, labels=None, ids=None):
         '''
@@ -20,9 +22,9 @@ class BaseClassifier(object):
         :param ids: list of ids
         '''
 
-        self.data = data
-        self.labels = labels
-        self.ids = ids
+        self.data = np.array(data)
+        self.labels = np.array(labels)
+        self.ids = np.array(ids)
 
     def create_train_and_valid(self, train_percent=.6, random_seed=None):
         '''
