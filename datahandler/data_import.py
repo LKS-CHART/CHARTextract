@@ -117,7 +117,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
 
     data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
 
-    print("Reading data from excel file")
+    print("Reading data from excel file...")
 
     count = 0
     for file_num, filename in enumerate(filenames):
@@ -164,7 +164,7 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
 
     data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
 
-    print("Reading data from csv file")
+    print("Reading data from csv file...")
 
     count = 0
     for file_num, filename in enumerate(filenames):

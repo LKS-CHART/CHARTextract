@@ -7,14 +7,13 @@ if __name__ == "__main__":
     debug = False
 
     if not debug:
-        print(os.getenv('DATA_FOLDER'))
+        print("Current data folder: {!r}\n".format(os.getenv('DATA_FOLDER')))
         filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
-        print(filenames)
+        print("Files of interest: {!r}\n".format(filenames))
         #Reading excel data
         data, labels, ids = di.data_from_excel(filenames, data_cols=3, label_cols=12, id_cols=0, repeat_ids=False)
-        print(data)
-        print(labels)
-        print(ids)
+        print("\nTraining data tuples:\n")
+        print(list(zip(data, labels, ids)))
     else:
         data, labels, ids = [],[],[]
 

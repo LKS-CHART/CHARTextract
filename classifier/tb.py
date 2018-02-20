@@ -16,4 +16,4 @@ class TB(BaseClassifier):
 
 
     def run_classifier(self):
-        print("Running Classifier:", self.name)
+        print("\nRunning Classifier:", self.name)
