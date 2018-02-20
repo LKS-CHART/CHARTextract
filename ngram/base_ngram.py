@@ -137,7 +137,7 @@ class Ngram(object):
         num_ngrams = sum(self.ngram_to_frequency.values())
         return {k: v/num_ngrams for k, v in self.ngram_to_frequency.items()}
 
-    def calculate_logistics(self):
+    def get_ngram_logistics(self):
         '''
         Computes the ngram_to_frequency dictionary and the ngram_to_matches dictionary
         '''
