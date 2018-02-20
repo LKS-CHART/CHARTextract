@@ -1,6 +1,7 @@
 import numpy as np
 from .base_classifier import BaseClassifier
 from ngram.base_ngram import *
+from ngram.ngram_functions import get_unique_keys
 
 class TB(BaseClassifier):
     '''
@@ -45,17 +46,17 @@ class TB(BaseClassifier):
         print("Number of positive examples : {0}\n".format(len(pos_data)))
         print("Number of negative examples : {0}\n".format(len(neg_data)))
 
-        pos_unigram = Ngram(pos_text, 1, name="pos_1_gram")
-        pos_bigram  = Ngram(pos_text, 2, name="pos_2_gram")
-        pos_trigram = Ngram(pos_text, 3, name="pos_3_gram")
+        pos_unigram = Ngram(pos_text, 1, name="pos_unigram")
+        pos_bigram  = Ngram(pos_text, 2, name="pos_bigram")
+        pos_trigram = Ngram(pos_text, 3, name="pos_trigram")
 
-        neg_unigram = Ngram(neg_text, 1, name="neg_1_gram")
-        neg_bigram  = Ngram(neg_text, 2, name="neg_2_gram")
-        neg_trigram = Ngram(neg_text, 3, name="neg_3_gram")
+        neg_unigram = Ngram(neg_text, 1, name="neg_unigram")
+        neg_bigram  = Ngram(neg_text, 2, name="neg_bigram")
+        neg_trigram = Ngram(neg_text, 3, name="neg_trigram")
 
-        unigram = Ngram(full_text, 1, name="1_gram")
-        bigram  = Ngram(full_text, 2, name="2_gram")
-        trigram = Ngram(full_text, 3, name="3_gram")
+        unigram = Ngram(full_text, 1, name="unigram")
+        bigram  = Ngram(full_text, 2, name="bigram")
+        trigram = Ngram(full_text, 3, name="trigram")
 
         #Information does not seem to be useful in distinct classification
         #Trigrams are somewhat promising
@@ -73,14 +74,7 @@ class TB(BaseClassifier):
         print("\nTrigram: Intersection between positive and negative examples: \n", pos_trigram & neg_trigram)
         print("\nBigram: Intersection between positive and negative examples: \n", pos_bigram & neg_bigram)
 
-        # print(set((pos_trigram & neg_trigram).keys()) == set((neg_trigram & pos_trigram).keys()))
-
-        #Keys that appear in pos_trigram but not in neg_trigram
-        print("\nPos trigram exclusive keys: ")
-        pos_keys = set(pos_trigram.ngram_to_frequency.keys()) - set(neg_trigram.ngram_to_frequency.keys())
-        print(pos_trigram.get_frequencies(list(pos_keys)))
-
-        #Keys that appear in pos unigram but not in neg unigram
-        print("\nPos unigram exclusive keys: ")
-        pos_keys = set(pos_unigram.ngram_to_frequency.keys()) - set(neg_unigram.ngram_to_frequency.keys())
-        print(pos_unigram.get_frequencies(list(pos_keys)))
+        for ngram_pos, ngram_neg in zip([pos_unigram, pos_bigram, pos_trigram], [neg_unigram, neg_bigram, neg_trigram]):
+            #Keys that appear in pos_trigram but not in neg_trigram
+            print("\n {name} exclusive keys:\n {freq}\n".format(name=ngram_pos.name, freq=get_unique_keys(ngram_pos, ngram_neg)))
+            print("\n {name} exclusive keys:\n {freq}\n".format(name=ngram_neg.name, freq=get_unique_keys(ngram_neg, ngram_pos)))
