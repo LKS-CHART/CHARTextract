@@ -4,7 +4,6 @@ from datahandler import data_import as di
 import re
 import os
 import numpy as np
-from copy import deepcopy
 
 if __name__ == "__main__":
 
