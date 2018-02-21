@@ -22,7 +22,7 @@ class Regex(object):
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
 
-        if flags is not None:
+        if flags is None:
             self.regex = re.compile(regex)
         else:
             self.regex = re.compile(regex, combine_flags(flags))
