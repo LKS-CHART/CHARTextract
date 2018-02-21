@@ -1,5 +1,6 @@
 from classifier.tb import TB
 from datahandler import data_import as di
+import re
 import os
 
 if __name__ == "__main__":
@@ -16,11 +17,19 @@ if __name__ == "__main__":
         print(list(zip(data, labels, ids)))
 
         #Reading regex files
-        regex_filenames = [os.path.join('examples', 'regexes', 'tb_regexes', 'tb_pos.txt')]
-        for file in regex_filenames:
-            with open(file) as f:
-                print(f.readlines())
+        regexes = {}
 
+        regex_dir = os.path.join('examples', 'regexes', 'tb_regexes')
+        regex_filenames = [os.path.join('examples', 'regexes', 'tb_regexes', fname) for fname in os.listdir(regex_dir)]
+
+        # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
+
+        for file in regex_filenames:
+            split_str = re.split(r'[\\]+', file)
+            key_name = split_str[-1].split('.')[0]
+            regexes[key_name] = di.regexes_from_csv([file], use_custom_score=False)
+
+        print(regexes)
     else:
         data, labels, ids = [],[],[]
 
