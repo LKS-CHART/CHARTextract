@@ -4,6 +4,7 @@ from datahandler import data_import as di
 import re
 import os
 import numpy as np
+from copy import deepcopy
 
 if __name__ == "__main__":
 
@@ -36,30 +37,43 @@ if __name__ == "__main__":
         data, labels, ids = [],[],[]
 
     #Creating TB Classifier
-    tb = NgramClassifier("TB Classifier 1")
-
-    tb.import_data(data, labels, ids)
-
-    #Setting all positive examples to 1
-    tb.labels[tb.labels == 'y'] = 1
-    tb.labels[tb.labels == 'n'] = 0
-
-    #Removing that one example which has value 10 in the labels
-    tb.labels = tb.labels[:-1]
-    tb.data = tb.data[:-1]
-    tb.ids = tb.ids[:-1]
-
-    tb.labels = tb.labels.astype(np.float)
-
-    train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
-    ids = {"train": train_ids, "valid": valid_ids}
+    # tb = NgramClassifier("TB Classifier 1")
+    #
+    # tb.import_data(data, labels, ids)
+    #
+    # #Setting all positive examples to 1
+    # tb.labels[tb.labels == 'y'] = 1
+    # tb.labels[tb.labels == 'n'] = 0
+    #
+    # #Removing that one example which has value 10 in the labels
+    # tb.labels = tb.labels[:-1]
+    # tb.data = tb.data[:-1]
+    # tb.ids = tb.ids[:-1]
+    #
+    # tb.labels = tb.labels.astype(np.float)
+    #
+    # train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
+    # ids = {"train": train_ids, "valid": valid_ids}
 
     #Running TB Classifier
-    tb.run_classifier()
+    # tb.run_classifier()
 
     #Creating Regex Classifier
-    tb_regex = RegexClassifier("TB Classifier Regex")
-    tb_regex.import_data()
+    tb_regex = RegexClassifier("TB Classifier Regex", regexes)
+    tb_regex.import_data(data, labels, ids)
 
-    train_ids_regex, valid_ids_regex = tb.create_train_and_valid(0.5,0)
+    #Setting all positive examples to 1
+    tb_regex.labels[tb_regex.labels == 'y'] = 1
+    tb_regex.labels[tb_regex.labels == 'n'] = 0
+
+    #Removing that one example which has value 10 in the labels
+    tb_regex.labels = tb_regex.labels[:-1]
+    tb_regex.data = tb_regex.data[:-1]
+    tb_regex.ids = tb_regex.ids[:-1]
+
+    tb_regex.labels = tb_regex.labels.astype(np.float)
+
+    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5,0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
+
+    tb_regex.run_classifier()
