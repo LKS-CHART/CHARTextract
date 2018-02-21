@@ -8,14 +8,15 @@ class NgramClassifier(BaseClassifier):
     Class specialized in classifying data using Ngrams
     '''
     def __init__(self, classifier_name, data=None, labels=None, ids=None):
-        super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
+        '''
+        Initializes NgramClassifier
 
-    # def _read_data_from_folders(self, folders=None):
-    #     if folders is None:
-    #         folders = self.data_folders
-    #
-    #     for folder in folders:
-    #         print(folder)
+        :param classifier_name: Name of classifier
+        :param data: List of data
+        :param labels: List of labels
+        :param ids: List of ids
+        '''
+        super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
 
     def run_classifier(self):
         print("\nRunning Classifier:", self.name)

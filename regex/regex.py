@@ -70,10 +70,14 @@ class Regex(object):
         :return: A list containing one MatchObject or multiple depending on all_matches parameter
         '''
 
+        self.matches = []
+
         if self.all_matches:
             self.matches = list(self._match_func(self.regex, text))
         else:
             self.matches = self._match_func(self.regex, text)
+
+        return self.matches
 
 
 

@@ -58,8 +58,11 @@ if __name__ == "__main__":
     #Running TB Classifier
     # tb.run_classifier()
 
+    regex_list = []
+    [regex_list.extend(l) for l in regexes.values()]
+
     #Creating Regex Classifier
-    tb_regex = RegexClassifier("TB Classifier Regex", regexes)
+    tb_regex = RegexClassifier("TB Classifier Regex", regex_list)
     tb_regex.import_data(data, labels, ids)
 
     #Setting all positive examples to 1
@@ -76,4 +79,5 @@ if __name__ == "__main__":
     train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5,0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
 
+    #Running TB Classifier
     tb_regex.run_classifier()

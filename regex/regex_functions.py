@@ -7,7 +7,7 @@ def combine_flags(flag_list):
 
     :param flag_list: list of flags e.g [re.IGNORECASE, re.DEBUG]
 
-    :return: bitstring
+    :return: int
 
     '''
 

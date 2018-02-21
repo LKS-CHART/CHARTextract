@@ -1,22 +1,23 @@
 import numpy as np
 from .base_classifier import BaseClassifier
-from ngram.base_ngram import *
-from ngram.ngram_functions import get_unique_keys
+from util.string_functions import split_string_into_sentences
 
 class RegexClassifier(BaseClassifier):
     '''
     Class specialized in classifying patient data using regexes
     '''
     def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None):
+        '''
+        Initializes RegexClassifier
+
+        :param classifier_name: Name of classifier
+        :param regexes: List of Regex objects
+        :param data: List of data
+        :param labels: List of labels
+        :param ids: List of ids
+        '''
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
         self.regexes = regexes
-
-    # def _read_data_from_folders(self, folders=None):
-    #     if folders is None:
-    #         folders = self.data_folders
-    #
-    #     for folder in folders:
-    #         print(folder)
 
     def weighted_score_text(self, text, regexes):
         pass
@@ -31,17 +32,55 @@ class RegexClassifier(BaseClassifier):
         :return: List of matches for each regex, total_score
         '''
 
-        # for regex in regexes:
-        pass
+        matches = []
+        total_score = 0
+        for regex in regexes:
+            regex_matches = regex.determine_matches(text)
+            score = regex.score*len(regex_matches)
+            matches.append(matches)
+            total_score += score
 
-    def score_sentences(self, text, regexes, score_func):
-        pass
+        return matches, total_score
 
     def score_sentence(self, text, regexes, score_func=None):
+        '''
+        Given regexes, score_func and text, determines a score for the sentence using score_func
+
+        :param text: String of text
+        :param regexes: List of Regex objects
+        :param score_func: function used for scoring sentence
+
+        :return: A list of matches for each regex and total score
+        '''
+
         func = self.naive_score_text if score_func is None else score_func
         matches, total_score = func(text, regexes)
 
-    def run_classifier(self):
+        return matches, total_score
+
+    def score_sentences(self, text, regexes, score_func):
+        '''
+        Given regexes, score_func and text, determines a score for the sentence using score_func
+
+        :param text: Text to be split into sentences
+        :param regexes: List of Regex Objects
+        :param score_func: function used for score each sentence
+
+        :return: List of (matches,score) tuples and a total_score
+        '''
+
+        sentences = split_string_into_sentences(text)
+        matches_score_list = []
+        total_score = 0
+
+        for sentence in sentences:
+            matches, score = self.score_sentence(sentence, regexes)
+            matches_score_list.append((matches, score))
+            total_score += score
+
+        return matches_score_list, total_score
+
+    def run_classifier(self, score_func=None):
         print("\nRunning Classifier:", self.name)
 
         #Just calculating some summary ngrams

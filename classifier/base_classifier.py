@@ -5,6 +5,15 @@ class BaseClassifier(object):
     BaseClassifier from which all classifier objects inherit from
     '''
     def __init__(self, classifier_name=None, data=None, labels=None, ids=None):
+        '''
+        Initializes BaseClassifier
+
+        :param classifier_name: Name of classifier
+        :param data: List of data
+        :param labels: List of labels
+        :param ids: List of ids
+        '''
+
         self.name = classifier_name
         self.data = data
         self.labels = labels
