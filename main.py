@@ -14,12 +14,18 @@ if __name__ == "__main__":
         data, labels, ids = di.data_from_excel(filenames, data_cols=3, label_cols=12, id_cols=0, repeat_ids=False)
         print("\nTraining data tuples:\n")
         print(list(zip(data, labels, ids)))
+
+        #Reading regex files
+        regex_filenames = [os.path.join('examples', 'regexes', 'tb_regexes', 'tb_pos.txt')]
+        for file in regex_filenames:
+            with open(file) as f:
+                print(f.readlines())
+
     else:
         data, labels, ids = [],[],[]
 
     #Creating TB Classifier
     tb = TB("TB Classifier 1")
-    print(labels)
     tb.import_data(data, labels, ids)
     train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
     ids = {"train": train_ids, "valid": valid_ids}
