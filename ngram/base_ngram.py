@@ -16,6 +16,7 @@ class Ngram(object):
         :param distance_weighting: Frequency calculation for an ngram takes into account the location of the match (bool)
         :param freq_dict: Pre-initialized ngram to frequency dict
         :param match_dict: Pre-initialized ngram to match dict
+        :param name: Name of Ngram object
         '''
 
         self.text = text
