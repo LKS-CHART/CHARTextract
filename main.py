@@ -1,7 +1,8 @@
-from classifier.tb import TB
+from classifier.regex_classifier import RegexClassifier
 from datahandler import data_import as di
 import re
 import os
+import numpy as np
 
 if __name__ == "__main__":
 
@@ -34,11 +35,23 @@ if __name__ == "__main__":
         data, labels, ids = [],[],[]
 
     #Creating TB Classifier
-    tb = TB("TB Classifier 1")
+    tb = RegexClassifier("TB Classifier 1", regexes)
+
     tb.import_data(data, labels, ids)
+
+    #Setting all positive examples to 1
+    tb.labels[tb.labels == 'y'] = 1
+    tb.labels[tb.labels == 'n'] = 0
+
+    #Removing that one example which has value 10 in the labels
+    tb.labels = tb.labels[:-1]
+    tb.data = tb.data[:-1]
+    tb.ids = tb.ids[:-1]
+
+    tb.labels = tb.labels.astype(np.float)
+
     train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
     ids = {"train": train_ids, "valid": valid_ids}
-
 
     #Running TB Classifier
     tb.run_classifier()

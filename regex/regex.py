@@ -27,6 +27,20 @@ class Regex(object):
         else:
             self.regex = re.compile(regex, combine_flags(flags))
 
+    def set_match_all(self, all_matches):
+        '''
+        Set the all_matches parameter in Regex object
+
+        :param all_matches: if True, determine_matches will return all matches else just the first one
+
+        :return: self.all_matches (bool)
+        '''
+
+        self.all_matches = all_matches
+        self._match_func = re.finditer if all_matches else re.search
+
+        return self.all_matches
+
     def __str__(self):
         '''
         Returns stringified dict of Regex object parameters and values

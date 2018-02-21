@@ -3,12 +3,13 @@ from .base_classifier import BaseClassifier
 from ngram.base_ngram import *
 from ngram.ngram_functions import get_unique_keys
 
-class TB(BaseClassifier):
+class RegexClassifier(BaseClassifier):
     '''
     Class specialized in classifying TB patient data
     '''
-    def __init__(self, classifier_name="TB Classifier", data=None, labels=None, ids=None):
+    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None):
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
+        self.regexes = regexes
 
     # def _read_data_from_folders(self, folders=None):
     #     if folders is None:
@@ -17,22 +18,34 @@ class TB(BaseClassifier):
     #     for folder in folders:
     #         print(folder)
 
+    def weighted_score_text(self, text, regexes):
+        pass
+
+    def naive_score_text(self, text, regexes):
+        '''
+        Naively scores text by summing the match scores in the Regex objects
+
+        :param text: A string of text
+        :param regexes: A list of Regex objects
+
+        :return: List of matches for each regex, total_score
+        '''
+
+        # for regex in regexes:
+        pass
+
+    def score_sentences(self, text, regexes, score_func):
+        pass
+
+    def score_sentence(self, text, regexes, score_func=None):
+        func = self.naive_score_text if score_func is None else score_func
+        matches, total_score = func(text, regexes)
+
     def run_classifier(self):
         print("\nRunning Classifier:", self.name)
 
         #Just calculating some summary ngrams
         full_text = " ".join(self.data)
-
-        #Setting all positive examples to 1
-        self.labels[self.labels == 'y'] = 1
-        self.labels[self.labels == 'n'] = 0
-
-        #Removing that one example which has value 10 in the labels
-        self.labels = self.labels[:-1]
-        self.data = self.data[:-1]
-        self.ids = self.ids[:-1]
-
-        self.labels = self.labels.astype(np.float)
 
         pos_indices = self.labels == 1
         pos_data = self.data[pos_indices]
@@ -47,11 +60,11 @@ class TB(BaseClassifier):
         print("Number of negative examples : {0}\n".format(len(neg_data)))
 
         pos_unigram = Ngram(pos_text, 1, name="pos_unigram")
-        pos_bigram  = Ngram(pos_text, 2, name="pos_bigram")
+        pos_bigram = Ngram(pos_text, 2, name="pos_bigram")
         pos_trigram = Ngram(pos_text, 3, name="pos_trigram")
 
         neg_unigram = Ngram(neg_text, 1, name="neg_unigram")
-        neg_bigram  = Ngram(neg_text, 2, name="neg_bigram")
+        neg_bigram = Ngram(neg_text, 2, name="neg_bigram")
         neg_trigram = Ngram(neg_text, 3, name="neg_trigram")
 
         unigram = Ngram(full_text, 1, name="unigram")
@@ -78,5 +91,7 @@ class TB(BaseClassifier):
             #Keys that appear in pos_trigram but not in neg_trigram
             print("\n {name} exclusive keys:\n {freq}\n".format(name=ngram_pos.name, freq=get_unique_keys(ngram_pos, ngram_neg)))
             print("\n {name} exclusive keys:\n {freq}\n".format(name=ngram_neg.name, freq=get_unique_keys(ngram_neg, ngram_pos)))
+
+        # self.score_text("This is text")
 
 

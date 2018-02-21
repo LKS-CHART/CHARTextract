@@ -194,7 +194,7 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
 
     return data, labels, ids
 
-def regexes_from_csv(filenames, use_custom_score=False):
+def regexes_from_csv(filenames, use_custom_score=False, all_matches=False):
     '''
     Given a list of filenames containing regexes, returns a list of Regex objects
 
@@ -228,7 +228,7 @@ def regexes_from_csv(filenames, use_custom_score=False):
                 regex = line[0]
 
                 #creating regex objects
-                cur_regex = Regex(name="reg{}".format(len(regexes)), regex=regex, score=score)
+                cur_regex = Regex(name="reg{}".format(len(regexes)), regex=regex, score=score, all_matches=all_matches)
                 regexes.append(cur_regex)
 
     return regexes
