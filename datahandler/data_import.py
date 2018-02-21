@@ -230,6 +230,5 @@ def regexes_from_csv(filenames, use_custom_score=False):
                 #creating regex objects
                 cur_regex = Regex(name="reg{}".format(len(regexes)), regex=regex, score=score)
                 regexes.append(cur_regex)
-                print(cur_regex)
 
     return regexes

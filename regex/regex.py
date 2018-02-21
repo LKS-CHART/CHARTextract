@@ -28,4 +28,4 @@ class Regex(object):
         :return: Dictionary of regex_params->values
         '''
 
-        return repr({"name": self.name, "regex": self.regex, "score": self.score, "matches": self.matches})
+        return repr({"name": self.name, "regex": self.regex.pattern, "score": self.score, "matches": self.matches})
