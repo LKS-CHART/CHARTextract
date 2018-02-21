@@ -4,7 +4,7 @@ class Regex(object):
     '''
     Container class for regexes, scores and matches
     '''
-    def __init__(self, name="Regex", regex=None, score=None):
+    def __init__(self, name, regex, score):
         self.name = name
         self.regex = re.compile(regex)
         self.score = score
