@@ -1,6 +1,7 @@
 import re
 import openpyxl
 import csv
+from regex.regex import Regex
 
 def preprocess_data(data):
     '''
@@ -192,3 +193,43 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
             data[i] = preprocess_func(data[i])
 
     return data, labels, ids
+
+def regexes_from_csv(filenames, use_custom_score=False):
+    '''
+    Given a list of filenames containing regexes, returns a list of Regex objects
+
+    :param filenames: A list of comma separated filenames
+    :param use_custom_score: if True user specified scores are given when creating regexes
+
+    :return: A list of Regex objects
+    '''
+
+    regexes = []
+    for file in filenames:
+        with open(file, 'r', encoding='utf8') as f:
+            lines = csv.reader(f, delimiter=',', quotechar='"')
+            for i, line in enumerate(lines):
+                #Checking for invalid lines
+                if len(line) > 2 and not line[0].startswith("#"):
+                    print("Invalid line in file")
+                    break
+
+                #Checking if user inputs a custom score when use_custom_score is false
+                if len(line) >= 2 and not use_custom_score:
+                    print("Received score when use_custom_score is False")
+                    break
+
+                #comment code
+                if line[0].startswith("#"):
+                    continue
+
+                #Reading score and regex
+                score = None if not use_custom_score else int(line[1])
+                regex = line[0]
+
+                #creating regex objects
+                cur_regex = Regex(name="reg{}".format(len(regexes)), regex=regex, score=score)
+                regexes.append(cur_regex)
+                print(cur_regex)
+
+    return regexes

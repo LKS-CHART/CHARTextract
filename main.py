@@ -27,7 +27,7 @@ if __name__ == "__main__":
         for file in regex_filenames:
             split_str = re.split(r'[\\]+', file)
             key_name = split_str[-1].split('.')[0]
-            regexes[key_name] = di.regexes_from_csv([file], use_custom_score=False)
+            regexes[key_name] = di.regexes_from_csv([file], use_custom_score=True)
 
         print(regexes)
     else:
