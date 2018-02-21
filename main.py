@@ -1,4 +1,5 @@
 from classifier.regex_classifier import RegexClassifier
+from classifier.ngram_classifier import NgramClassifier
 from datahandler import data_import as di
 import re
 import os
@@ -35,7 +36,7 @@ if __name__ == "__main__":
         data, labels, ids = [],[],[]
 
     #Creating TB Classifier
-    tb = RegexClassifier("TB Classifier 1", regexes)
+    tb = NgramClassifier("TB Classifier 1")
 
     tb.import_data(data, labels, ids)
 
@@ -55,3 +56,10 @@ if __name__ == "__main__":
 
     #Running TB Classifier
     tb.run_classifier()
+
+    #Creating Regex Classifier
+    tb_regex = RegexClassifier("TB Classifier Regex")
+    tb_regex.import_data()
+
+    train_ids_regex, valid_ids_regex = tb.create_train_and_valid(0.5,0)
+    ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
