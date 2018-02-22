@@ -103,7 +103,7 @@ def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
     return data, labels, ids, data_cols, label_cols, id_cols
 
 
-def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None):
+def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
     '''
     Reads data from the excel files
 
@@ -136,7 +136,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
             for i, row in enumerate(cur_ws):
                 if i >= first_row:
                    #If label column is empty don't include it
-                    if row[label_cols[file_num]].value is None:
+                    if row[check_col].value is None:
                         continue
                     count += 1
                     #getting data, label and ids from each row and concatenating it
@@ -150,7 +150,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
     return data, labels, ids
 
 
-def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None):
+def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
     '''
     Reads data from the csv files
 
@@ -179,14 +179,14 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
             for i, row in enumerate(rows):
                 if i >= first_row:
                     #If label column is empty don't include it
-                    if row[label_cols[file_num]] is None:
+                    if row[check_col] == '':
                         continue
 
                     count += 1
 
                     #getting data, label and ids from each row and concatenating it
                     data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
-                                                 data, labels, ids, repeat_ids, lambda col: str(row[col].value))
+                                                 data, labels, ids, repeat_ids, lambda col: str(row[col]))
 
     if preprocess_func is not None:
         for i in range(len(data)):
@@ -211,6 +211,7 @@ def regexes_from_csv(filenames, use_custom_score=False, all_matches=False):
             for i, line in enumerate(lines):
                 #Checking for invalid lines
                 if len(line) > 2 and not line[0].startswith("#"):
+                    print(line)
                     print("Invalid line in file")
                     break
 
