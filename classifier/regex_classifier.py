@@ -116,8 +116,5 @@ class RegexClassifier(BaseClassifier):
 
         for id, datum, label in zip(self.ids, self.data, self.labels):
             matches, score = self.score_sentences(datum, self.regexes)
-
-        print(matches)
-        print(score)
-
+            print(matches)
 
