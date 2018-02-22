@@ -61,6 +61,9 @@ class Regex(object):
 
         return repr({"name": self.name, "regex": self.regex, "score": self.score, "matches": self.matches})
 
+    def clear_matches(self):
+        self.matches = None
+
     def determine_matches(self, text):
         '''
         Compute the matches for a given text
@@ -70,12 +73,12 @@ class Regex(object):
         :return: A list containing one MatchObject or multiple depending on all_matches parameter
         '''
 
-        self.matches = []
-
         if self.all_matches:
             self.matches = list(self._match_func(self.regex, text))
         else:
+
             self.matches = self._match_func(self.regex, text)
+            self.matches = [] if self.matches is None else [self.matches]
 
         return self.matches
 
