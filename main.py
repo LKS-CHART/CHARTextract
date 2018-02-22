@@ -42,9 +42,9 @@ if __name__ == "__main__":
         # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
 
         for file in regex_filenames:
-            split_str = re.split(r'[\\]+', file)
+            split_str = re.split(r'[\\/]+', file)
             key_name = split_str[-1].split('.')[0]
-            regexes[key_name] = di.regexes_from_csv([file], use_custom_score=True)
+            regexes[key_name] = di.regexes_from_csv([file], [key_name], use_custom_score=True, all_matches=True)
 
         print(regexes)
     else:
