@@ -118,3 +118,29 @@ class RegexClassifier(BaseClassifier):
             matches, score = self.score_sentences(datum, self.regexes)
             print(matches)
 
+        '''
+        
+        TODO: 
+        
+        
+        Set required labels e.g Smoking = 0, Never Smoked = 1, Past Smoker = 2
+        
+        create dict_1 reg_name -> freq
+        
+        #Used only for vanilla frequency counting. Scale frequency method will use a different technique
+        For each sentence compute regex frequencies
+            dict[reg_name] += freq
+        
+        ??Scale Frequency based on sentence index?? 
+            -Potential formula
+            - sum((match_index(regex_match)/len_matches)*(sentence_index/num_sentences))
+                -Effect: Later terms penalized less, more matches penalized less since (1+2+3...k)/k is divergent
+        
+        normalize_frequencies [Perhaps unneeded if using frequency scaling]
+        
+        train_svm method
+            Classify data
+
+        
+        '''
+
