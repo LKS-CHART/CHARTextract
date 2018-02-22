@@ -206,7 +206,7 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
     :return: A list of Regex objects
     '''
 
-    assert(len(filenames) == len(regex_names))
+    assert(len(filenames) == len(set(regex_names)))
 
     regexes = []
     for file, nick_name in zip(filenames, regex_names):
