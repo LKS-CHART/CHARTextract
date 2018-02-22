@@ -36,12 +36,20 @@ class RegexClassifier(BaseClassifier):
         matches = []
         total_score = 0
         for regex in regexes:
+
+            #creating a copy because we want new unique regex objects for each match
+            #reusing old regex objects will cause previous matches to be replaced by new matches and this behaviour
+            #may not transfer well to multiple use cases
+
             regex_copy = copy(regex)
             regex_copy.clear_matches()
+
+            #determining matches and computing score
             regex_matches = regex_copy.determine_matches(text)
             score = regex.score*len(regex_matches)
 
             if len(regex_matches) > 0:
+                #adding the new copied regex object to matches
                 matches.append(regex_copy)
 
             total_score += score
@@ -72,21 +80,23 @@ class RegexClassifier(BaseClassifier):
         :param regexes: List of Regex Objects to search for in each sentence
         :param score_func: function used for score each sentence
 
-        :return: List of (list of Regex objects that matched,score) tuples and a total_score
+        :return: {sentence_i: {'matches': [Regex Objects], 'score': sentence_score}} and a total_score
         '''
 
         sentences = split_string_into_sentences(text)
-        matches_score_list = []
+        matches_score_dict = {}
         total_score = 0
 
-        for sentence in sentences:
+        for i, sentence in enumerate(sentences):
             matches, score = self.score_sentence(sentence, regexes)
+
+            #only adding sentences that matched
             if matches:
-                matches_score_list.append((matches, score))
+                matches_score_dict[i] = {"matches": matches, "score": score}
 
             total_score += score
 
-        return matches_score_list, total_score
+        return matches_score_dict, total_score
 
     def run_classifier(self, score_func=None):
         print("\nRunning Classifier:", self.name)
@@ -106,8 +116,8 @@ class RegexClassifier(BaseClassifier):
 
         for id, datum, label in zip(self.ids, self.data, self.labels):
             matches, score = self.score_sentences(datum, self.regexes)
-            if matches:
-                print(id, score, label)
 
+        print(matches)
+        print(score)
 
 
