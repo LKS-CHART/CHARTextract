@@ -215,11 +215,6 @@ def regexes_from_csv(filenames, use_custom_score=False, all_matches=False):
                     print("Invalid line in file")
                     break
 
-                #Checking if user inputs a custom score when use_custom_score is false
-                if len(line) >= 2 and not use_custom_score:
-                    print("Received score when use_custom_score is False")
-                    break
-
                 #comment code
                 if line[0].startswith("#"):
                     continue
