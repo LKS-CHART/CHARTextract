@@ -11,18 +11,33 @@ if __name__ == "__main__":
 
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('DATA_FOLDER')))
-        filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
-        print("Files of interest: {!r}\n".format(filenames))
+        print(os.getenv('TB_DATA_FOLDER'))
+        # filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
+        data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2.csv'))]
+        label_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx'))]
+        print("Files of interest: {!r}\n".format(data_filenames))
+        print("Files of interest: {!r}\n".format(label_filenames))
         #Reading excel data
-        data, labels, ids = di.data_from_excel(filenames, data_cols=3, label_cols=12, id_cols=0, repeat_ids=False)
+        data, _, ids = di.data_from_csv(data_filenames, data_cols=2, id_cols=0, repeat_ids=False)
+        _, temp_labels, temp_ids = di.data_from_excel(label_filenames, id_cols=1, label_cols=8, repeat_ids=False, first_row=2, check_col=1)
+        # print(temp_labels)
+        # print(len(temp_labels))
+        # print(np.sum([1 if label == 'Active TB' or  label == 'None' else 0 for label in temp_labels]))
+        labels = ["None"] * len(data)
+        count = 0
+        for i, data_id in enumerate(ids):
+            if data_id in temp_ids:
+                labels[i] = temp_labels[temp_ids.index(data_id)]
+            else:
+                count += 1
         print("\nTraining data tuples:\n")
         print(list(zip(data, labels, ids)))
 
         #Reading regex files
         regexes = {}
 
-        regex_dir = os.path.join('examples', 'regexes', 'tb_regexes')
-        regex_filenames = [os.path.join('examples', 'regexes', 'tb_regexes', fname) for fname in os.listdir(regex_dir)]
+        regex_dir = os.path.join('examples', 'regexes', 'tb_regexes', 'active_tb')
+        regex_filenames = [os.path.join(regex_dir, fname) for fname in os.listdir(regex_dir)]
 
         # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
 
@@ -63,17 +78,6 @@ if __name__ == "__main__":
     #Creating Regex Classifier
     tb_regex = RegexClassifier("TB Classifier Regex", regex_list)
     tb_regex.import_data(data, labels, ids)
-
-    #Setting all positive examples to 1
-    tb_regex.labels[tb_regex.labels == 'y'] = 1
-    tb_regex.labels[tb_regex.labels == 'n'] = 0
-
-    #Removing that one example which has value 10 in the labels
-    tb_regex.labels = tb_regex.labels[:-1]
-    tb_regex.data = tb_regex.data[:-1]
-    tb_regex.ids = tb_regex.ids[:-1]
-
-    tb_regex.labels = tb_regex.labels.astype(np.float)
 
     train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5,0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
