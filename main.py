@@ -10,8 +10,7 @@ if __name__ == "__main__":
     debug = False
 
     if not debug:
-        print("Current data folder: {!r}\n".format(os.getenv('DATA_FOLDER')))
-        print(os.getenv('TB_DATA_FOLDER'))
+        print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
         # filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
         data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2.csv'))]
         label_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx'))]
@@ -30,7 +29,8 @@ if __name__ == "__main__":
                 labels[i] = temp_labels[temp_ids.index(data_id)]
             else:
                 count += 1
-        print("\nTraining data tuples:\n")
+
+        print("\n\nTraining data tuples:\n")
         print(list(zip(data, labels, ids)))
 
         #Reading regex files
@@ -79,7 +79,7 @@ if __name__ == "__main__":
     tb_regex = RegexClassifier("TB Classifier Regex", regex_list)
     tb_regex.import_data(data, labels, ids)
 
-    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5,0)
+    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5, 0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
 
     #Running TB Classifier
