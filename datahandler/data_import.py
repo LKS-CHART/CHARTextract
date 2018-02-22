@@ -3,6 +3,7 @@ import openpyxl
 import csv
 from regex.regex import Regex
 
+
 def preprocess_data(data):
     '''
     Preprocesses datta
@@ -15,6 +16,7 @@ def preprocess_data(data):
     data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n').lower()
     data, num_subs = re.subn(r'\s{3,}', " ", data)
     return data
+
 
 def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_process_func):
     '''
@@ -59,9 +61,7 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
             else:
                 data.append(datum)
 
-
     return data, labels, ids
-
 
 
 def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
@@ -193,6 +193,7 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
             data[i] = preprocess_func(data[i])
 
     return data, labels, ids
+
 
 def regexes_from_csv(filenames, use_custom_score=False, all_matches=False):
     '''
