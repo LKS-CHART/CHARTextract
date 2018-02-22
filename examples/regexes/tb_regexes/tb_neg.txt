@@ -1,2 +1,0 @@
-This is a negative test file,-10
-This is the second line of a negative test file,-3
