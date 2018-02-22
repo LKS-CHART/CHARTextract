@@ -69,10 +69,10 @@ class RegexClassifier(BaseClassifier):
         Given regexes, score_func and text, determines a score for the sentence using score_func
 
         :param text: Text to be split into sentences
-        :param regexes: List of Regex Objects
+        :param regexes: List of Regex Objects to search for in each sentence
         :param score_func: function used for score each sentence
 
-        :return: List of (list of Regex objects,score) tuples and a total_score
+        :return: List of (list of Regex objects that matched,score) tuples and a total_score
         '''
 
         sentences = split_string_into_sentences(text)
