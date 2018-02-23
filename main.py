@@ -4,6 +4,7 @@ from datahandler import data_import as di
 import re
 import os
 import numpy as np
+from util.string_functions import split_string_into_sentences
 
 if __name__ == "__main__":
 
@@ -12,13 +13,13 @@ if __name__ == "__main__":
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
         # filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
-        data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2.csv'))]
+        data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (cleansed).csv'))]
         label_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx'))]
         print("Files of interest: {!r}\n".format(data_filenames))
         print("Files of interest: {!r}\n".format(label_filenames))
         #Reading excel data
         data, _, ids = di.data_from_csv(data_filenames, data_cols=2, id_cols=0, repeat_ids=False)
-        _, temp_labels, temp_ids = di.data_from_excel(label_filenames, id_cols=1, label_cols=8, repeat_ids=False, first_row=2, check_col=1)
+        _, temp_labels, temp_ids = di.data_from_excel(label_filenames, id_cols=1, label_cols=7, repeat_ids=False, first_row=2, check_col=1)
         # print(temp_labels)
         # print(len(temp_labels))
         # print(np.sum([1 if label == 'Active TB' or  label == 'None' else 0 for label in temp_labels]))
@@ -36,7 +37,7 @@ if __name__ == "__main__":
         #Reading regex files
         regexes = {}
 
-        regex_dir = os.path.join('examples', 'regexes', 'tb_regexes', 'active_tb')
+        regex_dir = os.path.join('examples', 'regexes', 'tb_regexes', 'smoking')
         regex_filenames = [os.path.join(regex_dir, fname) for fname in os.listdir(regex_dir)]
 
         # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
@@ -79,19 +80,18 @@ if __name__ == "__main__":
     tb_regex = RegexClassifier("Active TB/LTBI/None Classifier Regex", regex_list)
     tb_regex.import_data(data, labels, ids)
 
-    print(tb_regex.labels)
-
     #Converting label names to values
     tb_regex.labels[tb_regex.labels == 'None'] = 0
-    tb_regex.labels[tb_regex.labels == 'LTBI'] = 1
-    tb_regex.labels[tb_regex.labels == 'Active TB'] = 2
+    tb_regex.labels[tb_regex.labels == 'Former smoker'] = 1
+    tb_regex.labels[tb_regex.labels == 'Never smoked'] = 2
+    tb_regex.labels[tb_regex.labels == 'Current smoker'] = 3
 
     tb_regex.labels = tb_regex.labels.astype(np.int32)
 
-    print(tb_regex.labels)
-
-    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5, 0)
+    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.7, 0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
 
     #Running TB Classifier
-    tb_regex.run_classifier()
+    # svm_data, _ = V
+    # tb_regex.train_svm()
+    tb_regex.run_classifier(sets=["train","valid"])

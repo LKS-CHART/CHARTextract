@@ -13,7 +13,7 @@ def preprocess_data(data):
     :return: modified data
     '''
 
-    data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n').lower()
+    data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n+','\n')
     data, num_subs = re.subn(r'\s{3,}', " ", data)
     return data
 
@@ -38,28 +38,28 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
     if id_col is not None:
         cur_id = row_process_func(id_col)
 
-        #if repeat ids is false and id in ids, we want to only use the latest record
+        #if repeat ids is false and id in ids, we want to concatenate the ids
         if not repeat_ids and cur_id in ids:
             concat_index = ids.index(cur_id)
         else:
             ids.append(cur_id)
 
-        if label_col is not None:
-            #If we are concatenating data (i.e repeat_ids = False), use the latest diagnoses
-            if concat_index is not None:
-                labels[concat_index] = row_process_func(label_col)
-            else:
-                labels.append(row_process_func(label_col))
+    if label_col is not None:
+        #If we are concatenating data (i.e repeat_ids = False), use the latest diagnoses
+        if concat_index is not None:
+            labels[concat_index] = row_process_func(label_col)
+        else:
+            labels.append(row_process_func(label_col))
 
-        if data_col is not None:
-            datum = row_process_func(data_col)
-            # print("-"*100)
-            # print('NoneType has been found' if datum is None else datum)
+    if data_col is not None:
+        datum = row_process_func(data_col)
+        # print("-"*100)
+        # print('NoneType has been found' if datum is None else datum)
 
-            if concat_index is not None:
-                data[concat_index] += "{}\n".format(datum)
-            else:
-                data.append(datum)
+        if concat_index is not None:
+            data[concat_index] += "{}\n".format(preprocess_data(datum))
+        else:
+            data.append(preprocess_data(datum))
 
     return data, labels, ids
 

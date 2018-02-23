@@ -1,0 +1,8 @@
+"no longer smok",-10
+"used to smok",-10
+"quit[^\,]*smoking",-10
+"former smok",-10
+"ex-smoker",-10
+"exsmoker",-10
+"previous smoker",10
+"prior smoker",10

@@ -2,6 +2,9 @@ import numpy as np
 from copy import copy
 from .base_classifier import BaseClassifier
 from util.string_functions import split_string_into_sentences
+from sklearn import svm
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn import linear_model
 
 class RegexClassifier(BaseClassifier):
     '''
@@ -19,6 +22,7 @@ class RegexClassifier(BaseClassifier):
         '''
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
         self.regexes = regexes
+        self.classifier = None
 
     def weighted_score_text(self, text, regexes):
         pass
@@ -113,7 +117,46 @@ class RegexClassifier(BaseClassifier):
 
         return matches_score_dict, total_score
 
-    def run_classifier(self, score_func=None):
+    def init_classifier(self):
+
+        self.classifier = svm.SVC(kernel='linear', C=1)
+
+        data = self.dataset["train"]["data"]
+        labels = self.dataset["train"]["labels"]
+        ids = self.dataset["train"]["ids"]
+
+        id_to_regex_freq_data = {}
+
+        normalize = True
+        svm_data = np.array([[]])
+
+        for id, datum, label in zip(ids, data, labels):
+            regexes_to_freq = {regex.name: 0 for regex in self.regexes}
+            self.freq_count_sentences(datum, self.regexes, regexes_to_freq)
+
+            if normalize:
+                if sum(regexes_to_freq.values()) > 0:
+                    frequencies = np.array([[regexes_to_freq[regex.name]/sum(regexes_to_freq.values()) for regex in self.regexes]])
+                else:
+                    frequencies = np.array([[regexes_to_freq[regex.name] for regex in self.regexes]])
+            else:
+                frequencies = np.array([[regexes_to_freq[regex.name] for regex in self.regexes]])
+
+            id_to_regex_freq_data[id] = regexes_to_freq
+
+            if svm_data.shape[1] == 0:
+                svm_data = frequencies
+            else:
+                svm_data = np.concatenate((svm_data, frequencies), axis=0)
+
+        return svm_data, id_to_regex_freq_data
+
+    def train_classifier(self, data, labels):
+        clf = svm.SVC(kernel='linear', C=1)
+        x, y = data, labels
+        clf.fit(x,y)
+
+    def run_classifier(self, sets=["train", "valid"]):
         print("\nRunning Classifier:", self.name)
 
         # full_text = " ".join(self.data)
@@ -168,34 +211,18 @@ class RegexClassifier(BaseClassifier):
         Consider making regex classifier more general. More parameters... Think about this more 
         '''
 
-        id_to_regex_freq_data = {}
+        svm_data, regex_to_freq = self.init_classifier()
+        self.train_classifier(svm_data, self.dataset["train"]["labels"])
 
-        normalize = True
-        svm_data = np.array([[]])
+        for set in sets:
+            preds = self.classifier.predict(self.data[set]["data"])
+            wrong_indices = np.nonzero(~(preds == self.dataset[set]["labels"]))
+            print(wrong_indices)
+            labs = np.array(['None', 'Former smoker', 'Never smoked', 'Current smoker'])
+            print("Predictions: ", labs[preds[wrong_indices]])
+            print("Actual: ", labs[self.dataset[set][wrong_indices]])
+            print("Ids:", self.dataset[set]["ids"][wrong_indices])
+            print(preds)
+            print(np.sum(preds==self.dataset[set]["labels"])/len(self.dataset[set]["labels"]))
 
-        '''
-        Random dictionary access could cause reordering of key values... might need to use a list.
-        Solved... store dictionary keys in set order and access using that predefined order each time 
-        '''
-        for id, datum, label in zip(self.ids, self.data, self.labels):
-            regexes_to_freq = {regex.name: 0 for regex in self.regexes}
-            self.freq_count_sentences(datum, self.regexes, regexes_to_freq)
-
-            if normalize:
-                if sum(regexes_to_freq.values()) > 0:
-                    frequencies = np.array([[freq/sum(regexes_to_freq.values()) for _, freq in regexes_to_freq.items()]])
-            else:
-                frequencies = np.array([[freq for _]])
-
-            id_to_regex_freq_data[id] = frequencies
-
-            print(id_to_regex_freq_data[id])
-            svm_data = np.concatenate((svm_data, [id_to_regex_freq_data[id]]), axis=0)
-            #regex frequencies input data and labels are already preprocessed in main
-
-        print(svm_data)
-
-        print(id_to_regex_freq_data['1045'])
-
-
-
+            # print(id_to_regex_freq_data['1060'])

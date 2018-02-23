@@ -1,10 +1,15 @@
 "no evidence of active",-12
 "no evidence[^\,]*has active",-150
 "does not[^\,]*ha[s(?:ve)] active",-150
-#"history",-1
-#"rule out",-1
-#"reduce[^\,]chance",-1
+"not[^\,]*ha[s(?:ve)] active",-150
+"reduce[^\,]chance",-1
 " do not[^\,]*active",-2
-#"expos",-1
-#"contact",-1
+"expos",-1
+"contact",-1
 "negative fully-sensitive",-20
+# active_tb:
+# bias = -3
+#"no evidence of active",-12
+#"has active",50,"no evidence[^\,]*has active",-150,"does not[^\,]*ha[s(?:ve)] active",-150,"not[^\,]*ha[s(?:ve)] active",-150,"history",i,"rule out",i,"reduce[^\,]chance",i," do not[^\,]*active",i
+#"active pleural",12,"expos",i,"contact",i
+#"fully-sensitive",12,"expos",i,"contact",i,"negative fully-sensitive",i

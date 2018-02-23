@@ -1,0 +1,6 @@
+"does not smok",100
+"has never smok",100
+"not a smoker",100
+"never smok",100
+"nonsmoker",100
+"non-smoker",100

@@ -1,0 +1,9 @@
+"currently smokes",10
+"is a smoker",10
+"smokes[^\,]*frequently",10
+"occasional(ly)?[^\,]smokes",10
+"current smoker",10
+"smoker",5
+"a smoker",10
+"smokes",20
+"smoking",10
