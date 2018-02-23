@@ -23,6 +23,21 @@ class RegexClassifier(BaseClassifier):
     def weighted_score_text(self, text, regexes):
         pass
 
+    def simple_freq_count_text(self, text, regexes, regex_to_freq_dict):
+        for regex in regexes:
+            regex_matches = regex.determine_matches(text)
+            regex_to_freq_dict[regex.name] += len(regex_matches)
+            # print(regex.name, regex_to_freq_dict[regex.name])
+
+    def freq_count_sentence(self, text, regexes, regex_to_freq_dict, freq_func=None):
+        func = self.simple_freq_count_text if freq_func is None else freq_func
+        func(text, regexes, regex_to_freq_dict)
+
+    def freq_count_sentences(self, text, regexes, regex_to_freq_dict, freq_func=None):
+        sentences = split_string_into_sentences(text)
+        for sentence in sentences:
+            self.freq_count_sentence(sentence, regexes, regex_to_freq_dict, freq_func)
+
     def naive_score_text(self, text, regexes):
         '''
         Naively scores text by summing the match scores in the Regex objects
@@ -114,9 +129,18 @@ class RegexClassifier(BaseClassifier):
 
         # self.score_text("This is text")
 
+        '''
+        Naive classification done:
+        
+        id_to_match_scores = {}
+
         for id, datum, label in zip(self.ids, self.data, self.labels):
             matches, score = self.score_sentences(datum, self.regexes)
-            print(matches)
+            id_to_match_scores[id] = {"all_matches": matches, "final_score": score}
+
+        print(id_to_match_scores['1045'])
+        '''
+
 
         '''
         
@@ -136,11 +160,42 @@ class RegexClassifier(BaseClassifier):
             - sum((match_index(regex_match)/len_matches)*(sentence_index/num_sentences))
                 -Effect: Later terms penalized less, more matches penalized less since (1+2+3...k)/k is divergent
         
-        normalize_frequencies [Perhaps unneeded if using frequency scaling]
+        normalize_frequencies [Perhaps unneeded if using frequency scaling, maybe not needed at all]
         
         train_svm method
             Classify data
 
-        
+        Consider making regex classifier more general. More parameters... Think about this more 
         '''
+
+        id_to_regex_freq_data = {}
+
+        normalize = True
+        svm_data = np.array([[]])
+
+        '''
+        Random dictionary access could cause reordering of key values... might need to use a list.
+        Solved... store dictionary keys in set order and access using that predefined order each time 
+        '''
+        for id, datum, label in zip(self.ids, self.data, self.labels):
+            regexes_to_freq = {regex.name: 0 for regex in self.regexes}
+            self.freq_count_sentences(datum, self.regexes, regexes_to_freq)
+
+            if normalize:
+                if sum(regexes_to_freq.values()) > 0:
+                    frequencies = np.array([[freq/sum(regexes_to_freq.values()) for _, freq in regexes_to_freq.items()]])
+            else:
+                frequencies = np.array([[freq for _]])
+
+            id_to_regex_freq_data[id] = frequencies
+
+            print(id_to_regex_freq_data[id])
+            svm_data = np.concatenate((svm_data, [id_to_regex_freq_data[id]]), axis=0)
+            #regex frequencies input data and labels are already preprocessed in main
+
+        print(svm_data)
+
+        print(id_to_regex_freq_data['1045'])
+
+
 
