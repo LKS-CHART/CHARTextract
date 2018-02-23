@@ -76,8 +76,19 @@ if __name__ == "__main__":
     [regex_list.extend(l) for l in regexes.values()]
 
     #Creating Regex Classifier
-    tb_regex = RegexClassifier("TB Classifier Regex", regex_list)
+    tb_regex = RegexClassifier("Active TB/LTBI/None Classifier Regex", regex_list)
     tb_regex.import_data(data, labels, ids)
+
+    print(tb_regex.labels)
+
+    #Converting label names to values
+    tb_regex.labels[tb_regex.labels == 'None'] = 0
+    tb_regex.labels[tb_regex.labels == 'LTBI'] = 1
+    tb_regex.labels[tb_regex.labels == 'Active TB'] = 2
+
+    tb_regex.labels = tb_regex.labels.astype(np.int32)
+
+    print(tb_regex.labels)
 
     train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.5, 0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}

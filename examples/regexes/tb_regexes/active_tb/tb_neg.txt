@@ -1,10 +1,10 @@
 "no evidence of active",-12
 "no evidence[^\,]*has active",-150
 "does not[^\,]*ha[s(?:ve)] active",-150
-"history",-1
-"rule out",-1
-"reduce[^\,]chance",-1
+#"history",-1
+#"rule out",-1
+#"reduce[^\,]chance",-1
 " do not[^\,]*active",-2
-"expos",-1
-"contact",-1
+#"expos",-1
+#"contact",-1
 "negative fully-sensitive",-20
