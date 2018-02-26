@@ -81,7 +81,7 @@ if __name__ == "__main__":
     [regex_list.extend(l) for l in regexes.values()]
 
     #Creating Regex Classifier
-    tb_regex = SVMRegexClassifier("Smoking Classifier", regex_list)
+    tb_regex = SVMRegexClassifier("Smoking Classifier", regex_list, normalize=False)
     tb_regex.import_data(data, labels, ids)
 
     #Converting label names to values
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
     tb_regex.labels = tb_regex.labels.astype(np.int32)
 
-    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.8, 0)
+    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.75, 0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
 
     #Running TB Classifier
