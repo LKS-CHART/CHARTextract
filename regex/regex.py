@@ -5,13 +5,14 @@ class Regex(object):
     '''
     Container class for regexes, scores and matches
     '''
-    def __init__(self, name, regex, score, all_matches=False, flags=None):
+    def __init__(self, name, regex, score, effect=None, regex_components=None, all_matches=False, flags=None):
         '''
         Initialize Regex object
 
         :param name: Regex name (string)
         :param regex: Regular expression (string)
         :param score: Regex score (int)
+        :param regex_components: A list of secondary Regex objects
         :param all_matches: Return first match or all matches (bool)
         :param flags: list of regex flags to be used for compilation e.g [re.IGNORECASE, re.DEBUG]
         '''
@@ -21,6 +22,8 @@ class Regex(object):
         self.all_matches = all_matches
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
+        self.regex_components = regex_components
+        self.effect = effect
 
         if flags is None:
             self.regex = re.compile(regex)
@@ -75,6 +78,7 @@ class Regex(object):
 
         if self.all_matches:
             self.matches = list(self._match_func(self.regex, text))
+
         else:
 
             self.matches = self._match_func(self.regex, text)
@@ -82,6 +86,15 @@ class Regex(object):
 
         return self.matches
 
+    def determine_secondary_matches(self, text):
+        '''
+        Compute secondary matches for a given text
 
+        :param text: A string of text you want to find secondary matches for
+
+        :return: A dictionary containing regex_effect -> o
+        '''
+
+        pass
 
 
