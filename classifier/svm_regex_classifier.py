@@ -10,7 +10,7 @@ class SVMRegexClassifier(BaseClassifier):
     '''
     Class specialized in classifying patient data using regexes
     '''
-    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None):
+    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None, normalize=True):
         '''
         Initializes RegexClassifier
 
@@ -22,7 +22,8 @@ class SVMRegexClassifier(BaseClassifier):
         '''
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
         self.regexes = regexes
-        self.classifier = svm.SVC(kernel='linear', C=1)
+        self.normalize = normalize
+        self.classifier = svm.SVC(kernel='linear', C=1, class_weight='balanced')
 
     def simple_freq_count_text(self, text, regexes, regex_to_freq_dict):
         '''
@@ -98,13 +99,14 @@ class SVMRegexClassifier(BaseClassifier):
 
         return svm_data
 
-    def train_classifier(self):
+    def train_classifier(self, **classifier_params):
         '''
         Trains SVMRegexClassifier's classifier
         '''
 
-        data = self.calculate_frequency("train", normalize=False)
+        data = self.calculate_frequency("train", normalize=self.normalize)
         x, y = data, self.dataset["train"]["labels"]
+        self.classifier.set_params(**classifier_params)
         self.classifier.fit(x, y)
 
     def run_classifier(self, sets=["train", "valid"]):
@@ -118,8 +120,8 @@ class SVMRegexClassifier(BaseClassifier):
         print("\nRunning Classifier:", self.name)
 
         for data_set in sets:
-            print("\nRunning classifier on {}\n".format(data_set))
-            svm_data = self.calculate_frequency(data_set, normalize=False)
+            print("\nRunning classifier on {} with {} datapoints\n".format(data_set, len(self.dataset[data_set]["labels"])))
+            svm_data = self.calculate_frequency(data_set, normalize=self.normalize)
             preds = self.classifier.predict(svm_data)
             print("Predictions:", preds)
             print("Labels:", self.dataset[data_set]["labels"])
@@ -130,4 +132,6 @@ class SVMRegexClassifier(BaseClassifier):
             print("Actual Labels: ", self.dataset[data_set]["labels"][wrong_indices])
             print("Incorrect Ids:", self.dataset[data_set]["ids"][wrong_indices])
             print(np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
+
+        print(self.dataset["train"]["regex_frequencies"])
 
