@@ -10,37 +10,23 @@ class RegexClassifier(BaseClassifier):
     '''
     Class specialized in classifying patient data using regexes
     '''
-    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None):
+    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None, biases=None, multiclass=True):
         '''
         Initializes RegexClassifier
 
         :param classifier_name: Name of classifier
-        :param regexes: List of Regex objects
+        :param regexes: A dictionary of regex_name to a list of Regex objects
         :param data: List of data
         :param labels: List of labels
         :param ids: List of ids
         '''
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
         self.regexes = regexes
-        self.classifier = None
+        self.biases = biases
+        self.multiclass = multiclass
 
     def weighted_score_text(self, text, regexes):
         pass
-
-    def simple_freq_count_text(self, text, regexes, regex_to_freq_dict):
-        for regex in regexes:
-            regex_matches = regex.determine_matches(text)
-            regex_to_freq_dict[regex.name] += len(regex_matches)
-            # print(regex.name, regex_to_freq_dict[regex.name])
-
-    def freq_count_sentence(self, text, regexes, regex_to_freq_dict, freq_func=None):
-        func = self.simple_freq_count_text if freq_func is None else freq_func
-        func(text, regexes, regex_to_freq_dict)
-
-    def freq_count_sentences(self, text, regexes, regex_to_freq_dict, freq_func=None):
-        sentences = split_string_into_sentences(text)
-        for sentence in sentences:
-            self.freq_count_sentence(sentence, regexes, regex_to_freq_dict, freq_func)
 
     def naive_score_text(self, text, regexes):
         '''
@@ -117,44 +103,8 @@ class RegexClassifier(BaseClassifier):
 
         return matches_score_dict, total_score
 
-    def init_classifier(self):
-
-        self.classifier = svm.SVC(kernel='linear', C=1)
-
-        data = self.dataset["train"]["data"]
-        labels = self.dataset["train"]["labels"]
-        ids = self.dataset["train"]["ids"]
-
-        id_to_regex_freq_data = {}
-
-        normalize = True
-        svm_data = np.array([[]])
-
-        for id, datum, label in zip(ids, data, labels):
-            regexes_to_freq = {regex.name: 0 for regex in self.regexes}
-            self.freq_count_sentences(datum, self.regexes, regexes_to_freq)
-
-            if normalize:
-                if sum(regexes_to_freq.values()) > 0:
-                    frequencies = np.array([[regexes_to_freq[regex.name]/sum(regexes_to_freq.values()) for regex in self.regexes]])
-                else:
-                    frequencies = np.array([[regexes_to_freq[regex.name] for regex in self.regexes]])
-            else:
-                frequencies = np.array([[regexes_to_freq[regex.name] for regex in self.regexes]])
-
-            id_to_regex_freq_data[id] = regexes_to_freq
-
-            if svm_data.shape[1] == 0:
-                svm_data = frequencies
-            else:
-                svm_data = np.concatenate((svm_data, frequencies), axis=0)
-
-        return svm_data, id_to_regex_freq_data
-
-    def train_classifier(self, data, labels):
-        clf = svm.SVC(kernel='linear', C=1)
-        x, y = data, labels
-        clf.fit(x,y)
+    def classify(self, class_to_scores):
+        return max(class_to_scores.items(), key=lambda i: i[1])
 
     def run_classifier(self, sets=["train", "valid"]):
         print("\nRunning Classifier:", self.name)
@@ -173,56 +123,42 @@ class RegexClassifier(BaseClassifier):
         # self.score_text("This is text")
 
         '''
-        Naive classification done:
-        
-        id_to_match_scores = {}
-
-        for id, datum, label in zip(self.ids, self.data, self.labels):
-            matches, score = self.score_sentences(datum, self.regexes)
-            id_to_match_scores[id] = {"all_matches": matches, "final_score": score}
-
-        print(id_to_match_scores['1045'])
-        '''
-
-
-        '''
-        
-        TODO: 
-        
-        
-        Set required labels e.g Smoking = 0, Never Smoked = 1, Past Smoker = 2
-        
-        create dict_1 reg_name -> freq
-        
-        #Used only for vanilla frequency counting. Scale frequency method will use a different technique
-        For each sentence compute regex frequencies
-            dict[reg_name] += freq
-        
         ??Scale Frequency based on sentence index?? 
             -Potential formula
             - sum((match_index(regex_match)/len_matches)*(sentence_index/num_sentences))
                 -Effect: Later terms penalized less, more matches penalized less since (1+2+3...k)/k is divergent
         
-        normalize_frequencies [Perhaps unneeded if using frequency scaling, maybe not needed at all]
-        
-        train_svm method
-            Classify data
-
-        Consider making regex classifier more general. More parameters... Think about this more 
         '''
 
-        svm_data, regex_to_freq = self.init_classifier()
-        self.train_classifier(svm_data, self.dataset["train"]["labels"])
+        for data_set in sets:
+            print("\nCurrently classifying {} with {} datapoints\n".format(data_set, len(self.dataset[data_set]["data"])))
+            id_to_match_scores = {}
+            preds = []
+            ids = self.dataset[data_set]["ids"]
+            data = self.dataset[data_set]["data"]
+            labels = self.dataset[data_set]["labels"]
+            for id, datum, label in zip(ids, data, labels):
+                id_to_match_scores[id] = {}
+                for class_name in self.regexes:
+                    matches = []
+                    score = 0
+                    if len(self.regexes[class_name]) > 0:
+                        matches, score = self.score_sentences(datum, self.regexes[class_name])
 
-        for set in sets:
-            preds = self.classifier.predict(self.data[set]["data"])
-            wrong_indices = np.nonzero(~(preds == self.dataset[set]["labels"]))
+                    id_to_match_scores[id][class_name] = {"all_matches": matches, "final_score": self.biases[class_name] + score}
+
+                class_scores = {class_name: id_to_match_scores[id][class_name]["final_score"] for class_name in id_to_match_scores[id]}
+                preds.append(self.classify(class_scores)[0])
+
+            print(class_scores)
+            preds = np.array(preds)
+            print("Predictions:", preds)
+            print("Labels:", self.dataset[data_set]["labels"])
+            wrong_indices = np.nonzero(~(preds == self.dataset[data_set]["labels"]))
             print(wrong_indices)
-            labs = np.array(['None', 'Former smoker', 'Never smoked', 'Current smoker'])
-            print("Predictions: ", labs[preds[wrong_indices]])
-            print("Actual: ", labs[self.dataset[set][wrong_indices]])
-            print("Ids:", self.dataset[set]["ids"][wrong_indices])
-            print(preds)
-            print(np.sum(preds==self.dataset[set]["labels"])/len(self.dataset[set]["labels"]))
+            # labs = np.array(['None', 'Former smoker', 'Never smoked', 'Current smoker'])
+            print("Incorrect Predictions: ", preds[wrong_indices])
+            print("Actual Labels: ", self.dataset[data_set]["labels"][wrong_indices])
+            print("Incorrect Ids:", self.dataset[data_set]["ids"][wrong_indices])
+            print(np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
 
-            # print(id_to_regex_freq_data['1060'])
