@@ -1,4 +1,4 @@
-from classifier.regex_classifier import RegexClassifier
+from classifier.svm_regex_classifier import SVMRegexClassifier
 from classifier.ngram_classifier import NgramClassifier
 from datahandler import data_import as di
 import re
@@ -8,7 +8,7 @@ from util.string_functions import split_string_into_sentences
 
 if __name__ == "__main__":
 
-    debug = False
+    debug = True
 
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
@@ -49,7 +49,9 @@ if __name__ == "__main__":
 
         print(regexes)
     else:
-        data, labels, ids = [],[],[]
+        data = ['I am a smoker.', 'She does not smoke.', 'She used to smoke', 'Current smoker.', 'I am a patient.']
+        labels = ['Current smoker', 'Never smoked', 'Former smoker', 'Current smoker', 'None']
+        ids = ['0', '1', '2', '3', '4']
 
     #Creating TB Classifier
     # tb = NgramClassifier("TB Classifier 1")
@@ -77,7 +79,7 @@ if __name__ == "__main__":
     [regex_list.extend(l) for l in regexes.values()]
 
     #Creating Regex Classifier
-    tb_regex = RegexClassifier("Active TB/LTBI/None Classifier Regex", regex_list)
+    tb_regex = SVMRegexClassifier("Active TB/LTBI/None Classifier Regex", regex_list)
     tb_regex.import_data(data, labels, ids)
 
     #Converting label names to values
@@ -88,10 +90,11 @@ if __name__ == "__main__":
 
     tb_regex.labels = tb_regex.labels.astype(np.int32)
 
-    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.7, 0)
+    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.8, 0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
 
     #Running TB Classifier
     # svm_data, _ = V
-    # tb_regex.train_svm()
+    tb_regex.train_svm()
+    #tb_regex.load_dataset(data, labels, ids, dataset_name="test")
     tb_regex.run_classifier(sets=["train","valid"])
