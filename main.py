@@ -1,4 +1,5 @@
 from classifier.svm_regex_classifier import SVMRegexClassifier
+from classifier.simple_regex_classifier import RegexClassifier
 from classifier.ngram_classifier import NgramClassifier
 from datahandler import data_import as di
 import re
@@ -22,6 +23,8 @@ if __name__ == "__main__":
         split_str = re.split(r'[\\/]+', file)
         key_name = split_str[-1].split('.')[0]
         regexes[key_name] = di.regexes_from_csv([file], [key_name], use_custom_score=True, all_matches=False)
+
+    regexes["None"] = []
 
     print(regexes)
 
@@ -81,7 +84,7 @@ if __name__ == "__main__":
     [regex_list.extend(l) for l in regexes.values()]
 
     #Creating Regex Classifier
-    tb_regex = SVMRegexClassifier("Smoking Classifier", regex_list, normalize=False)
+    tb_regex = SVMRegexClassifier("Smoking Classifier", regex_list, normalize=True)
     tb_regex.import_data(data, labels, ids)
 
     #Converting label names to values
@@ -95,7 +98,24 @@ if __name__ == "__main__":
     train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.75, 0)
     ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
 
-    #Running TB Classifier
+    #Running Smoking Classifier
     # tb_regex.load_dataset("train", tb_regex.data, tb_regex.labels, tb_regex.ids)
     tb_regex.train_classifier()
     tb_regex.run_classifier(sets=["train", "valid"])
+
+    #Creating Naive Regex Classifier
+    regex_biases = {regex_name: 0 for regex_name in regexes}
+    regex_biases["None"] = 1
+    tb_regex_naive = RegexClassifier("Basic Smoking Classifier", regexes, multiclass=True, biases=regex_biases)
+    tb_regex_naive.import_data(data, labels, ids)
+
+    #Converting label names to values
+    tb_regex_naive.labels[tb_regex_naive.labels == 'None'] = 'None'
+    tb_regex_naive.labels[tb_regex_naive.labels == 'Former smoker'] = 'former_smoker'
+    tb_regex_naive.labels[tb_regex_naive.labels == 'Never smoked'] = 'never_smoker'
+    tb_regex_naive.labels[tb_regex_naive.labels == 'Current smoker'] = 'current_smoker'
+
+    tb_regex_naive.create_train_and_valid(0.7, 0)
+
+    #Running Naive Smoking Classifier
+    tb_regex_naive.run_classifier(sets=["train", "valid"])
