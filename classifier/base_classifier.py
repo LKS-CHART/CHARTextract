@@ -22,6 +22,10 @@ class BaseClassifier(object):
                            "valid": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []},
                            "test": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []}}
 
+    def load_dataset(self, dataset_name, data, labels, ids):
+        self.dataset[dataset_name] = {"ids": ids, "labels": labels, "data": data,
+                                                     "preds": [], "scores": [], "matches": []}
+
     def import_data(self, data=None, labels=None, ids=None):
         '''
         Imports data into classifier
