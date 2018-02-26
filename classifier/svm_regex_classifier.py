@@ -133,5 +133,3 @@ class SVMRegexClassifier(BaseClassifier):
             print("Incorrect Ids:", self.dataset[data_set]["ids"][wrong_indices])
             print(np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
 
-        print(self.dataset["train"]["regex_frequencies"])
-
