@@ -132,33 +132,47 @@ class RegexClassifier(BaseClassifier):
 
         for data_set in sets:
             print("\nCurrently classifying {} with {} datapoints\n".format(data_set, len(self.dataset[data_set]["data"])))
+
             id_to_match_scores = {}
             preds = []
+
             ids = self.dataset[data_set]["ids"]
             data = self.dataset[data_set]["data"]
             labels = self.dataset[data_set]["labels"]
+            self.dataset[data_set]["matches"] = []
+            self.dataset[data_set]["scores"] = []
+
             for id, datum, label in zip(ids, data, labels):
-                id_to_match_scores[id] = {}
+                class_scores = {}
+                class_matches = {}
                 for class_name in self.regexes:
                     matches = []
                     score = 0
                     if len(self.regexes[class_name]) > 0:
                         matches, score = self.score_sentences(datum, self.regexes[class_name])
 
-                    id_to_match_scores[id][class_name] = {"all_matches": matches, "final_score": self.biases[class_name] + score}
+                    class_scores[class_name] = self.biases[class_name] + score
+                    class_matches[class_name] = matches
 
-                class_scores = {class_name: id_to_match_scores[id][class_name]["final_score"] for class_name in id_to_match_scores[id]}
+                self.dataset[data_set]["matches"].append(class_matches)
+                self.dataset[data_set]["scores"].append(class_scores)
                 preds.append(self.classify(class_scores)[0])
 
-            print(class_scores)
             preds = np.array(preds)
+            self.dataset[data_set]["preds"] = preds
             print("Predictions:", preds)
-            print("Labels:", self.dataset[data_set]["labels"])
+            id_index = np.where(self.dataset[data_set]["ids"] == "1042")
+            print(preds[id_index])
+            print(self.dataset[data_set]["labels"][id_index])
+
+            print("\nLabels:", self.dataset[data_set]["labels"])
+
             wrong_indices = np.nonzero(~(preds == self.dataset[data_set]["labels"]))
-            print(wrong_indices)
-            # labs = np.array(['None', 'Former smoker', 'Never smoked', 'Current smoker'])
-            print("Incorrect Predictions: ", preds[wrong_indices])
+            print("\nWrong indices:", wrong_indices)
+
+            print("\nIncorrect Predictions: ", preds[wrong_indices])
             print("Actual Labels: ", self.dataset[data_set]["labels"][wrong_indices])
             print("Incorrect Ids:", self.dataset[data_set]["ids"][wrong_indices])
-            print(np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
+
+            print("\nAccuracy:", np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
 
