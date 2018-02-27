@@ -1,10 +1,10 @@
 import numpy as np
-from copy import copy
 from .base_classifier import BaseClassifier
 from util.string_functions import split_string_into_sentences
 from sklearn import svm
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn import linear_model
+# from sklearn.neighbors import KNeighborsClassifier
+# from sklearn import linear_model
+from .classifier_helpers import get_matches_all_sentences
 
 class SVMRegexClassifier(BaseClassifier):
     '''
@@ -121,15 +121,26 @@ class SVMRegexClassifier(BaseClassifier):
 
         for data_set in sets:
             print("\nRunning classifier on {} with {} datapoints\n".format(data_set, len(self.dataset[data_set]["labels"])))
+
             svm_data = self.calculate_frequency(data_set, normalize=self.normalize)
             preds = self.classifier.predict(svm_data)
+            self.dataset[data_set]["preds"] = preds
             print("Predictions:", preds)
+
+            matches = []
+
+            for datum in self.dataset[data_set]["data"]:
+                sentences = split_string_into_sentences(datum)
+                matches.append(get_matches_all_sentences(sentences, self.regexes))
+
+            self.dataset[data_set]["matches"] = matches
+
             print("Labels:", self.dataset[data_set]["labels"])
             wrong_indices = np.nonzero(~(preds == self.dataset[data_set]["labels"]))
             print(wrong_indices)
-            # labs = np.array(['None', 'Former smoker', 'Never smoked', 'Current smoker'])
             print("Incorrect Predictions: ", preds[wrong_indices])
             print("Actual Labels: ", self.dataset[data_set]["labels"][wrong_indices])
             print("Incorrect Ids:", self.dataset[data_set]["ids"][wrong_indices])
             print(np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
+
 
