@@ -22,6 +22,10 @@ class SVMRegexClassifier(BaseClassifier):
         '''
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
         self.regexes = regexes
+
+        self._regex_list = []
+        [self._regex_list.extend(l) for l in regexes.values()]
+
         self.normalize = normalize
         self.classifier = svm.SVC(kernel='linear', C=1, class_weight='balanced')
 
@@ -80,15 +84,15 @@ class SVMRegexClassifier(BaseClassifier):
         svm_data = np.array([[]])
 
         for id, datum, label in zip(ids, data, labels):
-            regexes_to_freq = {regex.name: 0 for regex in self.regexes}
-            self.freq_count_sentences(datum, self.regexes, regexes_to_freq)
+            regexes_to_freq = {regex.name: 0 for regex in self._regex_list}
+            self.freq_count_sentences(datum, self._regex_list, regexes_to_freq)
 
             total_val = 1
 
             if normalize:
                 total_val = sum(regexes_to_freq.values()) if sum(regexes_to_freq.values()) > 0 else 1
 
-            frequencies = np.array([[regexes_to_freq[regex.name]/total_val for regex in self.regexes]])
+            frequencies = np.array([[regexes_to_freq[regex.name]/total_val for regex in self._regex_list]])
 
             if svm_data.shape[1] == 0:
                 svm_data = frequencies
@@ -120,19 +124,23 @@ class SVMRegexClassifier(BaseClassifier):
         print("\nRunning Classifier:", self.name)
 
         for data_set in sets:
-            print("\nRunning classifier on {} with {} datapoints\n".format(data_set, len(self.dataset[data_set]["labels"])))
+            print("Running classifier on {} with {} datapoints".format(data_set, len(self.dataset[data_set]["labels"])))
 
             svm_data = self.calculate_frequency(data_set, normalize=self.normalize)
             preds = self.classifier.predict(svm_data)
             self.dataset[data_set]["preds"] = preds
 
-            matches = []
+            self.dataset[data_set]["matches"] = []
+            self.dataset[data_set]["scores"] = []
 
             for datum in self.dataset[data_set]["data"]:
+                class_matches = {}
+                class_scores = {}
                 sentences = split_string_into_sentences(datum)
-                matches.append(get_matches_all_sentences(sentences, self.regexes))
+                for class_name in self.regexes:
+                    matches = get_matches_all_sentences(sentences, self.regexes[class_name])
+                    class_scores[class_name] = None
+                    class_matches[class_name] = matches
 
-            self.dataset[data_set]["matches"] = matches
-
-
-
+                self.dataset[data_set]["matches"].append(class_matches)
+                self.dataset[data_set]["scores"].append(class_scores)
