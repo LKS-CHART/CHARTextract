@@ -131,7 +131,7 @@ class RegexClassifier(BaseClassifier):
         '''
 
         for data_set in sets:
-            print("\nCurrently classifying {} with {} datapoints\n".format(data_set, len(self.dataset[data_set]["data"])))
+            print("Currently classifying {} with {} datapoints".format(data_set, len(self.dataset[data_set]["data"])))
 
             id_to_match_scores = {}
             preds = []
