@@ -4,8 +4,7 @@ from classifier.ngram_classifier import NgramClassifier
 from datahandler import data_import as di
 import re
 import os
-import numpy as np
-from util.string_functions import split_string_into_sentences
+from stats.basic import calculate_accuracy
 
 if __name__ == "__main__":
 
@@ -80,28 +79,28 @@ if __name__ == "__main__":
     #Running TB Classifier
     # tb.run_classifier()
 
-    regex_list = []
-    [regex_list.extend(l) for l in regexes.values()]
-
-    #Creating Regex Classifier
-    tb_regex = SVMRegexClassifier("Smoking Classifier", regex_list, normalize=True)
-    tb_regex.import_data(data, labels, ids)
-
-    #Converting label names to values
-    tb_regex.labels[tb_regex.labels == 'None'] = 0
-    tb_regex.labels[tb_regex.labels == 'Former smoker'] = 1
-    tb_regex.labels[tb_regex.labels == 'Never smoked'] = 2
-    tb_regex.labels[tb_regex.labels == 'Current smoker'] = 3
-
-    tb_regex.labels = tb_regex.labels.astype(np.int32)
-
-    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.75, 0)
-    ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
-
-    #Running Smoking Classifier
-    # tb_regex.load_dataset("train", tb_regex.data, tb_regex.labels, tb_regex.ids)
-    tb_regex.train_classifier()
-    tb_regex.run_classifier(sets=["train", "valid"])
+    # regex_list = []
+    # [regex_list.extend(l) for l in regexes.values()]
+    #
+    # #Creating Regex Classifier
+    # tb_regex = SVMRegexClassifier("Smoking Classifier", regex_list, normalize=True)
+    # tb_regex.import_data(data, labels, ids)
+    #
+    # #Converting label names to values
+    # tb_regex.labels[tb_regex.labels == 'None'] = 0
+    # tb_regex.labels[tb_regex.labels == 'Former smoker'] = 1
+    # tb_regex.labels[tb_regex.labels == 'Never smoked'] = 2
+    # tb_regex.labels[tb_regex.labels == 'Current smoker'] = 3
+    #
+    # tb_regex.labels = tb_regex.labels.astype(np.int32)
+    #
+    # train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.75, 0)
+    # ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
+    #
+    # #Running Smoking Classifier
+    # # tb_regex.load_dataset("train", tb_regex.data, tb_regex.labels, tb_regex.ids)
+    # tb_regex.train_classifier(C=1)
+    # tb_regex.run_classifier(sets=["train", "valid"])
 
     #Creating Naive Regex Classifier
     regex_biases = {regex_name: 0 for regex_name in regexes}
@@ -119,3 +118,20 @@ if __name__ == "__main__":
 
     #Running Naive Smoking Classifier
     tb_regex_naive.run_classifier(sets=["train", "valid"])
+
+    for data_set in ["train", "valid"]:
+        print("\n\nDataset:", data_set)
+        #dataset accuarcy
+        accuracy, incorrect_indices = calculate_accuracy(tb_regex_naive.dataset[data_set]["preds"],
+                                                         tb_regex_naive.dataset[data_set]["labels"])
+
+        print("\nPredictions:", tb_regex_naive.dataset[data_set]["preds"])
+        print("\nLabels:", tb_regex_naive.dataset[data_set]["labels"])
+
+        print("\nIncorrect Indices:", incorrect_indices)
+        print("Incorrect Predictions: ", tb_regex_naive.dataset[data_set]["preds"][incorrect_indices])
+        print("Actual Labels: ", tb_regex_naive.dataset[data_set]["labels"][incorrect_indices])
+        print("Incorrect Ids:", tb_regex_naive.dataset[data_set]["ids"][incorrect_indices])
+
+        print("\nAccuracy:", accuracy)
+
