@@ -135,4 +135,3 @@ if __name__ == "__main__":
         print("Incorrect Ids:", tb_regex_naive.dataset[data_set]["ids"][incorrect_indices])
 
         print("\nAccuracy:", accuracy)
-

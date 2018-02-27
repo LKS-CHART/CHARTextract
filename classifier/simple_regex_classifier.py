@@ -97,7 +97,7 @@ class RegexClassifier(BaseClassifier):
 
             #only adding sentences that matched
             if matches:
-                matches_score_dict[i] = {"matches": matches, "score": score}
+                matches_score_dict[i] = {"matches": matches, "text_score": score}
 
             total_score += score
 

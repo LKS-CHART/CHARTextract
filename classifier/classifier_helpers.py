@@ -8,7 +8,7 @@ def get_matches_all_sentences(sentences, regexes):
     :param sentences: A list of sentences (list of str)
     :param regexes: List of Regex Objects to search for in each sentence
 
-    :return: {sentence_i: [Regex Objects]}
+    :return: {sentence_i: {"matches": [Regex Objects]}}
     '''
     matches_score_dict = {}
 
@@ -17,7 +17,7 @@ def get_matches_all_sentences(sentences, regexes):
 
         #only adding sentences that matched
         if matches:
-            matches_score_dict[i] = matches
+            matches_score_dict[i] = {"matches": matches}
 
     return matches_score_dict
 

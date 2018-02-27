@@ -139,6 +139,7 @@ class SVMRegexClassifier(BaseClassifier):
                 sentences = split_string_into_sentences(datum)
                 for class_name in self.regexes:
                     matches = get_matches_all_sentences(sentences, self.regexes[class_name])
+
                     class_scores[class_name] = None
                     class_matches[class_name] = matches
 
