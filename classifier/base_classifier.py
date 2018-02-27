@@ -18,13 +18,13 @@ class BaseClassifier(object):
         self.data = data
         self.labels = labels
         self.ids = ids
-        self.dataset = {"train": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []},
-                           "valid": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []},
-                           "test": {"ids": [], "labels": [], "data": [], "preds": [], "scores": [], "matches": []}}
+        self.dataset = {"train": {"ids": [], "labels": [], "data": [], "preds": [], "matches": []},
+                           "valid": {"ids": [], "labels": [], "data": [], "preds": [], "matches": []},
+                           "test": {"ids": [], "labels": [], "data": [], "preds": [], "matches": []}}
 
     def load_dataset(self, dataset_name, data, labels, ids):
         self.dataset[dataset_name] = {"ids": ids, "labels": labels, "data": data,
-                                                     "preds": [], "scores": [], "matches": []}
+                                                     "preds": [], "matches": []}
 
     def import_data(self, data=None, labels=None, ids=None):
         '''
