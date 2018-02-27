@@ -160,19 +160,7 @@ class RegexClassifier(BaseClassifier):
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
-            print("Predictions:", preds)
-            id_index = np.where(self.dataset[data_set]["ids"] == "1042")
-            print(preds[id_index])
-            print(self.dataset[data_set]["labels"][id_index])
-
-            print("\nLabels:", self.dataset[data_set]["labels"])
-
-            wrong_indices = np.nonzero(~(preds == self.dataset[data_set]["labels"]))
-            print("\nWrong indices:", wrong_indices)
-
-            print("\nIncorrect Predictions: ", preds[wrong_indices])
-            print("Actual Labels: ", self.dataset[data_set]["labels"][wrong_indices])
-            print("Incorrect Ids:", self.dataset[data_set]["ids"][wrong_indices])
-
-            print("\nAccuracy:", np.sum(preds == self.dataset[data_set]["labels"])/len(self.dataset[data_set]["labels"]))
+            # id_index = np.where(self.dataset[data_set]["ids"] == "1042")
+            # print(preds[id_index])
+            # print(self.dataset[data_set]["labels"][id_index])
 
