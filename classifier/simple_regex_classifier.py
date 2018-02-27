@@ -104,9 +104,22 @@ class RegexClassifier(BaseClassifier):
         return matches_score_dict, total_score
 
     def classify(self, class_to_scores):
+        '''
+        Given a dictionary of classes_to_scores, returns a tuple containing the class with the highest_score and its score
+        :param class_to_scores: Dictionary of class to scores {"class_name": score}
+
+        :return: (class_name, score) where class_name is the class with the highest score
+        '''
         return max(class_to_scores.items(), key=lambda i: i[1])
 
     def run_classifier(self, sets=["train", "valid"]):
+        '''
+        Runs the trained classifier on the given datasets. Note these datasets must be loaded into self.dataset object first
+        or initialized in some other manner
+
+        :param sets: A list of dataset names to run the classifier on
+        '''
+
         print("\nRunning Classifier:", self.name)
 
         # full_text = " ".join(self.data)

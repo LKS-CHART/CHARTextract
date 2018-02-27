@@ -120,6 +120,7 @@ if __name__ == "__main__":
     #Running Naive Smoking Classifier
     tb_regex_naive.run_classifier(sets=["train", "valid"])
 
+    #Calculating logistics for tb_regex_naive
     for data_set in ["train", "valid"]:
         print("\n\nDataset:", data_set)
         #dataset accuarcy
