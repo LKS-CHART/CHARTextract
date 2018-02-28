@@ -143,11 +143,17 @@ if __name__ == "__main__":
         for index in incorrect_indices:
             patient_id = tb_regex_naive.dataset[data_set]["ids"][index]
             pred = tb_regex_naive.dataset[data_set]["preds"][index]
-            labels = tb_regex_naive.dataset[data_set]["labels"][index]
+            label = tb_regex_naive.dataset[data_set]["labels"][index]
             match_obj = tb_regex_naive.dataset[data_set]["matches"][index]
             score = tb_regex_naive.dataset[data_set]["scores"][index]
             data = tb_regex_naive.dataset[data_set]["data"][index]
 
+            failures_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
+
         error_template = os.path.join('web', 'templates', 'error_report.html')
         output_dir = os.path.join('generated_data', 'smoking', data_set)
+        print(failures_dict)
+        if not os.path.isdir(output_dir):
+            os.mkdir(output_dir)
+
         generate_error_report(output_dir, "smoking_report.html", error_template, "Smoking Status", regexes.keys(), failures_dict, False)
