@@ -6,6 +6,8 @@ import re
 import os
 from stats.basic import calculate_accuracy
 import numpy as np
+from web.report_generator import generate_error_report
+import web
 
 if __name__ == "__main__":
 
@@ -136,3 +138,16 @@ if __name__ == "__main__":
         print("Incorrect Ids:", tb_regex_naive.dataset[data_set]["ids"][incorrect_indices])
 
         print("\nAccuracy:", accuracy)
+
+        failures_dict = {}
+        for index in incorrect_indices:
+            patient_id = tb_regex_naive.dataset[data_set]["ids"][index]
+            pred = tb_regex_naive.dataset[data_set]["preds"][index]
+            labels = tb_regex_naive.dataset[data_set]["labels"][index]
+            match_obj = tb_regex_naive.dataset[data_set]["matches"][index]
+            score = tb_regex_naive.dataset[data_set]["scores"][index]
+            data = tb_regex_naive.dataset[data_set]["data"][index]
+
+        error_template = os.path.join('web', 'templates', 'error_report.html')
+        output_dir = os.path.join('generated_data', 'smoking', data_set)
+        generate_error_report(output_dir, "smoking_report.html", error_template, "Smoking Status", regexes.keys(), failures_dict, False)
