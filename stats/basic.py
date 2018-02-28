@@ -9,7 +9,7 @@ def calculate_accuracy(preds, labels):
 
     :return: Accuracy of the classifier, a list of indices which the classifier got incorrect
     '''
-    wrong_indices = np.nonzero(~(preds == labels))
+    wrong_indices = np.nonzero(~(preds == labels))[0]
     accuracy = np.sum(preds == labels)/len(labels)
 
     return accuracy, wrong_indices
