@@ -16,7 +16,7 @@ def generate_error_report(output_directory, html_output_filename, html_template,
     generate_generic_report(output_directory, html_output_filename, html_template)
     generate_error_json(output_directory, json_filename, variable_name, class_names, failures_dict, highlight_regexes)
 
-def generate_error_json(output_directory, json_filename, variable_name, class_names, failure_ids_dict, highlight_regexes=True):
+def generate_error_json(output_directory, json_filename, variable_name, class_names, failures_dict, highlight_regexes=True):
     json_fname = os.path.join(output_directory, json_filename)
 
     data = {}
