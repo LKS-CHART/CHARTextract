@@ -32,21 +32,78 @@
             word-break: break-all;
 
         }
+        .with-margin-bot {
+            margin-bottom:10px;
+        }
+        .patient-links {
+            margin-left: 10px;
+            margin-right: 10px;
+            background-color: #eee;
+            width: 100px;
+            color: #000;
+        }
 
     </style>
 
     <script>
 
-       /*$.ajax({
-            url: {{ json_file }},
+
+       $.ajax({
+            url: '{{json_file}}',
             dataType: 'json',
             success: function(data)
             {
+                json_file = data;
+                var_name = data.var_name
+                $('#variablename').text(var_name + ' Error Report')
 
+                class_names = Object.keys(data.classes)
+                classes_json = data.classes
 
+                for (i = 0; i < class_names.length; i++)
+                {
+                    cur_name = class_names[i]
+                    colour = classes_json[cur_name]
+                    h4_object = '<div class="row with-margin-left with-margin-bot"><span class="h4">' + cur_name + '</span></div>'
+
+                    $("#classes_container").append(h4_object)
+                    $("#classes_container div span:eq(" + i + ")").css("background-color", colour)
+
+                    patients_errors = Object.keys(data.patient_cases)
+                    patients_json = data.patient_cases
+                    for (j = 0; j < patients_errors.length; j++)
+                    {
+                        id = patients_errors[j]
+                        if (patients_json[id].actual == cur_name)
+                        {
+                            id_link = '<a class="patient-links" href="#" id="' + id + '"">' + id + '</a>'
+                            $("#classes_container div:eq(" + i + ")").append(id_link)
+                            $("#" + id).css("background-color", classes_json[patients_json[id].pred])
+                        }
+                    }
+
+                    console.log(cur_name)
+                    console.log(colour)
+                }
+
+                $(".patient-links").click(function(e)
+                {
+                    clicked_id = e.target.id
+                    classification = data.patient_cases[clicked_id].pred
+                    actual = data.patient_cases[clicked_id].actual
+                    score = data.patient_cases[clicked_id].score[classification]
+                    text_data = data.patient_cases[clicked_id].data
+                    text_data = text_data.replace(/\\n/g,"\n")
+                    $("#case-no").text("Patient #ID: " + clicked_id)
+                    $("#classification").text("Classified as: " + classification)
+                    $("#actual").text("Actual: " + actual)
+                    $("#score").text("Score: " + score)
+                    $("#patient-text").html(text_data)
+                });
+                
             }
-        });
-        */
+
+        });      
 
     </script>
 
@@ -63,7 +120,7 @@
 
         <div class="row">
           <div class="col" style="padding-left: 20px">
-              <h3>Patient #ID</h3>
+              <h3 id="case-no">Patient #ID</h3>
           </div>
         </div>
 
@@ -75,42 +132,29 @@
             </div>
         </div>
 
-        <div class="row with-margin-left">
-            <h4 class="inline-block" style="margin-right: 20px;">None
-                <div class="btn-group" role="group" >
-                    <button type="button" class="btn btn-secondary ">ID #1</button>
-                    <button type="button" class="btn btn-secondary ">ID #2</button>
-                    <button type="button" class="btn btn-secondary ">ID #3</button>
-                </div>
-            </h4>
-        </div>
-
-        <div class="row with-margin-left">
-            <h4 class="inline-block">Non-Smoker
-                <div class="btn-group" role="group" >
-                    <button type="button" class="btn btn-secondary ">ID #1</button>
-                    <button type="button" class="btn btn-secondary ">ID #2</button>
-                    <button type="button" class="btn btn-secondary ">ID #3</button>
-                </div>
-            </h4>
-        </div>
+        <div id="classes_container">
+        </div>  
 
         <div class="row with-margin-top">
             <div class="col" style="padding-left: 20px">
-                <h4>Classified as smoker</h4>
+                <h4 id="classification">Classified as</h4>
             </div>
         </div>
 
         <div class="row">
             <div class="col" style="padding-left: 20px">
-                <h4>Score: 20</h4>
+                <h4 id="actual">Actual: </h4>
             </div>
         </div>
 
         <div class="row">
-            <div class="col line-break-and-tab" style="padding-left: 20px">
-                This is patient text
+            <div class="col" style="padding-left: 20px">
+                <h4 id="score">Score: </h4>
             </div>
+        </div>
+
+        <div class="row">
+            <p id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></p>
         </div>
     </div>
 </body>

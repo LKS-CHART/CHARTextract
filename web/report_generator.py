@@ -25,10 +25,10 @@ def _generate_hsl_colour_dictionary(keys):
 
     return colour_dict
 
-def generate_error_report(output_directory, html_output_filename, template_folder, html_template, variable_name, class_names, failures_dict,
+def generate_error_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, failures_dict,
                           highlight_regexes=True, custom_class_colours=None):
     json_filename = html_output_filename.split('.')[0] + '.json'
-    generate_generic_report(output_directory, html_output_filename, template_folder, html_template, json_file=json_filename)
+    generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
     generate_error_json(output_directory, json_filename, variable_name, class_names, failures_dict, highlight_regexes)
 
 def generate_error_json(output_directory, json_filename, variable_name, class_names, failures_dict,
