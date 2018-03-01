@@ -47,6 +47,51 @@
 
     <script>
 
+        function isEmpty(obj)
+        {
+            for (var key in obj) {
+                if(obj.hasOwnProperty(key))
+                    return false;
+            }
+
+            return true;
+        }
+
+        function highlight_matches(text, matches_obj, classes_to_colour) {
+
+            class_names = Object.keys(classes_to_colour)
+
+            for (i = 0; i < class_names.length; i++)
+            {
+                cur_name = class_names[i]
+                colour = classes_to_colour[cur_name]
+
+                if (!isEmpty(matches_obj[cur_name]))
+                {
+                    sentence_indices = Object.keys(matches_obj[cur_name])
+                    sentences = text.split(".")
+
+                    for (j in sentence_indices)
+                    {
+                        index = sentence_indices[j]
+                        sentence_matches = matches_obj[cur_name][index.toString()]
+                        sentence = sentences[index]
+                        sentence_mutate = sentences[index]
+
+                        for (k in sentence_matches)
+                        {
+                            match_start = sentence_matches[k].match_start
+                            match_end = sentence_matches[k].match_end
+                        }
+                    }
+
+                }
+
+                //if(matches_obj[cur_name] == {})
+            }
+
+        }
+
 
        $.ajax({
             url: 'smoking_report.json',
@@ -93,12 +138,14 @@
                     actual = data.patient_cases[clicked_id].actual
                     score = data.patient_cases[clicked_id].score[classification]
                     text_data = data.patient_cases[clicked_id].data
+                    highlight_matches(text_data, data.patient_cases[clicked_id].matches, data.classes)
                     text_data = text_data.replace(/\\n/g,"\n")
                     $("#case-no").text("Patient #ID: " + clicked_id)
                     $("#classification").text("Classified as: " + classification)
                     $("#actual").text("Actual: " + actual)
                     $("#score").text("Score: " + score)
                     $("#patient-text").html(text_data)
+
                 });
                 
             }
