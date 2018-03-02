@@ -57,11 +57,6 @@
 
     <script>
 
-        $(document).ready(function(){
-            console.log("TESTSTESTST")
-            
-        });  
-
         function isEmpty(obj)
         {
             for (var key in obj) {
@@ -78,16 +73,18 @@
             var new_sentence="";
             var span_start = '<span id="' + span_id + '">'
             var span_end = '</span>'
+            var in_span = false;
+
 
             for(var i = 0; i < sentence.length; i++)
             {   new_sentence += sentence.charAt(i)
-                var in_span = false;
 
-                if (i+4 < sentence.length)
+                if (i+5 < sentence.length)
                 {
-                    span_tag = sentence.slice(i, i+4)
-                    if(span_tag=="<span")
-                    {
+                    span_tag = sentence.slice(i, i+5)
+                    if(span_tag=="<span" || span_tag=="</spa")
+                    {   
+                        console.log(in_span)
                         in_span = true;
                     }
                 }
@@ -120,6 +117,58 @@
             return new_sentence
 
         }
+
+        // function insert_span(sentence, span_id, colour, match_start, match_end)
+        // {
+        //     var unmutated_index = 0;
+        //     var new_sentence="";
+        //     var span_start = '<span id="' + span_id + '">'
+        //     var span_end = '</span>'
+        //     var in_span = false;
+
+
+        //     for(var i = 0; i < sentence.length; i++)
+        //     {   new_sentence += sentence.charAt(i)
+
+        //         if (i+4 < sentence.length)
+        //         {
+        //             console.log("")
+        //             span_tag = sentence.slice(i, i+4)
+        //             if(span_tag=="<span")
+        //             {   
+        //                 console.log(in_space)
+        //                 in_span = true;
+        //             }
+        //         }
+
+        //         if (in_span && sentence.charAt(i)==">")
+        //         {
+        //             in_span = false;
+        //         }
+
+        //         if (!in_span)
+        //         {
+        //             unmutated_index++;
+
+        //         }
+
+        //         if (match_start == unmutated_index)
+        //         {
+        //             new_sentence += span_start
+        //         }
+
+        //         if (match_end == unmutated_index)
+        //         {
+        //             new_sentence += span_end
+        //         }
+
+        //     }
+
+        //     $(span_id).css("background-color", colour)
+
+        //     return new_sentence
+
+        // }
 
         function isInArray(value, array)
         {
@@ -184,7 +233,7 @@
 
                 json_file = data;
                 var_name = data.var_name
-                $('#variablename').text(var_name + ' Error Report')
+                $('#variablename').text(var_name + ' Classification Report')
 
                 class_names = Object.keys(data.classes)
                 classes_json = data.classes
@@ -198,28 +247,24 @@
                     $("#classes_container").append(h4_object)
                     $("#classes_container div span:eq(" + i + ")").css("background-color", colour)
 
-                    patients_errors = Object.keys(data.patient_cases)
+                    patients = Object.keys(data.patient_cases)
                     patients_json = data.patient_cases
-                    for (j = 0; j < patients_errors.length; j++)
+                    for (j = 0; j < patients.length; j++)
                     {
-                        id = patients_errors[j]
-                        if (patients_json[id].actual == cur_name)
+                        id = patients[j]
+                        if (patients_json[id].pred == cur_name)
                         {
                             id_link = '<a class="patient-links" href="#" id="' + id + '"">' + id + '</a>'
                             $("#classes_container div:eq(" + i + ")").append(id_link)
-                            $("#" + id).css("background-color", classes_json[patients_json[id].pred])
+                            $("#" + id).css("background-color", classes_json[patients_json[id].actual])
                         }
                     }
-
-                    console.log(cur_name)
-                    console.log(colour)
                 }
 
                 $(".patient-links").click(function(e)
                 {
                     clicked_id = e.target.id
                     classification = data.patient_cases[clicked_id].pred
-                    actual = data.patient_cases[clicked_id].actual
                     score = data.patient_cases[clicked_id].score[classification]
                     text_data = data.patient_cases[clicked_id].data
                     var span_id_to_info = {}
@@ -227,22 +272,20 @@
                     text_data = text_data.replace(/\\n/g,"\n")
                     $("#case-no").text("Patient #ID: " + clicked_id)
                     $("#classification").text("Classified as: " + classification)
-                    $("#actual").text("Actual: " + actual)
                     $("#score").text("Score: " + score)
                     $("#patient-text").html(text_data)
 
                     for (var id in span_id_to_info)
                     {
 
-                        console.log(id)
                         $("#" + id).css("background-color", span_id_to_info[id].colour)
                         $("#" + id).attr("data-toggle","tooltip")
                         $("#" + id).attr("data-html", "true")
-                        tooltip_text = "name: " + span_id_to_info[id].matches.name + 
-                        "</br>class: " + span_id_to_info[id].class + 
+                        tooltip_text = "name: " + span_id_to_info[id].matches.name +
+                        "</br>class: " + span_id_to_info[id].class +
                         "</br>score: " + span_id_to_info[id].matches.score +
                         "</br>pattern: " + span_id_to_info[id].matches.pattern +
-                        "</br>matched_string: " + span_id_to_info[id].matches.matched_string 
+                        "</br>matched_string: " + span_id_to_info[id].matches.matched_string
                         $("#" + id).attr("title", tooltip_text)
 
 
@@ -259,55 +302,55 @@
 
     </script>
 
-    <title>Error Report</title>
+    <title>Classification Report</title>
 </head>
 <body>
-    <div class="container-fluid">
+<div class="container-fluid">
 
-        <div class="row">
-            <div class="col">
-                <h2 id="variablename" class="text-center"> Smoking Status Error Report</h2>
-            </div>
-        </div>
-
-        <div class="row">
-          <div class="col" style="padding-left: 20px">
-              <h3 id="case-no">Patient #ID</h3>
-          </div>
-        </div>
-
-        <!-- TODO: FIX BUTTON ALIGNMENT -->
-
-        <div class="row">
-            <div class="col" style="padding-left: 20px">
-                <h3>Misclassifications:</h3>
-            </div>
-        </div>
-
-        <div id="classes_container">
-        </div>
-
-        <div class="row with-margin-top">
-            <div class="col" style="padding-left: 20px">
-                <h4 id="classification">Classified as</h4>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col" style="padding-left: 20px">
-                <h4 id="actual">Actual: </h4>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col" style="padding-left: 20px">
-                <h4 id="score">Score: </h4>
-            </div>
-        </div>
-
-        <div class="row">
-            <div id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></div>
+    <div class="row">
+        <div class="col">
+            <h2 id="variablename" class="text-center">Classification Report</h2>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col" style="padding-left: 20px">
+            <h3 id="case-no">Patient #ID</h3>
+        </div>
+    </div>
+
+    <!-- TODO: FIX BUTTON ALIGNMENT -->
+
+    <div class="row">
+        <div class="col" style="padding-left: 20px">
+            <h3>Classifications:</h3>
+        </div>
+    </div>
+
+    <div id="classes_container">
+    </div>
+
+    <div class="row with-margin-top">
+        <div class="col" style="padding-left: 20px">
+            <h4 id="classification">Classified as</h4>
+        </div>
+    </div>
+
+   <!--  <div class="row">
+        <div class="col" style="padding-left: 20px">
+            <h4 id="actual">Actual: </h4>
+        </div>
+    </div> -->
+
+    <div class="row">
+        <div class="col" style="padding-left: 20px">
+            <h4 id="score">Score: </h4>
+        </div>
+    </div>
+
+    <div class="row">
+        <div id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></div>
+    </div>
+</div>
 </body>
 </html>

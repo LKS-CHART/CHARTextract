@@ -73,16 +73,18 @@
             var new_sentence="";
             var span_start = '<span id="' + span_id + '">'
             var span_end = '</span>'
+            var in_span = false;
+
 
             for(var i = 0; i < sentence.length; i++)
             {   new_sentence += sentence.charAt(i)
-                var in_span = false;
 
-                if (i+4 < sentence.length)
+                if (i+5 < sentence.length)
                 {
-                    span_tag = sentence.slice(i, i+4)
-                    if(span_tag=="<span")
-                    {
+                    span_tag = sentence.slice(i, i+5)
+                    if(span_tag=="<span" || span_tag=="</spa")
+                    {   
+                        console.log(in_span)
                         in_span = true;
                     }
                 }
@@ -115,6 +117,58 @@
             return new_sentence
 
         }
+
+        // function insert_span(sentence, span_id, colour, match_start, match_end)
+        // {
+        //     var unmutated_index = 0;
+        //     var new_sentence="";
+        //     var span_start = '<span id="' + span_id + '">'
+        //     var span_end = '</span>'
+        //     var in_span = false;
+
+
+        //     for(var i = 0; i < sentence.length; i++)
+        //     {   new_sentence += sentence.charAt(i)
+
+        //         if (i+4 < sentence.length)
+        //         {
+        //             console.log("")
+        //             span_tag = sentence.slice(i, i+4)
+        //             if(span_tag=="<span")
+        //             {   
+        //                 console.log(in_space)
+        //                 in_span = true;
+        //             }
+        //         }
+
+        //         if (in_span && sentence.charAt(i)==">")
+        //         {
+        //             in_span = false;
+        //         }
+
+        //         if (!in_span)
+        //         {
+        //             unmutated_index++;
+
+        //         }
+
+        //         if (match_start == unmutated_index)
+        //         {
+        //             new_sentence += span_start
+        //         }
+
+        //         if (match_end == unmutated_index)
+        //         {
+        //             new_sentence += span_end
+        //         }
+
+        //     }
+
+        //     $(span_id).css("background-color", colour)
+
+        //     return new_sentence
+
+        // }
 
         function isInArray(value, array)
         {
@@ -172,7 +226,7 @@
 
 
        $.ajax({
-            url: 'smoking_report.json',
+            url: '{{json_file}}',
             dataType: 'json',
             success: function(data)
             {
@@ -202,12 +256,9 @@
                         {
                             id_link = '<a class="patient-links" href="#" id="' + id + '"">' + id + '</a>'
                             $("#classes_container div:eq(" + i + ")").append(id_link)
-                            $("#" + id).css("background-color", classes_json[patients_json[id].pred])
+                            $("#" + id).css("background-color", classes_json[patients_json[id].actual])
                         }
                     }
-
-                    console.log(cur_name)
-                    console.log(colour)
                 }
 
                 $(".patient-links").click(function(e)
@@ -227,7 +278,6 @@
                     for (var id in span_id_to_info)
                     {
 
-                        console.log(id)
                         $("#" + id).css("background-color", span_id_to_info[id].colour)
                         $("#" + id).attr("data-toggle","tooltip")
                         $("#" + id).attr("data-html", "true")

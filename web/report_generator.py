@@ -49,14 +49,14 @@ def generate_error_report(output_directory, html_output_filename, template_direc
     :param html_template: Name of the template we are using
     :param variable_name: Name of the variable in question
     :param class_names: List of classes for the variable (e.g nonsmoker, smoker, exsmoker etc...)
-    :param failures_dict: {id -> {data:, matches:, pred:, actual:, score:}
+    :param failures_dict: {id -> {label:, data:, matches:, pred:, actual:, score:}
     :param custom_class_colours: Using predefined user colours
     '''
     json_filename = html_output_filename.split('.')[0] + '.json'
     generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
-    generate_error_json(output_directory, json_filename, variable_name, class_names, failures_dict, custom_class_colours)
+    generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, custom_class_colours)
 
-def generate_error_json(output_directory, json_filename, variable_name, class_names, failures_dict, custom_class_colours=None):
+def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, custom_class_colours=None):
     '''
     Generates a json file for the html
 
@@ -64,7 +64,7 @@ def generate_error_json(output_directory, json_filename, variable_name, class_na
     :param json_filename: Wame of the json file
     :param variable_name: Name of the variable in question
     :param class_names: List of classes for the variable (e.g non smoker, smoker, exsmoker etc..)
-    :param failures_dict: {id -> {data:, matches:, pred:, actual:, score:}
+    :param patients_dict: {id -> {data:, matches:, pred:, actual:, score:}
     :param custom_class_colours: Using predefined user colours
     '''
 
@@ -76,15 +76,32 @@ def generate_error_json(output_directory, json_filename, variable_name, class_na
     data["classes"] = _generate_hsl_colour_dictionary(class_names) if not custom_class_colours else custom_class_colours
     data["patient_cases"] = {}
 
-    for patient_id in failures_dict:
-        data["patient_cases"][patient_id] = {"data": failures_dict[patient_id]["data"],
-                                            "matches": _generate_match_for_json(failures_dict[patient_id]["matches"]),
-                                             "pred": failures_dict[patient_id]["pred"],
-                                             "actual": failures_dict[patient_id]["label"],
-                                             "score": failures_dict[patient_id]["score"]}
+    for patient_id in patients_dict:
+        data["patient_cases"][patient_id] = {"data": patients_dict[patient_id]["data"],
+                                            "matches": _generate_match_for_json(patients_dict[patient_id]["matches"]),
+                                             "pred": patients_dict[patient_id]["pred"],
+                                             "actual": patients_dict[patient_id]["label"],
+                                             "score": patients_dict[patient_id]["score"]}
 
     with open(json_fname, 'w') as outfile:
         json.dump(data, outfile, indent=4)
+
+def generate_classification_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, all_patients, custom_class_colours=None):
+    '''
+    Generates a classification report html file and corresponding json file
+
+    :param output_directory: Where to output the html json file
+    :param html_output_filename: The name of the output file
+    :param template_directory: Location of html templates
+    :param html_template: Name of the template we are using
+    :param variable_name: Name of the variable in question
+    :param class_names: List of classes for the variable (e.g nonsmoker, smoker, exsmoker etc...)
+    :param all_patients: {id -> {label:, data:, matches:, pred:, actual:, score:}
+    :param custom_class_colours: Using predefined user colours
+    '''
+    json_filename = html_output_filename.split('.')[0] + '.json'
+    generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
+    generate_json(output_directory, json_filename, variable_name, class_names, all_patients, custom_class_colours)
 
 def generate_generic_report(output_directory, html_output_filename, template_folder, html_template, **template_args):
     '''

@@ -7,6 +7,7 @@ import os
 from stats.basic import calculate_accuracy
 import numpy as np
 from web.report_generator import generate_error_report
+from web.report_generator import generate_classification_report
 import web
 
 if __name__ == "__main__":
@@ -141,6 +142,8 @@ if __name__ == "__main__":
         print("\nAccuracy:", accuracy)
 
         failures_dict = {}
+        all_patients_dict = {}
+
         for index in incorrect_indices:
             patient_id = tb_regex_naive.dataset[data_set]["ids"][index]
             pred = tb_regex_naive.dataset[data_set]["preds"][index]
@@ -151,11 +154,24 @@ if __name__ == "__main__":
 
             failures_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
 
+        for index in range(len(tb_regex_naive.dataset[data_set]["ids"])):
+            patient_id = tb_regex_naive.dataset[data_set]["ids"][index]
+            pred = tb_regex_naive.dataset[data_set]["preds"][index]
+            label = tb_regex_naive.dataset[data_set]["labels"][index]
+            match_obj = tb_regex_naive.dataset[data_set]["matches"][index]
+            score = tb_regex_naive.dataset[data_set]["scores"][index]
+            data = tb_regex_naive.dataset[data_set]["data"][index]
+
+            all_patients_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
+
         template_directory = os.path.join('web', 'templates')
         output_dir = os.path.join('generated_data', 'smoking', data_set)
-        print(failures_dict)
+
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
 
-        generate_error_report(output_dir, "smoking_report.html", template_directory, 'error_report.html',
+        generate_error_report(output_dir, "smoking_error_report.html", template_directory, 'error_report.html',
                               "Smoking Status", regexes.keys(), failures_dict)
+
+        generate_classification_report(output_dir, "smoking_report.html", template_directory, 'classification_report.html',
+                              "Smoking Status", regexes.keys(), all_patients_dict)
