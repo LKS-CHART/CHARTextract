@@ -82,6 +82,15 @@
                         {
                             match_start = sentence_matches[k].match_start
                             match_end = sentence_matches[k].match_end
+                            span_id = index + cur_name + k
+                            sentence_mutate = str
+
+                            console.log(span_id)
+                            span_start = '<span id="' + span_id + '">'
+                            span_end = '</span>'
+                            $(span_id).css("background-color", colour)
+                            console.log(sentence.slice(0, match_start-1))
+                            console.log(sentence.slice(match_start, match_end))
                         }
                     }
 
@@ -201,7 +210,7 @@
         </div>
 
         <div class="row">
-            <p id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></p>
+            <div id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></div>
         </div>
     </div>
 </body>
