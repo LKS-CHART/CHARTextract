@@ -47,6 +47,117 @@
 
     <script>
 
+        function isEmpty(obj)
+        {
+            for (var key in obj) {
+                if(obj.hasOwnProperty(key))
+                    return false;
+            }
+
+            return true;
+        }
+
+        function insert_span(sentence, span_id, colour, match_start, match_end)
+        {
+            var unmutated_index = 0;
+            var new_sentence="";
+            var span_start = '<span id="' + span_id + '">'
+            var span_end = '</span>'
+
+            for(var i = 0; i < sentence.length; i++)
+            {   new_sentence += sentence.charAt(i)
+                var in_span = false;
+
+                if (i+4 < sentence.length)
+                {
+                    span_tag = sentence.slice(i, i+4)
+                    if(span_tag=="<span")
+                    {
+                        in_span = true;
+                    }
+                }
+
+                if (in_span && sentence.charAt(i)==">")
+                {
+                    in_span = false;
+                }
+
+                if (!in_span)
+                {
+                    unmutated_index++;
+
+                }
+
+                if (match_start == unmutated_index)
+                {
+                    new_sentence += span_start
+                }
+
+                if (match_end == unmutated_index)
+                {
+                    new_sentence += span_end
+                }
+
+            }
+
+            $(span_id).css("background-color", colour)
+
+            return new_sentence
+
+        }
+
+        function isInArray(value, array)
+        {
+            return array.indexOf(value) > -1;
+        }
+
+        function highlight_matches_single_class(text, class_name, class_matches_obj, colour, id_to_colour)
+
+        {
+            var sentences = text.split(".");
+            var sentence_indices = Object.keys(class_matches_obj);
+            var new_text = "";
+            for (var i = 0; i < sentences.length; i++)
+            {
+                var new_sentence = sentences[i];
+                if (isInArray(i.toString(), sentence_indices))
+                {
+                    var sentence_matches = class_matches_obj[i.toString()];
+
+                    for (k in sentence_matches)
+                    {
+                        match_start = sentence_matches[k].match_start;
+                        match_end = sentence_matches[k].match_end;
+                        span_id = i + class_name + k;
+                        new_sentence = insert_span(new_sentence, span_id, colour, match_start, match_end);
+                        id_to_colour[span_id] = colour
+                    }
+                }
+                
+                new_text += new_sentence + ".";
+            }
+
+            return new_text;
+        }
+
+        function highlight_matches(text, matches_obj, classes_to_colour, id_to_colour) {
+
+            var class_names = Object.keys(classes_to_colour);
+            var modified_text = text;
+
+            for (i = 0; i < class_names.length; i++)
+            {
+                var cur_name = class_names[i]
+                var colour = classes_to_colour[cur_name]
+
+                modified_text = highlight_matches_single_class(modified_text, cur_name, matches_obj[cur_name], colour, id_to_colour)
+
+            }
+
+            return modified_text;
+
+        }
+
 
        $.ajax({
             url: 'smoking_report.json',
@@ -93,12 +204,21 @@
                     actual = data.patient_cases[clicked_id].actual
                     score = data.patient_cases[clicked_id].score[classification]
                     text_data = data.patient_cases[clicked_id].data
+                    var id_to_colour = {}
+                    text_data = highlight_matches(text_data, data.patient_cases[clicked_id].matches, data.classes, id_to_colour)
                     text_data = text_data.replace(/\\n/g,"\n")
                     $("#case-no").text("Patient #ID: " + clicked_id)
                     $("#classification").text("Classified as: " + classification)
                     $("#actual").text("Actual: " + actual)
                     $("#score").text("Score: " + score)
                     $("#patient-text").html(text_data)
+
+                    for (var id in id_to_colour)
+                    {
+                        console.log(id)
+                        $("#" + id).css("background-color", id_to_colour[id])
+                    }
+
                 });
                 
             }
@@ -154,7 +274,7 @@
         </div>
 
         <div class="row">
-            <p id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></p>
+            <div id="patient-text" class="col line-break-and-tab with-margin-top" style= "padding-left: 20px;" ></div>
         </div>
     </div>
 </body>
