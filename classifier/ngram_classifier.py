@@ -69,5 +69,3 @@ class NgramClassifier(BaseClassifier):
             print("\n {name} exclusive keys:\n {freq}\n".format(name=ngram_pos.name, freq=get_unique_keys(ngram_pos, ngram_neg)))
             print("\n {name} exclusive keys:\n {freq}\n".format(name=ngram_neg.name, freq=get_unique_keys(ngram_neg, ngram_pos)))
 
-        # self.score_text("This is text")
-

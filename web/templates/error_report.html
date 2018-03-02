@@ -130,7 +130,8 @@
                         match_end = sentence_matches[k].match_end;
                         span_id = i + class_name + k;
                         new_sentence = insert_span(new_sentence, span_id, colour, match_start, match_end);
-                        id_to_colour[span_id] = colour
+                        id_to_colour[span_id] = {"colour": colour, "matches": sentence_matches[k]}
+
                     }
                 }
 
@@ -204,8 +205,8 @@
                     actual = data.patient_cases[clicked_id].actual
                     score = data.patient_cases[clicked_id].score[classification]
                     text_data = data.patient_cases[clicked_id].data
-                    var id_to_colour = {}
-                    text_data = highlight_matches(text_data, data.patient_cases[clicked_id].matches, data.classes, id_to_colour)
+                    var span_id_to_info = {}
+                    text_data = highlight_matches(text_data, data.patient_cases[clicked_id].matches, data.classes, span_id_to_info)
                     text_data = text_data.replace(/\\n/g,"\n")
                     $("#case-no").text("Patient #ID: " + clicked_id)
                     $("#classification").text("Classified as: " + classification)
@@ -213,10 +214,11 @@
                     $("#score").text("Score: " + score)
                     $("#patient-text").html(text_data)
 
-                    for (var id in id_to_colour)
+                    for (var id in span_id_to_info)
                     {
                         console.log(id)
-                        $("#" + id).css("background-color", id_to_colour[id])
+                        $("#" + id).css("background-color", span_id_to_info[id].colour)
+                        console.log(span_id_to_info[id].matches)
                     }
 
                 });

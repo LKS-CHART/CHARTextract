@@ -58,6 +58,7 @@ if __name__ == "__main__":
     else:
         data = ['I am a smoker.', 'She does not smoke.', 'She used to smoke', 'Current smoker.', 'I am a patient.']
         labels = ['Current smoker', 'Never smoked', 'Former smoker', 'Current smoker', 'None']
+        #labels = np.random.permutation(labels)
         ids = ['0', '1', '2', '3', '4']
 
     #Creating TB Classifier
@@ -122,7 +123,7 @@ if __name__ == "__main__":
     #Running Naive Smoking Classifier
     tb_regex_naive.run_classifier(sets=["train", "valid"])
 
-    #Calculating logistics for tb_regex_naive
+    #Calculating logistics for tb_regex_naive and generating templates
     for data_set in ["train", "valid"]:
         print("\n\nDataset:", data_set)
         #dataset accuarcy
@@ -157,4 +158,4 @@ if __name__ == "__main__":
             os.mkdir(output_dir)
 
         generate_error_report(output_dir, "smoking_report.html", template_directory, 'error_report.html',
-                              "Smoking Status", regexes.keys(), failures_dict, False)
+                              "Smoking Status", regexes.keys(), failures_dict)

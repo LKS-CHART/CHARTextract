@@ -122,19 +122,6 @@ class RegexClassifier(BaseClassifier):
 
         print("\nRunning Classifier:", self.name)
 
-        # full_text = " ".join(self.data)
-        #
-        # pos_indices = self.labels == 1
-        # pos_data = self.data[pos_indices]
-        # neg_data = self.data[~pos_indices]
-        # pos_ids = self.data[pos_indices]
-        # neg_ids = self.data[~pos_indices]
-        #
-        # pos_text = " ".join(pos_data)
-        # neg_text = " ".join(neg_data)
-
-        # self.score_text("This is text")
-
         '''
         ??Scale Frequency based on sentence index?? 
             -Potential formula
@@ -146,7 +133,6 @@ class RegexClassifier(BaseClassifier):
         for data_set in sets:
             print("Currently classifying {} with {} datapoints".format(data_set, len(self.dataset[data_set]["data"])))
 
-            id_to_match_scores = {}
             preds = []
 
             ids = self.dataset[data_set]["ids"]
@@ -173,7 +159,3 @@ class RegexClassifier(BaseClassifier):
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
-            # id_index = np.where(self.dataset[data_set]["ids"] == "1042")
-            # print(preds[id_index])
-            # print(self.dataset[data_set]["labels"][id_index])
-
