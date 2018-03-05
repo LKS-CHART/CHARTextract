@@ -103,7 +103,7 @@
                     }
                 }
 
-                new_text += new_sentence + ".";
+                new_text += i < sentences.length - 1 ? new_sentence + "." : new_sentence;
             }
 
             return new_text;
@@ -159,8 +159,6 @@
                         }
                     }
 
-                    console.log(cur_name)
-                    console.log(colour)
                 }
 
                 $(".patient-links").click(function(e)

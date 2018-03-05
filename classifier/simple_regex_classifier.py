@@ -5,12 +5,13 @@ from util.string_functions import split_string_into_sentences
 from sklearn import svm
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn import linear_model
+from regex.handlers import RegexHandler
 
 class RegexClassifier(BaseClassifier):
     '''
     Class specialized in classifying patient data using regexes
     '''
-    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None, biases=None, multiclass=True):
+    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None):
         '''
         Initializes RegexClassifier
 
@@ -24,6 +25,7 @@ class RegexClassifier(BaseClassifier):
         self.regexes = regexes
         self.biases = biases
         self.multiclass = multiclass
+        self.handler = RegexHandler() if handler is None else handler
 
     def weighted_score_text(self, text, regexes):
         pass

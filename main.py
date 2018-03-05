@@ -9,9 +9,11 @@ import numpy as np
 from web.report_generator import generate_error_report
 from web.report_generator import generate_classification_report
 import web
+import cProfile as profile
 
 if __name__ == "__main__":
 
+    pr = profile.Profile()
     debug = False
 
     #Reading regex files
@@ -34,7 +36,7 @@ if __name__ == "__main__":
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
         # filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
-        data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (cleansed).csv'))]
+        data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
         label_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx'))]
         print("Files of interest: {!r}\n".format(data_filenames))
         print("Files of interest: {!r}\n".format(label_filenames))
@@ -53,11 +55,8 @@ if __name__ == "__main__":
             else:
                 count += 1
 
-        print("\n\nTraining data tuples:\n")
-        print(list(zip(data, labels, ids)))
-
     else:
-        data = ['I am a smoker.', 'She does not smoke.', 'She used to smoke', 'Current smoker.', 'I am a patient.']
+        data = ['I am a smoker.', 'She does not smoke. This is a test', 'She used to smoke', 'Current smoker.', 'I am a patient.']
         labels = ['Current smoker', 'Never smoked', 'Former smoker', 'Current smoker', 'None']
         #labels = np.random.permutation(labels)
         ids = ['0', '1', '2', '3', '4']
@@ -84,28 +83,28 @@ if __name__ == "__main__":
     #Running TB Classifier
     # tb.run_classifier()
 
-    regex_list = []
-    [regex_list.extend(l) for l in regexes.values()]
-
-    #Creating Regex Classifier
-    tb_regex = SVMRegexClassifier("Smoking Classifier", regexes, normalize=True)
-    tb_regex.import_data(data, labels, ids)
-
-    #Converting label names to values
-    tb_regex.labels[tb_regex.labels == 'None'] = 0
-    tb_regex.labels[tb_regex.labels == 'Former smoker'] = 1
-    tb_regex.labels[tb_regex.labels == 'Never smoked'] = 2
-    tb_regex.labels[tb_regex.labels == 'Current smoker'] = 3
-
-    tb_regex.labels = tb_regex.labels.astype(np.int32)
-
-    train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.75, 0)
-    ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
-
-    #Running Smoking Classifier
-    # tb_regex.load_dataset("train", tb_regex.data, tb_regex.labels, tb_regex.ids)
-    tb_regex.train_classifier(C=1)
-    tb_regex.run_classifier(sets=["train", "valid"])
+    # regex_list = []
+    # [regex_list.extend(l) for l in regexes.values()]
+    #
+    # #Creating Regex Classifier
+    # tb_regex = SVMRegexClassifier("Smoking Classifier", regexes, normalize=True)
+    # tb_regex.import_data(data, labels, ids)
+    #
+    # #Converting label names to values
+    # tb_regex.labels[tb_regex.labels == 'None'] = 0
+    # tb_regex.labels[tb_regex.labels == 'Former smoker'] = 1
+    # tb_regex.labels[tb_regex.labels == 'Never smoked'] = 2
+    # tb_regex.labels[tb_regex.labels == 'Current smoker'] = 3
+    #
+    # tb_regex.labels = tb_regex.labels.astype(np.int32)
+    #
+    # train_ids_regex, valid_ids_regex = tb_regex.create_train_and_valid(0.75, 0)
+    # ids_regex = {"train": train_ids_regex, "valid": valid_ids_regex}
+    #
+    # #Running Smoking Classifier
+    # # tb_regex.load_dataset("train", tb_regex.data, tb_regex.labels, tb_regex.ids)
+    # tb_regex.train_classifier(C=1)
+    # tb_regex.run_classifier(sets=["train", "valid"])
 
     #Creating Naive Regex Classifier
     regex_biases = {regex_name: 0 for regex_name in regexes}
@@ -122,7 +121,13 @@ if __name__ == "__main__":
     tb_regex_naive.create_train_and_valid(0.7, 0)
 
     #Running Naive Smoking Classifier
+
+    import time
+    start = time.time()
     tb_regex_naive.run_classifier(sets=["train", "valid"])
+    end = time.time()
+
+    print("Total time:", end-start)
 
     #Calculating logistics for tb_regex_naive and generating templates
     for data_set in ["train", "valid"]:
@@ -175,3 +180,5 @@ if __name__ == "__main__":
 
         generate_classification_report(output_dir, "smoking_report.html", template_directory, 'classification_report.html',
                               "Smoking Status", regexes.keys(), all_patients_dict)
+
+        pr.dump_stats('profile.pstat')

@@ -2,7 +2,8 @@ import re
 import openpyxl
 import csv
 from regex.regex import Regex
-
+from regex.regex import SecondaryRegex
+from time import time
 
 def preprocess_data(data):
     '''
@@ -128,7 +129,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
         if limit is not None and count == limit:
             break
 
-        workbook = openpyxl.load_workbook(filename, data_only=True, read_only=False)
+        workbook = openpyxl.load_workbook(filename, data_only=True, read_only=True)
         sheet_names = workbook.get_sheet_names()
         for sheet_name in sheet_names:
             #getting rows in worksheet
@@ -142,7 +143,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
                     #getting data, label and ids from each row and concatenating it
                     data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
                                                  data, labels, ids, repeat_ids, lambda col: str(row[col].value))
-
+        end = time()
     if preprocess_func is not None:
         for i in range(len(data)):
             data[i] = preprocess_func(data[i])
@@ -214,22 +215,37 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
             lines = csv.reader(f, delimiter=',', quotechar='"')
             for i, line in enumerate(lines):
                 #Checking for invalid lines
-                if len(line) > 2 and not line[0].startswith("#"):
+                if len(line) < 1 and not line[0].startswith("#"):
                     print(line)
-                    print("Invalid line in file")
+                    print("Empty line in file")
                     break
 
                 #comment code
                 if line[0].startswith("#"):
                     continue
 
-                #Reading score and regex
+                #Reading primary score and primary regex
                 score = None if not use_custom_score else int(line[1])
                 regex = line[0]
 
+                secondary_regexes = []
+
+                for j in range(2, len(line) - 2, 3):
+                    pattern = line[j]
+                    effect = line[j+1]
+                    secondary_score = None if not use_custom_score else int(line[j+2])
+
+                    secondary_regex = SecondaryRegex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), nick_name),
+                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=False, flags=flags)
+
+                    secondary_regexes.append(secondary_regex)
+
+
                 #creating regex objects
-                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score, all_matches=False,
-                                  flags=flags)
+                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score,
+                                  secondary_regexes=secondary_regexes, all_matches=False, flags=flags)
+
                 regexes.append(cur_regex)
 
+                print(cur_regex)
     return regexes
