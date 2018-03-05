@@ -57,11 +57,6 @@
 
     <script>
 
-        $(document).ready(function(){
-            console.log("TESTSTESTST")
-            
-        });  
-
         function isEmpty(obj)
         {
             for (var key in obj) {
@@ -72,53 +67,12 @@
             return true;
         }
 
-        function insert_span(sentence, span_id, colour, match_start, match_end)
+        function insert_span(sentence, match_text, span_id, colour)
         {
-            var unmutated_index = 0;
-            var new_sentence="";
-            var span_start = '<span id="' + span_id + '">'
-            var span_end = '</span>'
+            regex = new RegExp(match_text + "(?!(<\/span>))");
+            sentence = sentence.replace(regex, '<span id="' + span_id + '">' + match_text + "</span>");
 
-            for(var i = 0; i < sentence.length; i++)
-            {   new_sentence += sentence.charAt(i)
-                var in_span = false;
-
-                if (i+4 < sentence.length)
-                {
-                    span_tag = sentence.slice(i, i+4)
-                    if(span_tag=="<span")
-                    {
-                        in_span = true;
-                    }
-                }
-
-                if (in_span && sentence.charAt(i)==">")
-                {
-                    in_span = false;
-                }
-
-                if (!in_span)
-                {
-                    unmutated_index++;
-
-                }
-
-                if (match_start == unmutated_index)
-                {
-                    new_sentence += span_start
-                }
-
-                if (match_end == unmutated_index)
-                {
-                    new_sentence += span_end
-                }
-
-            }
-
-            $(span_id).css("background-color", colour)
-
-            return new_sentence
-
+            return sentence;
         }
 
         function isInArray(value, array)
@@ -126,28 +80,26 @@
             return array.indexOf(value) > -1;
         }
 
-        function highlight_matches_single_class(text, class_name, class_matches_obj, colour, id_to_colour)
-
+        function insert_spans_single_class(text, class_name, class_matches_obj, colour, id_to_info)
         {
             var sentences = text.split(".");
             var sentence_indices = Object.keys(class_matches_obj);
             var new_text = "";
-            for (var i = 0; i < sentences.length; i++)
+
+            for (var i =0; i < sentences.length; i++)
             {
                 var new_sentence = sentences[i];
                 if (isInArray(i.toString(), sentence_indices))
                 {
                     var sentence_matches = class_matches_obj[i.toString()];
 
-                    for (k in sentence_matches)
+                    for (var k in sentence_matches)
                     {
-                        match_start = sentence_matches[k].match_start;
-                        match_end = sentence_matches[k].match_end;
+                        match_text = sentence_matches[k].matched_string;
                         span_id = i + class_name + k;
-                        new_sentence = insert_span(new_sentence, span_id, colour, match_start, match_end);
-                        id_to_colour[span_id] = {"colour": colour, "matches": sentence_matches[k], "class": class_name}
 
-
+                        new_sentence = insert_span(new_sentence, match_text, span_id, colour);
+                        id_to_info[span_id] = {"colour": colour, "matches": sentence_matches[k], "class": class_name};
                     }
                 }
 
@@ -157,25 +109,21 @@
             return new_text;
         }
 
-        function highlight_matches(text, matches_obj, classes_to_colour, id_to_colour) {
-
+        function insert_spans(text, matches_obj, classes_to_colour, id_to_info) 
+        {
             var class_names = Object.keys(classes_to_colour);
             var modified_text = text;
 
-            for (i = 0; i < class_names.length; i++)
+            for (var i = 0; i < class_names.length; i++)
             {
-                var cur_name = class_names[i]
-                var colour = classes_to_colour[cur_name]
+                var cur_name = class_names[i];
+                var colour = classes_to_colour[cur_name];
 
-                modified_text = highlight_matches_single_class(modified_text, cur_name, matches_obj[cur_name], colour, id_to_colour)
-
+                modified_text = insert_spans_single_class(modified_text, cur_name, matches_obj[cur_name], colour, id_to_info);
             }
 
             return modified_text;
-
         }
-
-
        $.ajax({
             url: '{{json_file}}',
             dataType: 'json',
@@ -223,7 +171,7 @@
                     score = data.patient_cases[clicked_id].score[classification]
                     text_data = data.patient_cases[clicked_id].data
                     var span_id_to_info = {}
-                    text_data = highlight_matches(text_data, data.patient_cases[clicked_id].matches, data.classes, span_id_to_info)
+                    text_data = insert_spans(text_data, data.patient_cases[clicked_id].matches, data.classes, span_id_to_info);
                     text_data = text_data.replace(/\\n/g,"\n")
                     $("#case-no").text("Patient #ID: " + clicked_id)
                     $("#classification").text("Classified as: " + classification)
@@ -234,18 +182,15 @@
                     for (var id in span_id_to_info)
                     {
 
-                        console.log(id)
                         $("#" + id).css("background-color", span_id_to_info[id].colour)
                         $("#" + id).attr("data-toggle","tooltip")
                         $("#" + id).attr("data-html", "true")
-                        tooltip_text = "name: " + span_id_to_info[id].matches.name + 
-                        "</br>class: " + span_id_to_info[id].class + 
+                        tooltip_text = "name: " + span_id_to_info[id].matches.name +
+                        "</br>class: " + span_id_to_info[id].class +
                         "</br>score: " + span_id_to_info[id].matches.score +
                         "</br>pattern: " + span_id_to_info[id].matches.pattern +
-                        "</br>matched_string: " + span_id_to_info[id].matches.matched_string 
+                        "</br>matched_string: " + span_id_to_info[id].matches.matched_string
                         $("#" + id).attr("title", tooltip_text)
-
-
                     }
 
                     $('[data-toggle="tooltip"]').tooltip();
