@@ -138,6 +138,7 @@ if __name__ == "__main__":
 
         print("\nPredictions:", tb_regex_naive.dataset[data_set]["preds"])
         print("\nLabels:", tb_regex_naive.dataset[data_set]["labels"])
+        print("\nIds:", tb_regex_naive.dataset[data_set]["ids"])
 
         print("\nIncorrect Indices:", incorrect_indices)
         print("Incorrect Predictions: ", tb_regex_naive.dataset[data_set]["preds"][incorrect_indices])

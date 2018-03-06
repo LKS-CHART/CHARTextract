@@ -100,7 +100,10 @@ class Regex(object):
 
         for secondary_regex in self.secondary_regexes:
             if secondary_regex.effect in type_list:
-                match_dict[secondary_regex.effect].append(secondary_regex.determine_matches(text))
+                secondary_regex.determine_matches(text)
+                match_dict[secondary_regex.effect].append(secondary_regex)
+
+        return match_dict
 
 #Note this does not inherit from Regex
 class SecondaryRegex(object):
@@ -183,5 +186,3 @@ class SecondaryRegex(object):
 
             self.matches = self._match_func(self.regex, text)
             self.matches = [] if self.matches is None else [self.matches]
-
-        return self.matches

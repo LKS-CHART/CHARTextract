@@ -1,5 +1,6 @@
 from util.string_functions import split_string_into_sentences
 from copy import copy
+from itertools import product
 
 class RegexHandler(object):
 
@@ -56,13 +57,30 @@ class RegexHandler(object):
             regex_matches = regex_copy.determine_matches(text)
             score = regex.score*len(regex_matches)
 
-            total_score += score
 
             if len(regex_matches) > 0:
                 #adding the new copied regex object to matches
-                matches.append(regex_copy)
+                ignore_matches = regex_copy.determine_secondary_matches(text, ["i", "ib", "ia"])
 
+                if ignore_matches["i"]:
+                    score = 0
+                elif ignore_matches["ib"] and any(map(lambda match_ignore, match_primary: match_ignore.start() < match_primary.start(),
+                                                      product(ignore_matches["ib"], regex_matches))):
 
+                    score = 0
+                elif ignore_matches["ia"] and any(map(lambda match_ignore, match_primary: match_ignore.start() > match_primary.end(),
+                                                      product(ignore_matches["ia"], regex_matches))):
+
+                    score = 0
+                else:
+                    add_matches = regex_copy.determine_secondary_matches(text, ["a", "ab", "aa"])
+
+                    for add_match in add_matches["a"]:
+                        if add_match[1]
+
+                    matches.append(regex_copy)
+
+            total_score += score
 
         return matches, total_score
 
