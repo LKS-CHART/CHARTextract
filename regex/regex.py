@@ -1,6 +1,6 @@
 import re
 from regex.regex_functions import combine_flags
-from collections import defaultdict
+from heapq import *
 
 class Regex(object):
     '''
@@ -22,7 +22,6 @@ class Regex(object):
         self.all_matches = all_matches
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
-        self.secondary_matches = None
 
         if flags is None:
             self.regex = re.compile(regex)
@@ -92,18 +91,18 @@ class Regex(object):
         :param text: A string of text for which you want to find secondary matches for
         :param type_list: The effect types you want to find secondary matches for (default: None -> Searches all effect types)
 
-        :return: A dictionary containing effect type -> [A list containing one MatchObject or multiple depending on
-        Secondary Regex's allmatches parameter]
+        :return: A priority queue where each element contains the (regex_priority, effect, matches, score)
         '''
 
-        match_dict = defaultdict(list)
+        priority_queue = []
 
-        for secondary_regex in self.secondary_regexes:
-            if secondary_regex.effect in type_list:
-                secondary_regex.determine_matches(text)
-                match_dict[secondary_regex.effect].append(secondary_regex)
+        for i, secondary_regex in enumerate(self.secondary_regexes):
+            if secondary_regex.effect in type_list or not type_list:
+                matches = secondary_regex.determine_matches(text)
+                if matches:
+                    heappush((i, secondary_regex.effect, matches, secondary_regex.score))
 
-        return match_dict
+        return priority_queue
 
 #Note this does not inherit from Regex
 class SecondaryRegex(object):
@@ -186,3 +185,5 @@ class SecondaryRegex(object):
 
             self.matches = self._match_func(self.regex, text)
             self.matches = [] if self.matches is None else [self.matches]
+
+        return self.matches

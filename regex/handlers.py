@@ -1,6 +1,7 @@
 from util.string_functions import split_string_into_sentences
 from copy import copy
 from itertools import product
+from heapq import *
 
 class RegexHandler(object):
 
@@ -56,28 +57,75 @@ class RegexHandler(object):
             #determining matches and computing score
             regex_matches = regex_copy.determine_matches(text)
             score = regex.score*len(regex_matches)
+            should_add_regex = True
 
+            #TODO: Lots of duplicated code here. Fix this later
 
             if len(regex_matches) > 0:
                 #adding the new copied regex object to matches
                 ignore_matches = regex_copy.determine_secondary_matches(text, ["i", "ib", "ia"])
+                ignore_matched = True if ignore_matches else False
 
-                if ignore_matches["i"]:
-                    score = 0
-                elif ignore_matches["ib"] and any(map(lambda match_ignore, match_primary: match_ignore.start() < match_primary.start(),
-                                                      product(ignore_matches["ib"], regex_matches))):
+                if ignore_matched:
+                    for i in range(len(ignore_matches)):
+                        ignore_matched = False
+                        _, effect, matches, _ = heappop(ignore_matches)
 
-                    score = 0
-                elif ignore_matches["ia"] and any(map(lambda match_ignore, match_primary: match_ignore.start() > match_primary.end(),
-                                                      product(ignore_matches["ia"], regex_matches))):
+                        if effect == "i":
+                            ignore_matched = True
+                        elif effect == "ib" and any(map(lambda match_ignore, match_primary: match_ignore.start() < match_primary.start(),
+                                                        product(matches, regex_matches))):
+                            ignore_matched = True
 
-                    score = 0
-                else:
-                    add_matches = regex_copy.determine_secondary_matches(text, ["a", "ab", "aa"])
+                        elif effect == "ia" and any(map(lambda match_ignore, match_primary: match_ignore.start() > match_primary.end(),
+                                                        product(matches, regex_matches))):
+                            ignore_matched = True
 
-                    for add_match in add_matches["a"]:
-                        if add_match[1]
+                        if ignore_matched:
+                            score = 0
+                            should_add_regex = False
+                            break
 
+                if not ignore_matched:
+                    replace_matches = regex_copy.determine_secondary_matches(text, ["r", "rb", "ra"])
+                    replace_matched = True if replace_matches else False
+
+                    if replace_matched:
+                        for i in range(len(replace_matches)):
+                            replace_matched = False
+                            _, effect, matches, rscore = heappop(replace_matches)
+
+                            if effect == "r":
+                                replace_matched = True
+                            elif effect == "rb" and any(map(lambda match_replace, match_primary: match_replace.start() < match_primary.start(),
+                                                            product(matches, regex_matches))):
+                                replace_matched = True
+
+                            elif effect == "ra" and any(map(lambda match_replace, match_primary: match_replace.start() > match_primary.end(),
+                                                            product(matches, regex_matches))):
+                                replace_matched = True
+
+                            if replace_matched:
+                                score = rscore
+                                break
+
+                    if not replace_matched:
+                        add_matches = regex_copy.determine_matches(text, ["a", "ab", "aa"])
+
+                        for i in range(len(add_matches)):
+                            _, effect, matches, rscore = heappop(add_matches)
+
+                            if effect == "a":
+                                total_score += rscore
+                            elif effect == "ab" and any(map(lambda match_replace, match_primary: match_replace.start() < match_primary.start(),
+                                                            product(matches, regex_matches))):
+                                total_score += rscore
+
+                            elif effect == "aa" and any(map(lambda match_replace, match_primary: match_replace.start() > match_primary.end(),
+                                                            product(matches, regex_matches))):
+                                total_score += rscore
+
+                if should_add_regex:
                     matches.append(regex_copy)
 
             total_score += score
