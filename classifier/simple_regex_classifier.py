@@ -11,6 +11,7 @@ class RegexClassifier(BaseClassifier):
     '''
     Class specialized in classifying patient data using regexes
     '''
+
     def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None):
         '''
         Initializes RegexClassifier
@@ -150,7 +151,7 @@ class RegexClassifier(BaseClassifier):
                     matches = []
                     score = 0
                     if len(self.regexes[class_name]) > 0:
-                        matches, score = self.score_sentences(datum, self.regexes[class_name])
+                        matches, score = self.handler.score_and_match_sentences(datum, self.regexes[class_name])
 
                     class_scores[class_name] = self.biases[class_name] + score
                     class_matches[class_name] = matches

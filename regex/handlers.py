@@ -29,6 +29,7 @@ class RegexHandler(object):
             if matches:
                 matches_score_dict[i] = {"matches": matches, "text_score": score}
 
+
             total_score += score
 
         return matches_score_dict, total_score
@@ -52,12 +53,12 @@ class RegexHandler(object):
             #may not transfer well to multiple use cases
 
             regex_copy = copy(regex)
+            # print(regex_copy)
             regex_copy.clear_matches()
 
             #determining matches and computing score
             regex_matches = regex_copy.determine_matches(text)
             score = regex.score*len(regex_matches)
-            should_add_regex = True
 
             #TODO: Lots of duplicated code here. Fix this later
 
@@ -69,21 +70,21 @@ class RegexHandler(object):
                 if ignore_matched:
                     for i in range(len(ignore_matches)):
                         ignore_matched = False
-                        _, effect, matches, _ = heappop(ignore_matches)
+                        index, popped_regex = heappop(ignore_matches)
+                        _, _, effect, rmatches, _ = index, popped_regex.name, popped_regex.effect, popped_regex.matches, popped_regex.score
 
                         if effect == "i":
                             ignore_matched = True
-                        elif effect == "ib" and any(map(lambda match_ignore, match_primary: match_ignore.start() < match_primary.start(),
-                                                        product(matches, regex_matches))):
+                        elif effect == "ib" and any(map(lambda tup: tup[0].start() < tup[1].start(),
+                                                        product(rmatches, regex_matches))):
                             ignore_matched = True
 
-                        elif effect == "ia" and any(map(lambda match_ignore, match_primary: match_ignore.start() > match_primary.end(),
-                                                        product(matches, regex_matches))):
+                        elif effect == "ia" and any(map(lambda tup: tup[0].start() > tup[1].end(),
+                                                        product(rmatches, regex_matches))):
                             ignore_matched = True
 
                         if ignore_matched:
                             score = 0
-                            should_add_regex = False
                             break
 
                 if not ignore_matched:
@@ -91,41 +92,52 @@ class RegexHandler(object):
                     replace_matched = True if replace_matches else False
 
                     if replace_matched:
+                        matched_name = []
                         for i in range(len(replace_matches)):
                             replace_matched = False
-                            _, effect, matches, rscore = heappop(replace_matches)
+                            index, popped_regex = heappop(replace_matches)
+                            _, name, effect, rmatches, rscore = index, popped_regex.name, popped_regex.effect, popped_regex.matches, popped_regex.score
 
-                            if effect == "r":
-                                replace_matched = True
-                            elif effect == "rb" and any(map(lambda match_replace, match_primary: match_replace.start() < match_primary.start(),
-                                                            product(matches, regex_matches))):
-                                replace_matched = True
+                            if rmatches:
+                                if effect == "r":
+                                    replace_matched = True
+                                elif effect == "rb" and any(map(lambda tup: tup[0].start() < tup[1].start(),
+                                                                product(rmatches, regex_matches))):
+                                    replace_matched = True
 
-                            elif effect == "ra" and any(map(lambda match_replace, match_primary: match_replace.start() > match_primary.end(),
-                                                            product(matches, regex_matches))):
-                                replace_matched = True
+                                elif effect == "ra" and any(map(lambda tup: tup[0].start() > tup[1].end(),
+                                                                product(rmatches, regex_matches))):
+                                    replace_matched = True
 
-                            if replace_matched:
-                                score = rscore
-                                break
+                                if replace_matched:
+                                    matched_name.append(name)
+                                    score = rscore
+                                    regex_copy.secondary_regexes = tuple([popped_regex])
+                                    break
 
                     if not replace_matched:
-                        add_matches = regex_copy.determine_matches(text, ["a", "ab", "aa"])
-
+                        add_matches = regex_copy.determine_secondary_matches(text, ["a", "ab", "aa"])
+                        matched_adds = []
                         for i in range(len(add_matches)):
-                            _, effect, matches, rscore = heappop(add_matches)
+                            index, popped_regex = heappop(add_matches)
+                            _, name, effect, rmatches, rscore = index, popped_regex.name, popped_regex.effect, popped_regex.matches, popped_regex.score
 
-                            if effect == "a":
-                                total_score += rscore
-                            elif effect == "ab" and any(map(lambda match_replace, match_primary: match_replace.start() < match_primary.start(),
-                                                            product(matches, regex_matches))):
-                                total_score += rscore
+                            if rmatches:
+                                if effect == "a":
+                                    total_score += rscore
+                                elif effect == "ab" and any(map(lambda tup: tup[0].start() < tup[1].start(),
+                                                                product(rmatches, regex_matches))):
+                                    total_score += rscore
 
-                            elif effect == "aa" and any(map(lambda match_replace, match_primary: match_replace.start() > match_primary.end(),
-                                                            product(matches, regex_matches))):
-                                total_score += rscore
+                                elif effect == "aa" and any(map(lambda tup: tup[0].start() > tup[1].end(),
+                                                                product(rmatches, regex_matches))):
+                                    total_score += rscore
 
-                if should_add_regex:
+                                matched_adds.append(popped_regex)
+
+                        regex_copy.secondary_regexes = tuple(matched_adds)
+
+                if not ignore_matched:
                     matches.append(regex_copy)
 
             total_score += score

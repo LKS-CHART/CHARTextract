@@ -236,16 +236,15 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
                     secondary_score = None if not use_custom_score else int(line[j+2])
 
                     secondary_regex = SecondaryRegex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), nick_name),
-                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=False, flags=flags)
+                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=True, flags=flags)
 
                     secondary_regexes.append(secondary_regex)
 
 
                 #creating regex objects
                 cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score,
-                                  secondary_regexes=secondary_regexes, all_matches=False, flags=flags)
+                                  secondary_regexes=secondary_regexes, all_matches=True, flags=flags)
 
                 regexes.append(cur_regex)
 
-                print(cur_regex)
     return regexes

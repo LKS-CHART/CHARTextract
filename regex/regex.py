@@ -1,8 +1,11 @@
 import re
 from regex.regex_functions import combine_flags
 from heapq import *
+from copy import copy
 
 class Regex(object):
+    #TODO: Horrible hack by using tuples to avoid mutability bug with secondary regexes list... bad design. Need to figure out mutability bug
+
     '''
     Container class for regexes, scores and matches
     '''
@@ -28,7 +31,7 @@ class Regex(object):
         else:
             self.regex = re.compile(regex, combine_flags(flags))
 
-        self.secondary_regexes = secondary_regexes
+        self.secondary_regexes = tuple(secondary_regexes)
 
     def set_match_all(self, all_matches):
         '''
@@ -91,7 +94,7 @@ class Regex(object):
         :param text: A string of text for which you want to find secondary matches for
         :param type_list: The effect types you want to find secondary matches for (default: None -> Searches all effect types)
 
-        :return: A priority queue where each element contains the (regex_priority, effect, matches, score)
+        :return: A priority queue where each element contains the (regex_priority, name, effect, matches, score)
         '''
 
         priority_queue = []
@@ -100,9 +103,19 @@ class Regex(object):
             if secondary_regex.effect in type_list or not type_list:
                 matches = secondary_regex.determine_matches(text)
                 if matches:
-                    heappush((i, secondary_regex.effect, matches, secondary_regex.score))
+                    #TODO: Must fix this ugly thing... workaround for now :(
+                    print(secondary_regex.flags)
+                    secondary = SecondaryRegex(secondary_regex.name, secondary_regex.regex, secondary_regex.effect,
+                                               secondary_regex.score, secondary_regex.all_matches, secondary_regex.flags)
+
+                    secondary.matches = matches
+
+                    heappush(priority_queue, (i, secondary))
 
         return priority_queue
+
+    def prune_secondary_regexes(self, regex_name_list, secondary_regexes, inverted=False):
+        return tuple(filter(lambda secondary_regex: inverted ^ (secondary_regex.name not in regex_name_list), secondary_regexes))
 
 #Note this does not inherit from Regex
 class SecondaryRegex(object):
@@ -127,26 +140,16 @@ class SecondaryRegex(object):
         self.score = score
         self.all_matches = all_matches
         self._match_func = re.finditer if all_matches else re.search
-        self.matches = None
+        self.flags = flags
 
-        if flags is None:
+        if self.flags is None and not isinstance(regex, re._pattern_type):
             self.regex = re.compile(regex)
+        elif self.flags is not None and not isinstance(regex, re._pattern_type):
+            self.regex = re.compile(regex, combine_flags(self.flags))
         else:
-            self.regex = re.compile(regex, combine_flags(flags))
+            self.regex = regex
 
-    def set_match_all(self, all_matches):
-        '''
-        Set the all_matches parameter in SecondaryRegex object
-
-        :param all_matches: if True, determine_matches will return all matches else just the first one
-
-        :return: self.all_matches (bool)
-        '''
-
-        self.all_matches = all_matches
-        self._match_func = re.finditer if all_matches else re.search
-
-        return self.all_matches
+        self.matches = None
 
     def __str__(self):
         '''
@@ -166,9 +169,6 @@ class SecondaryRegex(object):
 
         return repr({"name": self.name, "regex": self.regex, "effect": self.effect, "score": self.score, "matches": self.matches})
 
-    def clear_matches(self):
-        self.matches = None
-
     def determine_matches(self, text):
         '''
         Compute the matches for a given text
@@ -178,12 +178,13 @@ class SecondaryRegex(object):
         :return: A list containing one MatchObject or multiple depending on all_matches parameter
         '''
 
+
         if self.all_matches:
-            self.matches = list(self._match_func(self.regex, text))
+            matches = list(self._match_func(self.regex, text))
 
         else:
 
-            self.matches = self._match_func(self.regex, text)
-            self.matches = [] if self.matches is None else [self.matches]
+            matches = self._match_func(self.regex, text)
+            matches = [] if matches is None else [matches]
 
-        return self.matches
+        return matches

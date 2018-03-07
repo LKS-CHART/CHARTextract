@@ -14,12 +14,12 @@ import cProfile as profile
 if __name__ == "__main__":
 
     pr = profile.Profile()
-    debug = False
+    debug = True
 
     #Reading regex files
     regexes = {}
 
-    regex_dir = os.path.join('examples', 'regexes', 'tb_regexes', 'smoking')
+    regex_dir = os.path.join('examples', 'regexes', 'tb_regexes', 'smoking_new')
     regex_filenames = [os.path.join(regex_dir, fname) for fname in os.listdir(regex_dir)]
 
     # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
@@ -30,8 +30,6 @@ if __name__ == "__main__":
         regexes[key_name] = di.regexes_from_csv([file], [key_name], use_custom_score=True, all_matches=False)
 
     regexes["None"] = []
-
-    print(regexes)
 
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
@@ -56,10 +54,13 @@ if __name__ == "__main__":
                 count += 1
 
     else:
-        data = ['I am a smoker.', 'She does not smoke. This is a test', 'She used to smoke', 'Current smoker.', 'I am a patient.']
-        labels = ['Current smoker', 'Never smoked', 'Former smoker', 'Current smoker', 'None']
-        #labels = np.random.permutation(labels)
-        ids = ['0', '1', '2', '3', '4']
+        data = ['I am not a smoker.', 'She does not smoke. This is a test', 'She used to smoke', 'Current smoker.', 'I am a patient.', 'Not a smoker']
+        labels = ['Current smoker', 'Never smoked', 'Former smoker', 'Current smoker', 'None', 'Never smoked']
+        ids = ['0', '1', '2', '3', '4', '5']
+
+        # data = ['Robert', 'Not a smoker', 'This is not a smoker not a smoker dog']
+        # labels = ['None', 'Never smoked', 'Never smoked']
+        # ids = ['0', '1', '2']
 
     #Creating TB Classifier
     # tb = NgramClassifier("TB Classifier 1")
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     #
     # tb.labels = tb.labels.astype(np.float)
     #
-    # train_ids, valid_ids = tb.create_train_and_valid(.5, 0)dd
+    # train_ids, valid_ids = tb.create_train_and_valid(.5, 0)
     # ids = {"train": train_ids, "valid": valid_ids}
 
     #Running TB Classifier
@@ -169,6 +170,8 @@ if __name__ == "__main__":
             data = tb_regex_naive.dataset[data_set]["data"][index]
 
             all_patients_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
+
+            print(match_obj)
 
         template_directory = os.path.join('web', 'templates')
         output_dir = os.path.join('generated_data', 'smoking', data_set)

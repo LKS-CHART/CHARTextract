@@ -1,4 +1,4 @@
-"no longer smok",20
+"no longer a? smok",20
 "used to smoke",10
 "used to be a smoker", 20
 "quit[^\,]*smoking",20
