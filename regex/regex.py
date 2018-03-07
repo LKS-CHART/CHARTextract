@@ -104,7 +104,6 @@ class Regex(object):
                 matches = secondary_regex.determine_matches(text)
                 if matches:
                     #TODO: Must fix this ugly thing... workaround for now :(
-                    print(secondary_regex.flags)
                     secondary = SecondaryRegex(secondary_regex.name, secondary_regex.regex, secondary_regex.effect,
                                                secondary_regex.score, secondary_regex.all_matches, secondary_regex.flags)
 
