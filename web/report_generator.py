@@ -17,16 +17,25 @@ def _generate_match_for_json(match_obj):
     for class_name in match_obj:
         match_dict[class_name] = {}
         for sentence_id in match_obj[class_name]:
-            match_dict[class_name][sentence_id] = [{"name": regex_obj.name, "score": regex_obj.score,
-                                                    "pattern": regex_obj.regex.pattern, "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group()}
-                                                   for regex_obj in match_obj[class_name][sentence_id]['matches']
-                                                   for match in regex_obj.matches]
+            matches = []
+            match_dict[class_name][sentence_id] = matches
+
+            for regex_obj in match_obj[class_name][sentence_id]['matches']:
+                matches.extend([{"name": regex_obj.name, "score": regex_obj.score,
+                                                    "pattern": regex_obj.regex.pattern, "effect": "p", "match_start": match.start(),
+                                                    "match_end": match.end(), "matched_string": match.group()} for match in regex_obj.matches])
+
+                for secondary_regex in regex_obj.secondary_regexes:
+                    secondary_dict = [{"name": secondary_regex.name, "score": secondary_regex.score,
+                                                    "pattern": secondary_regex.regex.pattern, "effect": secondary_regex.effect, "match_start": match.start(),
+                                                    "match_end": match.end(), "matched_string": match.group()} for match in secondary_regex.matches]
+                    matches.extend(secondary_dict)
+
     return match_dict
 
-def _generate_hsl_colour_dictionary(keys):
+def _generate_hsl_colour_dictionary(keys, lightness=85):
     '''
-    Given class names, generates light colours
+    Given keys names, generates light colours
 
     :param keys: class names
 
@@ -35,11 +44,11 @@ def _generate_hsl_colour_dictionary(keys):
     colour_dict = {}
     for key in keys:
         colour_dict[key] = "hsl({hue},{saturation}%,{lightness}%)".format(hue=360*r(), saturation=25 + 70*r(),
-                                                                          lightness=85 + 10*r())
+                                                                          lightness=lightness + 10*r())
 
     return colour_dict
 
-def generate_error_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, failures_dict, custom_class_colours=None):
+def generate_error_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, failures_dict, effects, custom_class_colours=None, custom_effect_colours=None):
     '''
     Generates an error report html file and corresponding json file
 
@@ -54,9 +63,9 @@ def generate_error_report(output_directory, html_output_filename, template_direc
     '''
     json_filename = html_output_filename.split('.')[0] + '.json'
     generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
-    generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, custom_class_colours)
+    generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours)
 
-def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, custom_class_colours=None):
+def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, effects, custom_class_colours=None, custom_effect_colours=None):
     '''
     Generates a json file for the html
 
@@ -74,6 +83,7 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
 
     data["var_name"] = variable_name
     data["classes"] = _generate_hsl_colour_dictionary(class_names) if not custom_class_colours else custom_class_colours
+    data["effects"] = _generate_hsl_colour_dictionary(effects, lightness=0) if not custom_effect_colours else custom_effect_colours
     data["patient_cases"] = {}
 
     for patient_id in patients_dict:
@@ -86,7 +96,7 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
     with open(json_fname, 'w') as outfile:
         json.dump(data, outfile, indent=4)
 
-def generate_classification_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, all_patients, custom_class_colours=None):
+def generate_classification_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, all_patients, effects, custom_class_colours=None, custom_effect_colours=None):
     '''
     Generates a classification report html file and corresponding json file
 
@@ -101,7 +111,7 @@ def generate_classification_report(output_directory, html_output_filename, templ
     '''
     json_filename = html_output_filename.split('.')[0] + '.json'
     generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
-    generate_json(output_directory, json_filename, variable_name, class_names, all_patients, custom_class_colours)
+    generate_json(output_directory, json_filename, variable_name, class_names, all_patients, effects, custom_class_colours, custom_effect_colours)
 
 def generate_generic_report(output_directory, html_output_filename, template_folder, html_template, **template_args):
     '''

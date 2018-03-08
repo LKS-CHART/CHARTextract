@@ -178,13 +178,18 @@ if __name__ == "__main__":
         template_directory = os.path.join('web', 'templates')
         output_dir = os.path.join('generated_data', 'smoking', data_set)
 
+        effects = ["a", "aa", "ab", "r", "rb", "ra"]
+
+        effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
+        effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
+
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
 
         generate_error_report(output_dir, "smoking_error_report.html", template_directory, 'error_report.html',
-                              "Smoking Status", regexes.keys(), failures_dict)
+                              "Smoking Status", regexes.keys(), failures_dict, effects, custom_effect_colours=effect_colours)
 
         generate_classification_report(output_dir, "smoking_report.html", template_directory, 'classification_report.html',
-                              "Smoking Status", regexes.keys(), all_patients_dict)
+                              "Smoking Status", regexes.keys(), all_patients_dict, effects, custom_effect_colours=effect_colours)
 
         pr.dump_stats('profile.pstat')

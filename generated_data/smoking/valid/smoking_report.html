@@ -150,7 +150,7 @@
                         console.log("Before: " + new_sentence)
                         new_sentence = insert_span(new_sentence, match_start, match_end, span_id)
                         console.log("After: " + new_sentence)
-                        id_to_info[span_id] = {"colour": colour, "matches": sentence_matches[k], "class": class_name};
+                        id_to_info[span_id] = {"colour": colour, "matches": sentence_matches[k], "class": class_name, "effect": sentence_matches[k].effect};
                     }
                 }
 
@@ -190,6 +190,8 @@
 
                 class_names = Object.keys(data.classes)
                 classes_json = data.classes
+                effect_names = Object.keys(data.effects)
+
 
                 for (i = 0; i < class_names.length; i++)
                 {
@@ -228,22 +230,39 @@
                     $("#score").text("Score: " + score)
                     $("#patient-text").html(text_data)
 
+                    var placement = ["top", "bottom", "right", "left"]
+                    var incr = 0;
                     for (var id in span_id_to_info)
                     {
+
                         $("#" + id).css("background-color", span_id_to_info[id].colour)
+
+                        if (isInArray(span_id_to_info[id].effect, effect_names))
+                        {
+                           $("#" + id).css("text-decoration", "underline")
+                           $("#" + id).css("text-decoration-color", data.effects[span_id_to_info[id].effect])
+
+                        }
+
                         $("#" + id).attr("data-toggle","tooltip")
                         $("#" + id).attr("data-html", "true")
+                        $("#" + id).attr("data-placement", placement[incr])
                         tooltip_text = "name: " + span_id_to_info[id].matches.name +
                         "</br>class: " + span_id_to_info[id].class +
                         "</br>score: " + span_id_to_info[id].matches.score +
                         "</br>pattern: " + span_id_to_info[id].matches.pattern +
                         "</br>matched_string: " + span_id_to_info[id].matches.matched_string
                         $("#" + id).attr("title", tooltip_text)
+                        incr++;
 
-
+                        if (incr > 3)
+                        {
+                            incr = 0;
+                        }
                     }
 
-                    $('[data-toggle="tooltip"]').tooltip();
+
+                   // $('[data-toggle="tooltip"]').tooltip();
 
 
                 });
