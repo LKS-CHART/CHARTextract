@@ -67,12 +67,57 @@
             return true;
         }
 
-        function insert_span(sentence, match_text, span_id, colour)
+        function extract_span_info(sentence)
         {
-            regex = new RegExp(match_text + "(?!(<\/span>))");
-            sentence = sentence.replace(regex, '<span id="' + span_id + '">' + match_text + "</span>");
+            index = sentence.indexOf(">")
+            info = sentence.slice(0, index+1)
 
-            return sentence;
+            return info
+        }
+
+        function insert_span(sentence, match_start, match_end, span_id)
+        {
+            var i = 0;
+            var start = 0;
+            var new_sentence = "";
+            var tag_start = '<span id="' + span_id + '">';
+            var tag_end = '</span>'
+            var span = false;
+
+            while (i < sentence.length)
+            {
+
+                if((sentence.slice(i,i+5) == "<span" || sentence.slice(i,i+5) == "</spa"))
+                {
+
+                    temp = sentence.slice(i,sentence.length)
+                    info = extract_span_info(temp)
+
+                    i += info.length
+                    new_sentence += info
+                    continue;
+
+                }
+
+
+                if (start == match_start)
+                {
+                    new_sentence += tag_start
+                }
+
+                if (start == match_end)
+                {
+                     new_sentence += tag_end
+                }
+
+                new_sentence += sentence.charAt(i);
+                
+                i++;
+                start++;
+
+            }
+
+            return new_sentence
         }
 
         function isInArray(value, array)
@@ -96,9 +141,14 @@
                     for (var k in sentence_matches)
                     {
                         match_text = sentence_matches[k].matched_string;
+                        match_start = sentence_matches[k].match_start
+                        match_end = sentence_matches[k].match_end
                         span_id = i + class_name + k;
 
-                        new_sentence = insert_span(new_sentence, match_text, span_id, colour);
+                        //new_sentence = insert_span(new_sentence, match_text, span_id, colour);
+                        console.log("Before: " + new_sentence)
+                        new_sentence = insert_span(new_sentence, match_start, match_end, span_id)
+                        console.log("After: " + new_sentence)
                         id_to_info[span_id] = {"colour": colour, "matches": sentence_matches[k], "class": class_name};
                     }
                 }
