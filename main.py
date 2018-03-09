@@ -10,11 +10,14 @@ from web.report_generator import generate_error_report
 from web.report_generator import generate_classification_report
 import web
 import cProfile as profile
+import os
+import psutil
 
 if __name__ == "__main__":
 
+    process = psutil.Process(os.getpid())
     pr = profile.Profile()
-    debug = False
+    debug = True
 
     #Reading regex files
     regexes = {}
@@ -55,7 +58,7 @@ if __name__ == "__main__":
 
     else:
         data = ['I am not a smoker.', 'She does not smoke. This is a test', 'She used to smoke', 'Current smoker.', 'I am a patient.', 'Not a smoker']
-        labels = ['Current smoker', 'Never smoked', 'Former smoker', 'Current smoker', 'None', 'Never smoked']
+        labels = ['Never smoked', 'Never smoked', 'Former smoker', 'Current smoker', 'None', 'Never smoked']
         ids = ['0', '1', '2', '3', '4', '5']
 
         # data = ['Robert', 'Not a smoker', 'This is not a smoker not a smoker dog']
@@ -193,3 +196,4 @@ if __name__ == "__main__":
                               "Smoking Status", regexes.keys(), all_patients_dict, effects, custom_effect_colours=effect_colours)
 
         pr.dump_stats('profile.pstat')
+        print(process.memory_info().rss)
