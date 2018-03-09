@@ -12,12 +12,13 @@ import web
 import cProfile as profile
 import os
 import psutil
+import pickle
 
 if __name__ == "__main__":
 
     process = psutil.Process(os.getpid())
     pr = profile.Profile()
-    debug = True
+    debug = False
 
     #Reading regex files
     regexes = {}
@@ -196,4 +197,4 @@ if __name__ == "__main__":
                               "Smoking Status", regexes.keys(), all_patients_dict, effects, custom_effect_colours=effect_colours)
 
         pr.dump_stats('profile.pstat')
-        print(process.memory_info().rss)
+        # print(process.memory_info().rss)

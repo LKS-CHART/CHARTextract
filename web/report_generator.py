@@ -2,6 +2,7 @@ import os
 from jinja2 import Environment, FileSystemLoader
 from numpy.random import rand as r
 import json
+import pickle
 
 def _generate_match_for_json(match_obj):
     '''
@@ -92,6 +93,10 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
                                              "pred": patients_dict[patient_id]["pred"],
                                              "actual": patients_dict[patient_id]["label"],
                                              "score": patients_dict[patient_id]["score"]}
+
+    #Regex Objects memory consumption upperbound approximation
+    pickled_str = pickle.dumps(data)
+    print(len(pickled_str))
 
     with open(json_fname, 'w') as outfile:
         json.dump(data, outfile, indent=4)
