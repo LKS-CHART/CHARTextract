@@ -22,7 +22,7 @@ class BaseClassifier(object):
                            "valid": {"ids": [], "labels": [], "data": [], "preds": [], "matches": []},
                            "test": {"ids": [], "labels": [], "data": [], "preds": [], "matches": []}}
 
-    def load_dataset(self, dataset_name, data, labels, ids):
+    def load_dataset(self, dataset_name, data=None, labels=None, ids=None):
         self.dataset[dataset_name] = {"ids": ids, "labels": labels, "data": data,
                                                      "preds": [], "matches": []}
 
@@ -35,9 +35,9 @@ class BaseClassifier(object):
         :param ids: list of ids
         '''
 
-        self.data = np.array(data)
-        self.labels = np.array(labels)
-        self.ids = np.array(ids)
+        self.data = np.array(data) if data else None
+        self.labels = np.array(labels) if labels else None
+        self.ids = np.array(ids) if ids else None
 
     def create_train_and_valid(self, train_percent=.6, random_seed=None):
         '''

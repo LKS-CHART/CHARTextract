@@ -12,7 +12,7 @@ class RegexClassifier(BaseClassifier):
     Class specialized in classifying patient data using regexes
     '''
 
-    def __init__(self, classifier_name, regexes, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None, negative_label="None"):
+    def __init__(self, classifier_name="Classifier", regexes=None, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None, negative_label="None"):
         '''
         Initializes RegexClassifier
 
@@ -69,13 +69,12 @@ class RegexClassifier(BaseClassifier):
 
             preds = []
 
-            ids = self.dataset[data_set]["ids"]
             data = self.dataset[data_set]["data"]
-            labels = self.dataset[data_set]["labels"]
+
             self.dataset[data_set]["matches"] = []
             self.dataset[data_set]["scores"] = []
 
-            for id, datum, label in zip(ids, data, labels):
+            for datum in data:
                 class_scores = {}
                 class_matches = {}
                 for class_name in self.regexes:

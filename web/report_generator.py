@@ -94,7 +94,7 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
                                              "actual": patients_dict[patient_id]["label"],
                                              "score": patients_dict[patient_id]["score"]}
 
-    #Regex Objects memory consumption upperbound approximation
+    #Regex Objects memory consumption  approximation
     pickled_str = pickle.dumps(data)
     print(len(pickled_str))
 
