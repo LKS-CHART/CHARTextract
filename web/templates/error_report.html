@@ -248,9 +248,10 @@
                         $("#" + id).attr("data-placement", placement[incr])
                         tooltip_text = "name: " + span_id_to_info[id].matches.name +
                         "</br>class: " + span_id_to_info[id].class +
+                        "</br>effect: " + span_id_to_info[id].effect + 
                         "</br>score: " + span_id_to_info[id].matches.score +
                         "</br>pattern: " + span_id_to_info[id].matches.pattern +
-                        "</br>matched_string: " + span_id_to_info[id].matches.matched_string
+                        "</br>matched_string: " + span_id_to_info[id].matches.matched_string +
                         $("#" + id).attr("title", tooltip_text)
                         incr++;
 

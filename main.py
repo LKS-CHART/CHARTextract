@@ -1,6 +1,7 @@
 from variable_classifiers.base_runner import Runner, import_regexes
 from datahandler import data_import as di
 import os
+import time
 
 if __name__ == "__main__":
     data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
@@ -13,6 +14,7 @@ if __name__ == "__main__":
     smoking_classifier_args = {"classifier_name": "Smoking Classifier", "regexes": regexes, "biases": regex_biases}
     smoking_classifier = Runner("RegexClassifier", **smoking_classifier_args)
 
+    s = time.time()
     smoking_classifier.run(ids=ids, data=data)
-
+    print(time.time() - s)
     print(smoking_classifier.classifier.dataset["test"]["preds"])
