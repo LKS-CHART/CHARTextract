@@ -23,7 +23,7 @@ if __name__ == "__main__":
     #Reading regex files
     regexes = {}
 
-    regex_dir = os.path.join('examples', 'regexes', 'tb_regexes', 'smoking_new')
+    regex_dir = os.path.join('regexes', 'tb_regexes', 'smoking_new')
     regex_filenames = [os.path.join(regex_dir, fname) for fname in os.listdir(regex_dir)]
 
     # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
@@ -179,8 +179,8 @@ if __name__ == "__main__":
             # print(match_obj)
             # print(score)
 
-        template_directory = os.path.join('web', 'templates')
-        output_dir = os.path.join('generated_data', 'smoking', data_set)
+        template_directory = os.path.join('..', 'web', 'templates')
+        output_dir = os.path.join('..','generated_data', 'smoking', data_set)
 
         effects = ["a", "aa", "ab", "r", "rb", "ra"]
 
@@ -196,5 +196,5 @@ if __name__ == "__main__":
         generate_classification_report(output_dir, "smoking_report.html", template_directory, 'classification_report.html',
                                        "Smoking Status", regexes.keys(), all_patients_dict, effects, custom_effect_colours=effect_colours)
 
-        pr.dump_stats('profile.pstat')
+        pr.dump_stats('smoking_profile.pstat')
         # print(process.memory_info().rss)
