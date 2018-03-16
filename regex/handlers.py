@@ -8,7 +8,7 @@ class RegexHandler(object):
     def __init__(self):
         pass
 
-    def score_and_match_sentences(self, text, regexes):
+    def score_and_match_sentences(self, text, regexes, gen_matches=True):
         '''
         Given regexes and text, determines a score for the sentence
 
@@ -34,7 +34,7 @@ class RegexHandler(object):
 
         return matches_score_dict, total_score
 
-    def score_and_match_sentence(self, text, regexes):
+    def score_and_match_sentence(self, text, regexes, gen_matches=True):
         '''
         Scores the text and returns matches based on the effects of the regexes
 
@@ -60,7 +60,7 @@ class RegexHandler(object):
             regex_matches = regex_copy.determine_matches(text)
             score = regex.score*len(regex_matches)
 
-            #TODO: Lots of duplicated code here. Fix this later
+            #TODO: Lots of duplicated code here. Fix this later, possibly using effect handlers or some other method.
 
             if len(regex_matches) > 0:
                 #adding the new copied regex object to matches

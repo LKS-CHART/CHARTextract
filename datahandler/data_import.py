@@ -4,6 +4,7 @@ import csv
 from regex.regex import Regex
 from regex.regex import SecondaryRegex
 from time import time
+import ast
 
 def preprocess_data(data):
     '''
@@ -210,10 +211,20 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
     assert(len(filenames) == len(set(regex_names)))
 
     regexes = []
+    classifier_type = None
+    classifier_args = {}
+
     for file, nick_name in zip(filenames, regex_names):
         with open(file, 'r', encoding='utf8') as f:
             lines = csv.reader(f, delimiter=',', quotechar='"')
             for i, line in enumerate(lines):
+                if i == 0 and line[0].startswith("!"):
+                    classifier_type = line[0][1:]
+                    if len(line) > 1:
+                        for j in range(1, len(line) - 1, 2):
+                            classifier_args[line[j]] = ast.literal_eval(line[j+1])
+                    continue
+
                 #Checking for invalid lines
                 if len(line) < 1 and not line[0].startswith("#"):
                     print(line)
@@ -236,7 +247,7 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
                     secondary_score = None if not use_custom_score else int(line[j+2])
 
                     secondary_regex = SecondaryRegex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), nick_name),
-                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=True, flags=flags)
+                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags)
 
                     secondary_regexes.append(secondary_regex)
 
@@ -247,4 +258,4 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
 
                 regexes.append(cur_regex)
 
-    return regexes
+    return classifier_type, classifier_args, regexes

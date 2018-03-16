@@ -23,11 +23,22 @@ class RegexClassifier(BaseClassifier):
         :param ids: List of ids
         '''
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
+
         self.regexes = regexes
-        self.biases = biases
+        self.biases = {class_name: 0 for class_name in self.regexes}
         self.multiclass = multiclass
         self.negative_label = negative_label
         self.handler = RegexHandler() if handler is None else handler
+
+        if self.multiclass:
+            self.biases.update({negative_label: 0})
+            self.regexes.update({negative_label: []})
+
+        if biases:
+            self.set_biases(biases)
+
+    def set_biases(self, bias_dict={}):
+        self.biases.update(bias_dict)
 
     def classify(self, class_to_scores):
         '''
