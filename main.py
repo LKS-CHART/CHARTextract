@@ -16,7 +16,6 @@ if __name__ == "__main__":
     parser.add_argument('data_col',  help='The column which hosts the data instances. Starts counting at 1 for .xlsx files and 0 for .csv files', type=int)
     parser.add_argument('id_col',  help='The column which hosts the id instances. Starts counting at 1 for .xlsx files and 0 for .csv files', type=int)
     parser.add_argument('line_start',  help='The row at which to start  reading the ids and the data')
-    parser.add_argument('classifier_type',  help='Which classifier to use (default: RegexClassifier)', default="RegexClassifier")
     args = parser.parse_args()
 
     filename = args.filename
@@ -25,7 +24,6 @@ if __name__ == "__main__":
     data_col = args.data_col
     id_col = args.id_col
     line_start = args.line_start
-    classifier = args.classifier_type
     training_mode = None if not args.training_mode else args.training_mode
     print(training_mode)
 
@@ -75,7 +73,7 @@ if __name__ == "__main__":
         else:
             rule_classifier.run(ids=ids, data=data, labels=labels, train=train, train_percent=train_percent)
 
-        # print(rule_classifier.classifier.dataset["test"]["preds"])
+        print(rule_classifier.classifier.dataset["train"]["preds"])
 
     # data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
     # data, _, ids = di.data_from_csv(data_filenames, data_cols=2, id_cols=0, repeat_ids=False)

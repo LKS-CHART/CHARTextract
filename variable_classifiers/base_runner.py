@@ -64,3 +64,4 @@ class Runner(object):
             self.classifier.import_data(data=data, ids=ids, labels=labels)
             self.classifier.create_train_and_valid(train_percent)
             self.classifier.run_classifier(sets=["train", "valid"], **self.additional_params)
+
