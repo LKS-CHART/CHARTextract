@@ -1,7 +1,6 @@
 import re
 from regex.regex_functions import combine_flags
 from heapq import *
-from copy import copy
 
 class Regex(object):
     #TODO: Horrible hack by using tuples to avoid mutability bug with secondary regexes list... bad design. Need to figure out mutability bug

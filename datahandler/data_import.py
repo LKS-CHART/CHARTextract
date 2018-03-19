@@ -1,8 +1,7 @@
 import re
 import openpyxl
 import csv
-from regex.regex import Regex
-from regex.regex import SecondaryRegex
+from regex.regex2 import Regex
 from time import time
 import ast
 
@@ -238,6 +237,7 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
                 #Reading primary score and primary regex
                 score = None if not use_custom_score else int(line[1])
                 regex = line[0]
+                effect = 'p'
 
                 secondary_regexes = []
 
@@ -246,14 +246,14 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
                     effect = line[j+1]
                     secondary_score = None if not use_custom_score else int(line[j+2])
 
-                    secondary_regex = SecondaryRegex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), nick_name),
-                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags)
+                    secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), nick_name),
+                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
 
                     secondary_regexes.append(secondary_regex)
 
 
                 #creating regex objects
-                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score,
+                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score, effect=effect,
                                   secondary_regexes=secondary_regexes, all_matches=True, flags=flags)
 
                 regexes.append(cur_regex)

@@ -3,16 +3,12 @@ from classifier.simple_regex_classifier import RegexClassifier
 from classifier.ngram_classifier import NgramClassifier
 from datahandler import data_import as di
 import re
-import os
 from stats.basic import calculate_accuracy
-import numpy as np
 from web.report_generator import generate_error_report
 from web.report_generator import generate_classification_report
-import web
 import cProfile as profile
 import os
 import psutil
-import pickle
 
 if __name__ == "__main__":
 
@@ -25,8 +21,6 @@ if __name__ == "__main__":
 
     regex_dir = os.path.join('regexes', 'tb_regexes', 'smoking_new')
     regex_filenames = [os.path.join(regex_dir, fname) for fname in os.listdir(regex_dir)]
-
-    # regexes = di.regexes_from_csv(filenames, use_customized_score=True)
 
     for file in regex_filenames:
         split_str = re.split(r'[\\/]+', file)
@@ -179,22 +173,22 @@ if __name__ == "__main__":
             # print(match_obj)
             # print(score)
 
-        template_directory = os.path.join('..', 'web', 'templates')
-        output_dir = os.path.join('..','generated_data', 'smoking', data_set)
-
-        effects = ["a", "aa", "ab", "r", "rb", "ra"]
-
-        effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
-        effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
-
-        if not os.path.isdir(output_dir):
-            os.mkdir(output_dir)
-
-        generate_error_report(output_dir, "smoking_error_report.html", template_directory, 'error_report.html',
-                              "Smoking Status", regexes.keys(), failures_dict, effects, custom_effect_colours=effect_colours)
-
-        generate_classification_report(output_dir, "smoking_report.html", template_directory, 'classification_report.html',
-                                       "Smoking Status", regexes.keys(), all_patients_dict, effects, custom_effect_colours=effect_colours)
-
-        pr.dump_stats('smoking_profile.pstat')
-        # print(process.memory_info().rss)
+        # template_directory = os.path.join('..', 'web', 'templates')
+        # output_dir = os.path.join('..','generated_data', 'smoking', data_set)
+        #
+        # effects = ["a", "aa", "ab", "r", "rb", "ra"]
+        #
+        # effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
+        # effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
+        #
+        # if not os.path.isdir(output_dir):
+        #     os.mkdir(output_dir)
+        #
+        # generate_error_report(output_dir, "smoking_error_report.html", template_directory, 'error_report.html',
+        #                       "Smoking Status", regexes.keys(), failures_dict, effects, custom_effect_colours=effect_colours)
+        #
+        # generate_classification_report(output_dir, "smoking_report.html", template_directory, 'classification_report.html',
+        #                                "Smoking Status", regexes.keys(), all_patients_dict, effects, custom_effect_colours=effect_colours)
+        #
+        # pr.dump_stats('smoking_profile.pstat')
+        # # print(process.memory_info().rss)

@@ -1,11 +1,6 @@
 import numpy as np
-from copy import copy
 from .base_classifier import BaseClassifier
-from util.string_functions import split_string_into_sentences
-from sklearn import svm
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn import linear_model
-from regex.handlers import RegexHandler
+from regex.handlers2 import RegexHandler
 
 class RegexClassifier(BaseClassifier):
     '''

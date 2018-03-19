@@ -8,7 +8,7 @@ class RegexHandler(object):
     def __init__(self):
         pass
 
-    def score_and_match_sentences(self, text, regexes, gen_matches=True):
+    def score_and_match_sentences(self, text, regexes):
         '''
         Given regexes and text, determines a score for the sentence
 
