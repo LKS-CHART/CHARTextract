@@ -25,6 +25,7 @@ if __name__ == "__main__":
     id_col = args.id_col
     line_start = args.line_start
     training_mode = None if not args.training_mode else args.training_mode
+    train=False
     print(training_mode)
 
     if repeat_ids:
@@ -56,6 +57,7 @@ if __name__ == "__main__":
     classifiers_args = []
 
     rules = [(fname, os.path.join(rules, fname)) for fname in os.listdir(rules)]
+    print(rules)
 
     for rule_name, rule in rules:
         classifier_type, classifier_args, regexes_dict = import_regexes(rule) if os.path.isdir(rule) else import_regex(rule)
@@ -73,7 +75,7 @@ if __name__ == "__main__":
         else:
             rule_classifier.run(ids=ids, data=data, labels=labels, train=train, train_percent=train_percent)
 
-        print(rule_classifier.classifier.dataset["train"]["preds"])
+        print(rule_classifier.classifier.dataset["test"]["preds"])
 
     # data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
     # data, _, ids = di.data_from_csv(data_filenames, data_cols=2, id_cols=0, repeat_ids=False)
