@@ -77,11 +77,11 @@ class Regex(object):
         '''
 
         if self.all_matches:
-            return list(self._match_func(self.regex, text))
+            matches = list(self._match_func(self.regex, text))
 
         else:
             matches = self._match_func(self.regex, text)
-            matches = [] if matches is None else self.matches
+            matches = [] if matches is None else [matches]
 
         return matches
 

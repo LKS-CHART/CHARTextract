@@ -15,8 +15,10 @@ class RegexHandler(object):
             if len(secondary_regex.effect) == 2:
                 effect_modifier = secondary_regex.effect[1]
                 if effect_modifier == "b" and any(map(lambda tup: tup[0].start() < tup[1].start(), product(secondary_matches, primary_regex_matches))):
-                    secondary_matches = []
+                    secondary_matches = secondary_matches
                 elif effect_modifier == "a" and any(map(lambda tup: tup[0].start() > tup[1].end(), product(secondary_matches, primary_regex_matches))):
+                    secondary_matches = secondary_matches
+                else:
                     secondary_matches = []
 
         return secondary_matches
@@ -98,8 +100,8 @@ class RegexHandler(object):
                         secondary_matches.append(secondary_regex_obj)
 
                 primary_match["secondary_matches"] = secondary_matches
+                matches.append(primary_match)
 
-            matches.append(primary_match)
             total_score += score
 
         return matches, total_score
