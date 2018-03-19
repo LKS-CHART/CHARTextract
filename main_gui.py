@@ -10,7 +10,6 @@ if __name__ == "__main__":
     root = Tk()
     root.title("RegexNLP")
 
-    #DATA UPLOAD
 
     filename = StringVar()
     rules = StringVar()
@@ -25,6 +24,8 @@ if __name__ == "__main__":
         rule_text.insert(END,rule_folder)
         print(rule_folder)
 
+    #RULE UPLOAD
+
     rule_label = Label(root, text="Rules Folder")
     rule_label.grid(column=0, row=0)
 
@@ -35,7 +36,10 @@ if __name__ == "__main__":
     rule_upload = Button(root, text="Load", command=rule_btn_clicked)
     rule_upload.grid(column=2, row=0)
 
+    #DATA UPLOAD
+
     data_label = Label(root, text="Data File")
+
     data_label.grid(column=0, row=1, sticky=W)
 
     data_text = Entry(root, width=40, textvariable=filename)
@@ -53,6 +57,8 @@ if __name__ == "__main__":
     data_checkvar = IntVar()
     data_checkbox = Checkbutton(text="Repeat Ids", variable=repeat_ids, onvalue=1, offvalue=0)
     data_checkbox.grid(column=3, row=1)
+
+    #DATA PARAMETERS
 
     data_col_label = Label(root, text="Data col")
     data_col_label.grid(column=0, row=2, sticky=W)
@@ -75,6 +81,8 @@ if __name__ == "__main__":
     line_col_text.insert(END,'1')
     line_col_text.grid(column=1, row=4, sticky=W)
 
+    #RUN SCRIPT
+
     def run_script():
         str_filename = filename.get()
         str_rules = rules.get()
@@ -91,7 +99,6 @@ if __name__ == "__main__":
         classifiers_args = []
 
         rule_tups = [(fname, os.path.normpath(os.path.join(str_rules, fname))) for fname in os.listdir(str_rules)]
-        print(rule_tups)
 
         for rule_name,rule in rule_tups:
             classifier_type, classifier_args, regexes_dict = import_regexes(rule) if os.path.isdir(rule) else import_regex(rule)
@@ -100,16 +107,12 @@ if __name__ == "__main__":
             classifiers.append(classifier_type)
 
         for classifier_args, classifier in zip(classifiers_args, classifiers):
-            print("HEREHERHEHREH")
             rule_classifier = Runner(classifier, **classifier_args)
-            print(data)
-            print(ids)
             rule_classifier.run(ids=ids, data=data)
             print(rule_classifier.classifier.dataset["test"]["preds"])
 
     run = Button(root, text="RUN", command=run_script)
     run.grid(column=0, row=5, sticky=W)
 
-    print("HERE")
     root.mainloop()
 
