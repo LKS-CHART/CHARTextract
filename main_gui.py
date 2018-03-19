@@ -1,18 +1,76 @@
 from variable_classifiers.base_runner import Runner, import_regexes, import_regex
 from datahandler import data_import as di
 import os
-import tkinter as tk
+from tkinter import *
 from tkinter import filedialog
+from tkinter import ttk
 
 if __name__ == "__main__":
 
-    root = tk.Tk()
-    w = tk.Label(root, text="Hello World!")
-    w.pack()
-    folder_pick = filedialog.askdirectory()
-    print(folder_pick)
+    root = Tk()
+    root.title("RegexNLP")
 
+    #DATA UPLOAD
+
+    data_label = Label(root, text="Data File")
+    data_label.grid(column=0, row=0, sticky=W)
+
+    data_text = Entry(root, width=40)
+    data_text.grid(column=1, row=0)
+
+    def file_btn_clicked():
+        data_text.delete(0,'end')
+        data_file = filedialog.askopenfile(title="Select file", filetype=[("CSV or Excel Files", ("*.csv", "*.xlsx"))])
+        data_text.insert(END,data_file.name)
+
+    data_upload = Button(root, text="Load", command=file_btn_clicked)
+    data_upload.grid(column=2, row=0)
+
+    data_checkvar = IntVar()
+    data_checkbox = Checkbutton(text="Repeat Ids", variable=data_checkvar, onvalue=1, offvalue=0)
+    data_checkbox.grid(column=3,row=0)
+
+    data_col_label = Label(root, text="Data col")
+    data_col_label.grid(column=0, row=1, sticky=W)
+
+    data_col_text = Entry(root, width=10)
+    data_col_text.grid(column=1, row=1, sticky=W)
+
+    id_col_label = Label(root, text="ID col", anchor="w")
+    id_col_label.grid(column=0, row=2, sticky=W)
+
+    id_col_text = Entry(root, width=10)
+    id_col_text.grid(column=1, row=2, sticky=W)
+
+
+    #RULE UPLOAD
+
+    rule_label = Label(root, text="Rules Folder")
+    rule_label.grid(column=0, row=3)
+
+    rule_text = Entry(root, width=40)
+    rule_text.grid(column=1, row=3)
+
+    def rule_btn_clicked():
+        rule_text.delete(0,'end')
+        rule_folder = filedialog.askdirectory()
+        rule_text.insert(END,rule_folder)
+        print(rule_folder)
+
+    rule_upload = Button(root, text="Load", command=rule_btn_clicked)
+    rule_upload.grid(column=2, row=3)
+    root.geometry('435x200')
+
+    print("HERE")
     root.mainloop()
+
+    # mainframe = ttk.Frame(root, padding="")
+    # w = tk.Label(root, text="Hello World!")
+    # w.pack()
+    # folder_pick = filedialog.askdirectory()
+    # print(folder_pick)
+    #
+    # root.mainloop()
 
     # filename = args.filename
     # rules = args.rules_folder
