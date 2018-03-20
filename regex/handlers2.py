@@ -2,6 +2,19 @@ from util.string_functions import split_string_into_sentences
 from itertools import product
 from heapq import *
 
+class CaptureHandler(object):
+    def __init__(self):
+        pass
+
+    def score_and_capture_sentences(self, text, regexes, pwd=None):
+        '''
+        Given regexes and text
+        :param text: Text to be split into sentences
+        :param regexes: List of Regex objects to search for in sentences
+
+        :return:
+        '''
+
 class RegexHandler(object):
 
     def __init__(self):
@@ -85,7 +98,7 @@ class RegexHandler(object):
                         secondary_regex_obj["matches"] = secondary_match
                         secondary_matches.append(secondary_regex_obj)
 
-                        if secondary_match and secondary_regex.effect.startswith("i"):
+                        if secondary_regex.effect.startswith("i"):
                             score = 0
                             break
 

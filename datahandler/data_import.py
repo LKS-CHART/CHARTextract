@@ -237,7 +237,6 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
                 #Reading primary score and primary regex
                 score = None if not use_custom_score else int(line[1])
                 regex = line[0]
-                effect = 'p'
 
                 secondary_regexes = []
 
@@ -253,7 +252,7 @@ def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches
 
 
                 #creating regex objects
-                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score, effect=effect,
+                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score, effect='p',
                                   secondary_regexes=secondary_regexes, all_matches=True, flags=flags)
 
                 regexes.append(cur_regex)

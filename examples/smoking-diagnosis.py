@@ -168,7 +168,6 @@ if __name__ == "__main__":
             data = tb_regex_naive.dataset[data_set]["data"][index]
 
             all_patients_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
-            print(match_obj)
 
             # print(patient_id)
             # print(match_obj)
