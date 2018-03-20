@@ -1,5 +1,4 @@
 from util.string_functions import split_string_into_sentences
-from copy import copy
 from itertools import product
 from heapq import *
 
@@ -66,7 +65,7 @@ class RegexHandler(object):
             score = regex.score*len(regex_matches)
             priority_queue = []
             secondary_matches = []
-            primary_match = {"primary_name": regex.name, "primary_score": regex.score, "primary_effect": regex.effect, "primary_matches": regex_matches, "secondary_matches": []}
+            primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.regex.pattern, "secondary_matches": []}
 
             if len(regex_matches) > 0:
                 ignore_regexes = regex.get_secondary_regexes(type_list=["i", "ib", "ia"])
@@ -79,25 +78,23 @@ class RegexHandler(object):
 
                 for i in range(len(priority_queue)):
                     secondary_regex = heappop(priority_queue)[1]
-                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "score": secondary_regex.score, "matches": []}
+                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.regex.pattern, "score": secondary_regex.score, "matches": []}
                     secondary_match = self._match_secondary(secondary_regex, text, regex_matches)
 
-                    if secondary_match and secondary_regex.effect.startswith("i"):
-                        score = 0
+                    if secondary_match:
                         secondary_regex_obj["matches"] = secondary_match
                         secondary_matches.append(secondary_regex_obj)
-                        break
 
-                    elif secondary_match and secondary_regex.effect.startswith("r"):
-                        score = secondary_regex.score
-                        secondary_regex_obj["matches"] = secondary_match
-                        secondary_matches.append(secondary_regex_obj)
-                        break
+                        if secondary_match and secondary_regex.effect.startswith("i"):
+                            score = 0
+                            break
 
-                    elif secondary_match and secondary_regex.effect.startswith("a"):
-                        score += secondary_regex.score
-                        secondary_regex_obj["matches"] = secondary_match
-                        secondary_matches.append(secondary_regex_obj)
+                        elif secondary_regex.effect.startswith("r"):
+                            score = secondary_regex.score
+                            break
+
+                        elif secondary_regex.effect.startswith("a"):
+                            score += secondary_regex.score
 
                 primary_match["secondary_matches"] = secondary_matches
                 matches.append(primary_match)

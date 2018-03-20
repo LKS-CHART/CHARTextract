@@ -21,15 +21,16 @@ def _generate_match_for_json(match_obj):
             matches = []
             match_dict[class_name][sentence_id] = matches
 
+            #TODO: Duplicate values generated if all_matches parameter is used. Consider adding matches list to json instead of match.start() etc..
             for regex_obj in match_obj[class_name][sentence_id]['matches']:
-                matches.extend([{"name": regex_obj.name, "score": regex_obj.score,
-                                                    "pattern": regex_obj.regex.pattern, "effect": "p", "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group()} for match in regex_obj.matches])
+                matches.extend([{"name": regex_obj["name"], "score": regex_obj["score"],
+                                                    "pattern": regex_obj["pattern"], "effect": regex_obj["effect"], "match_start": match.start(),
+                                                    "match_end": match.end(), "matched_string": match.group()} for match in regex_obj["matches"]])
 
-                for secondary_regex in regex_obj.secondary_regexes:
-                    secondary_dict = [{"name": secondary_regex.name, "score": secondary_regex.score,
-                                                    "pattern": secondary_regex.regex.pattern, "effect": secondary_regex.effect, "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group()} for match in secondary_regex.matches]
+                for secondary_regex in regex_obj["secondary_matches"]:
+                    secondary_dict = [{"name": secondary_regex["name"], "score": secondary_regex["score"],
+                                                    "pattern": secondary_regex["pattern"], "effect": secondary_regex["effect"], "match_start": match.start(),
+                                                    "match_end": match.end(), "matched_string": match.group()} for match in secondary_regex["matches"]]
                     matches.extend(secondary_dict)
 
     return match_dict
