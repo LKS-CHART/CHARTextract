@@ -75,12 +75,13 @@ class Regex(object):
 
         if self.all_matches:
             matches = list(self._match_func(self.regex, text))
-            print(matches)
         else:
             matches = self._match_func(self.regex, text)
             matches = [] if matches is None else [matches]
 
         captures = [capture for match in matches for capture in match.groups()]
+        print(matches)
+        print(captures)
 
         return matches, captures
 
