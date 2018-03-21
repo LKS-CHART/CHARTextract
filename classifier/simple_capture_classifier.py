@@ -2,7 +2,7 @@ import numpy as np
 from .base_classifier import BaseClassifier
 from regex.handlers2 import CaptureHandler
 
-class RegexClassifier(BaseClassifier):
+class CaptureClassifier(BaseClassifier):
     '''
     Class specialized in capturing information of interest. E.g Country of birth
     '''
@@ -74,7 +74,6 @@ class RegexClassifier(BaseClassifier):
 
                     if len(self.regexes[class_name]) > 0:
                         matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name], self.pwds, preprocess_func)
-
                     class_matches[class_name] = matches
 
                     for bias in self.capture_biases:

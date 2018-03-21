@@ -30,22 +30,28 @@ class CaptureHandler(object):
 
         return matches_scores_dict, captures, capture_scores
 
-    def score_and_match_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None):
+    def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None):
         matches = []
-        total_score = []
+        captures = []
+        total_score = 0
 
         #preprocessed_pwds = preprocess_func(text)
 
         for regex in regexes:
-            regex_matches, regex_captures = regex.determine_matches(text)
+            regex_matches, regex_captures = regex.determine_captures_w_matches(text)
+            score = regex.score*len(regex_matches)
             primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": []}
+
             for capture in regex_captures:
                 capture_scores[capture] += regex.score
 
             primary_matches["matches"].extend(regex_captures)
+            matches.append(primary_matches)
+            captures.extend(regex_captures)
 
+            total_score += score
 
-        return
+        return matches, captures, total_score
 
 
 class RegexHandler(object):
@@ -88,7 +94,6 @@ class RegexHandler(object):
             #only adding sentences that matched
             if matches:
                 matches_score_dict[i] = {"matches": matches, "text_score": score}
-
 
             total_score += score
 

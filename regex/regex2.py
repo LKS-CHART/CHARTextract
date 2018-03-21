@@ -67,6 +67,23 @@ class Regex(object):
     def clear_matches(self):
         self.matches = None
 
+    #TODO: Temporary placeholder method. Transfer functionality into determine_matches
+    def determine_captures_w_matches(self, text):
+        '''
+        Computer the matches and captures for a given text
+        '''
+
+        if self.all_matches:
+            matches = list(self._match_func(self.regex, text))
+            print(matches)
+        else:
+            matches = self._match_func(self.regex, text)
+            matches = [] if matches is None else [matches]
+
+        captures = [capture for match in matches for capture in match.groups()]
+
+        return matches, captures
+
     def determine_matches(self, text):
         '''
         Compute the matches for a given text
