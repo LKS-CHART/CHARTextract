@@ -117,7 +117,7 @@ if __name__ == "__main__":
     tb_regex_naive.labels[tb_regex_naive.labels == 'Never smoked'] = 'never_smoker'
     tb_regex_naive.labels[tb_regex_naive.labels == 'Current smoker'] = 'current_smoker'
 
-    tb_regex_naive.create_train_and_valid(0.7, 0)
+    tb_regex_naive.create_train_and_valid(0.6, 0)
 
     #Running Naive Smoking Classifier
 
