@@ -7,7 +7,7 @@ class RegexClassifier(BaseClassifier):
     Class specialized in capturing information of interest. E.g Country of birth
     '''
 
-    def __init__(self, classifier_name="Classifier", regexes=None, data=None, labels=None, ids=None, capture_biases=None, handler=None, negative_label="None"):
+    def __init__(self, classifier_name="Classifier", regexes=None, data=None, labels=None, ids=None, capture_biases=None, handler=None, negative_label="None", pwds=None):
         '''
         Initializes Capture Classifier
 
@@ -23,6 +23,7 @@ class RegexClassifier(BaseClassifier):
         self.capture_biases = {capture: capture_biases[capture] for capture in capture_biases}
         self.negative_label = negative_label
         self.handler = CaptureHandler() if handler is None else handler
+        self.pwds = pwds
 
     def classify(self, class_to_scores, threshold=0):
         '''
@@ -38,7 +39,7 @@ class RegexClassifier(BaseClassifier):
         else:
             return self.negative_label, 0
 
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None):
         '''
         Runs the trained classifier on the given datasets. Note these datasets must be loaded into self.dataset object first
         or initialized in some other manner
@@ -60,27 +61,32 @@ class RegexClassifier(BaseClassifier):
 
             for datum in data:
                 capture_scores = {}
+                matches = {}
                 captures = {}
+                class_matches = {}
+
+                #Assumes only 1 capturing class (e.g country of birth)
                 for class_name in self.regexes:
                     #Class captures and scores
                     #E.g
-                    #captures["canada"] = 23231
+                    #??captures["canada"] = 23231??
                     #captures = {sentence_i: {matches}}
 
                     if len(self.regexes[class_name]) > 0:
-                        captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name])
+                        matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name], self.pwds, preprocess_func)
 
-
-                    class_scores[class_name] = self.biases[class_name] + score
                     class_matches[class_name] = matches
 
-                self.dataset[data_set]["matches"].append(class_matches)
-                self.dataset[data_set]["scores"].append(class_scores)
+                    for bias in self.capture_biases:
+                        if bias in capture_scores:
+                            capture_scores[bias] += bias
+                        else:
+                            capture_scores[bias] = bias
 
-                if self.multiclass:
-                    preds.append(self.classify(class_scores)[0])
-                else:
-                    preds.append(self.classify_single(class_scores, single_class_threshold, self.negative_label))
+                self.dataset[data_set]["matches"].append(class_matches)
+                self.dataset[data_set]["scores"].append(capture_scores)
+
+                preds.append(self.classify(capture_scores)[0])
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds

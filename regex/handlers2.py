@@ -1,19 +1,52 @@
 from util.string_functions import split_string_into_sentences
 from itertools import product
 from heapq import *
+from collections import defaultdict
 
 class CaptureHandler(object):
+    #TODO: Only works with primary regexes not secondary. Add this functionality later... Should pretty much be identical
     def __init__(self):
         pass
 
-    def score_and_capture_sentences(self, text, regexes, pwd=None):
+    def score_and_capture_sentences(self, text, regexes, pwds=None, preprocess_func=None):
         '''
         Given regexes and text
         :param text: Text to be split into sentences
         :param regexes: List of Regex objects to search for in sentences
 
-        :return:
+        :return: matches, captures, capture_scores
         '''
+
+        sentences = split_string_into_sentences(text)
+        matches_scores_dict = {}
+        captures = {}
+        capture_scores = defaultdict(int)
+
+        for i, sentence in enumerate(sentences):
+            matches, captures, score = self.score_and_capture_sentence(sentence, regexes, capture_scores)
+
+            if matches:
+                matches_scores_dict[i] = {"matches": matches, "text_score": score}
+
+        return matches_scores_dict, captures, capture_scores
+
+    def score_and_match_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None):
+        matches = []
+        total_score = []
+
+        #preprocessed_pwds = preprocess_func(text)
+
+        for regex in regexes:
+            regex_matches, regex_captures = regex.determine_matches(text)
+            primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": []}
+            for capture in regex_captures:
+                capture_scores[capture] += regex.score
+
+            primary_matches["matches"].extend(regex_captures)
+
+
+        return
+
 
 class RegexHandler(object):
 
