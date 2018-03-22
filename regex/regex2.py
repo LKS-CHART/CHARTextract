@@ -24,12 +24,9 @@ class Regex(object):
         self.effect = effect
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
-
-        if flags is None:
-            self.regex = re.compile(regex)
-        else:
-            self.regex = re.compile(regex, combine_flags(flags))
-
+        self._should_compile = True
+        self.flags = combine_flags(flags) if flags else 0
+        self.regex = re.compile(regex, self.flags) if self._should_compile else self.regex
         self.secondary_regexes = tuple(secondary_regexes)
 
     def set_match_all(self, all_matches):
@@ -67,21 +64,20 @@ class Regex(object):
     def clear_matches(self):
         self.matches = None
 
-    #TODO: Temporary placeholder method. Transfer functionality into determine_matches
+    #TODO: Temporary placeholder method. Transfer functionality into determine_matches (Maybe)
     def determine_captures_w_matches(self, text):
         '''
         Computer the matches and captures for a given text
         '''
 
+        #maybe pass in arg list instead of repeating self._match_func calls.. honestly just bein
         if self.all_matches:
-            matches = list(self._match_func(self.regex, text))
+            matches = list(self._match_func(self.regex, text)) if self._should_compile else self._match_func(self.regex, text, self.flags)
         else:
-            matches = self._match_func(self.regex, text)
+            matches = self._match_func(self.regex, text) if self._should_compile else self._match_func(self.regex, text, self.flags)
             matches = [] if matches is None else [matches]
 
         captures = [capture for match in matches for capture in match.groups()]
-        print(matches)
-        print(captures)
 
         return matches, captures
 

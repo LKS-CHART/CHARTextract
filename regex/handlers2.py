@@ -28,6 +28,9 @@ class CaptureHandler(object):
             if matches:
                 matches_scores_dict[i] = {"matches": matches, "text_score": score}
 
+        print(matches_scores_dict)
+        print(captures)
+        print(capture_scores)
         return matches_scores_dict, captures, capture_scores
 
     def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None):
@@ -45,9 +48,9 @@ class CaptureHandler(object):
             for capture in regex_captures:
                 capture_scores[capture] += regex.score
 
-            primary_matches["matches"].extend(regex_captures)
-            matches.append(primary_matches)
-            captures.extend(regex_captures)
+            if len(regex_matches) > 0:
+                matches.append(primary_matches)
+                captures.extend(regex_captures)
 
             total_score += score
 
