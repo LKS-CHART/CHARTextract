@@ -3,6 +3,9 @@ from regex.regex_functions import combine_flags
 from heapq import *
 from copy import copy
 
+class Default(dict):
+    def __missing__(self, k): return '{' + k + '}'
+
 class Regex(object):
     '''
     Container class for regexes, scores and matches
@@ -24,10 +27,39 @@ class Regex(object):
         self.effect = effect
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
-        self._should_compile = True
+        self._should_compile = regex.find("dict:'") == -1 #Don't compile if it found dict:'
+        self._required_pwds = [] if self._should_compile else self._get_required_pwds()
         self.flags = combine_flags(flags) if flags else 0
         self.regex = re.compile(regex, self.flags) if self._should_compile else self.regex
         self.secondary_regexes = tuple(secondary_regexes)
+
+    def _add_dict_to_pattern(self, regex, required_pwds, pwds):
+        #string.format can't work if we regexes which have curly braces like so \d{4} since str.format expects a value
+        #opting for a simple replace method
+
+        regex_pwds = {key: "|".join(pwds[key]) for key in required_pwds}
+
+        for key in regex_pwds:
+            regex = re.sub("({{{}}})".format(key), regex_pwds[key], regex)
+
+        return regex
+
+
+    def _get_required_pwds(self):
+        pwds = []
+
+        def replace_pattern(match_obj):
+            pwds.append((match_obj.group(2)))
+            if match_obj.group(1) == "\(":
+                return "({{{}}})".format(match_obj.group(2))
+            else:
+                return "{{{}}}".format(match_obj.group(2))
+
+        check_pattern = r"{}(\\\()?([^\s)]+)(\\\))?{}".format("dict:'", "'")
+        self.regex, n = re.subn(check_pattern, replace_pattern, self.regex)
+
+        return list(set(pwds))
+
 
     def set_match_all(self, all_matches):
         '''

@@ -77,10 +77,7 @@ class CaptureClassifier(BaseClassifier):
                     class_matches[class_name] = matches
 
                     for bias in self.capture_biases:
-                        if bias in capture_scores:
-                            capture_scores[bias] += bias
-                        else:
-                            capture_scores[bias] = bias
+                        capture_scores[bias] += self.capture_biases[bias]
 
                 self.dataset[data_set]["matches"].append(class_matches)
                 self.dataset[data_set]["scores"].append(capture_scores)

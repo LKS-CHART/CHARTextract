@@ -38,7 +38,7 @@ class CaptureHandler(object):
         captures = []
         total_score = 0
 
-        #preprocessed_pwds = preprocess_func(text)
+        # preprocessed_pwds = preprocess_func(text)
 
         for regex in regexes:
             regex_matches, regex_captures = regex.determine_captures_w_matches(text)
