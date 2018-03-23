@@ -40,7 +40,7 @@ class Regex(object):
         regex_pwds = {key: "|".join(pwds[key]) for key in required_pwds}
 
         for key in regex_pwds:
-            regex = re.sub("({{{}}})".format(key), regex_pwds[key], regex)
+            regex = regex.replace("{{{}}}".format(key), regex_pwds[key])
 
         return regex
 
