@@ -7,7 +7,7 @@ class RegexClassifier(BaseClassifier):
     Class specialized in classifying patient data using regexes
     '''
 
-    def __init__(self, classifier_name="RegexClassifier", regexes=None, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None, negative_label="None"):
+    def __init__(self, classifier_name="RegexClassifier", regexes=None, data=None, labels=None, ids=None, biases=None, handler=None, negative_label="None"):
         '''
         Initializes RegexClassifier
 
@@ -20,15 +20,12 @@ class RegexClassifier(BaseClassifier):
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
 
         self.regexes = regexes
-        print(self.regexes)
         self.biases = {class_name: 0 for class_name in self.regexes}
-        self.multiclass = multiclass
         self.negative_label = negative_label
         self.handler = RegexHandler() if handler is None else handler
 
-        if self.multiclass:
-            self.biases.update({negative_label: 0})
-            self.regexes.update({negative_label: []})
+        self.biases.update({negative_label: 0})
+        self.regexes.update({negative_label: []})
 
         if biases:
             self.set_biases(biases)
@@ -36,24 +33,21 @@ class RegexClassifier(BaseClassifier):
     def set_biases(self, bias_dict={}):
         self.biases.update(bias_dict)
 
-    def classify(self, class_to_scores):
+    def classify(self, class_to_scores, threshold=0, negative_label="None"):
         '''
         Given a dictionary of classes_to_scores, returns a tuple containing the class with the highest_score and its score
         :param class_to_scores: Dictionary of class to scores {"class_name": score}
 
         :return: (class_name, score) where class_name is the class with the highest score
         '''
-        return max(class_to_scores.items(), key=lambda i: i[1])
-
-    def classify_single(self, class_to_score, threshold=0, negative_label="None"):
-        label, score = list(class_to_score.items())[0]
+        label, score = max(class_to_scores.items(), key=lambda i: i[1])
 
         if score > threshold:
-            return label
+            return label, score
         else:
-            return negative_label
+            return negative_label, score
 
-    def run_classifier(self, sets=["train", "valid"], single_class_threshold=0):
+    def run_classifier(self, sets=["train", "valid"], threshold=0):
         '''
         Runs the trained classifier on the given datasets. Note these datasets must be loaded into self.dataset object first
         or initialized in some other manner
@@ -96,10 +90,8 @@ class RegexClassifier(BaseClassifier):
                 self.dataset[data_set]["matches"].append(class_matches)
                 self.dataset[data_set]["scores"].append(class_scores)
 
-                if self.multiclass:
-                    preds.append(self.classify(class_scores)[0])
-                else:
-                    preds.append(self.classify_single(class_scores, single_class_threshold, self.negative_label))
+                classification, score = self.classify(class_scores, threshold, self.negative_label)
+                preds.append(classification)
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
