@@ -195,66 +195,61 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
 
     return data, labels, ids
 
-
-def regexes_from_csv(filenames, regex_names, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
+def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
     '''
-    Given a list of filenames containing regexes, returns a list of Regex objects
+    Given a file containing regexes, returns a list of Regex objects
 
-    :param filenames: A list of comma separated filenames
-    :param regex_names: List of file nicknames. Must have the same number of elements as filenames
+    :param filename: A rule file which contains regexes
     :param use_custom_score: if True user specified scores are given when creating regexes
 
     :return: A list of Regex objects
     '''
 
-    assert(len(filenames) == len(set(regex_names)))
-
     regexes = []
     classifier_type = None
     classifier_args = {}
+    class_name = None
 
-    for file, nick_name in zip(filenames, regex_names):
-        with open(file, 'r', encoding='utf8') as f:
-            lines = csv.reader(f, delimiter=',', quotechar='"')
-            for i, line in enumerate(lines):
-                if i == 0 and line[0].startswith("!"):
-                    classifier_type = line[0][1:]
-                    if len(line) > 1:
-                        for j in range(1, len(line) - 1, 2):
-                            classifier_args[line[j]] = ast.literal_eval(line[j+1])
-                    continue
+    with open(filename, 'r', encoding='utf8') as f:
+        lines = csv.reader(f, delimiter=',', quotechar='"')
+        for i, line in enumerate(lines):
+            if i == 0:
+                if not line[0].startswith("!"):
+                    raise Exception("Rule file requires label name at start of file. Specify as !label_name")
 
-                #Checking for invalid lines
-                if len(line) < 1 and not line[0].startswith("#"):
-                    print(line)
-                    print("Empty line in file")
-                    break
+                class_name = line[0][1:]
+                if len(line) > 1:
+                    classifier_type = line[1]
+                    for j in range(2, len(line) - 1, 2):
+                        classifier_args[line[j]] = ast.literal_eval(line[j+1])
 
-                #comment code
-                if line[0].startswith("#"):
-                    continue
+                continue
 
-                #Reading primary score and primary regex
-                score = None if not use_custom_score else int(line[1])
-                regex = line[0]
+            #comment code
+            if line[0].startswith("#"):
+                continue
 
-                secondary_regexes = []
+            #Reading primary score and primary regex
+            score = None if not use_custom_score else int(line[1])
+            regex = line[0]
 
-                for j in range(2, len(line) - 2, 3):
-                    pattern = line[j]
-                    effect = line[j+1]
-                    secondary_score = None if not use_custom_score else int(line[j+2])
+            secondary_regexes = []
 
-                    secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), nick_name),
-                                                     regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
+            for j in range(2, len(line) - 2, 3):
+                pattern = line[j]
+                effect = line[j+1]
+                secondary_score = None if not use_custom_score else int(line[j+2])
 
-                    secondary_regexes.append(secondary_regex)
+                secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), class_name),
+                                        regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
+
+                secondary_regexes.append(secondary_regex)
 
 
-                #creating regex objects
-                cur_regex = Regex(name="reg{}-{}".format(len(regexes), nick_name), regex=regex, score=score, effect='p',
-                                  secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
+            #creating regex objects
+            cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
+                              secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
 
-                regexes.append(cur_regex)
+            regexes.append(cur_regex)
 
-    return classifier_type, classifier_args, regexes
+    return classifier_type, classifier_args, class_name, regexes
