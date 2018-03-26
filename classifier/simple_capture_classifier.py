@@ -7,7 +7,7 @@ class CaptureClassifier(BaseClassifier):
     Class specialized in capturing information of interest. E.g Country of birth
     '''
 
-    def __init__(self, classifier_name="Classifier", regexes=None, data=None, labels=None, ids=None, capture_biases=None, handler=None, negative_label="None", pwds=None):
+    def __init__(self, classifier_name="CaptureClassifier", regexes=None, data=None, labels=None, ids=None, capture_biases=None, handler=None, negative_label="None", pwds=None):
         '''
         Initializes Capture Classifier
 

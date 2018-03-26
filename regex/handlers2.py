@@ -119,7 +119,7 @@ class RegexHandler(object):
             score = regex.score*len(regex_matches)
             priority_queue = []
             secondary_matches = []
-            primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.regex.pattern, "secondary_matches": []}
+            primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.get_regex(), "secondary_matches": []}
 
             if len(regex_matches) > 0:
                 ignore_regexes = regex.get_secondary_regexes(type_list=["i", "ib", "ia"])
@@ -132,7 +132,7 @@ class RegexHandler(object):
 
                 for i in range(len(priority_queue)):
                     secondary_regex = heappop(priority_queue)[1]
-                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.regex.pattern, "score": secondary_regex.score, "matches": []}
+                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": regex.get_regex(), "score": secondary_regex.score, "matches": []}
                     secondary_match = self._match_secondary(secondary_regex, text, regex_matches)
 
                     if secondary_match:

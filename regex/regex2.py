@@ -33,6 +33,9 @@ class Regex(object):
         self._required_pwds = [] if self._should_compile else self._get_required_pwds()
         self.secondary_regexes = tuple(secondary_regexes)
 
+    def get_regex(self):
+        return self.regex.pattern if self._should_compile else self.regex
+
     def _add_dict_to_pattern(self, regex, required_pwds, pwds):
         #string.format can't work if we regexes which have curly braces like so \d{4} since str.format expects a value
         #opting for a simple replace method
@@ -43,6 +46,7 @@ class Regex(object):
             regex = regex.replace("{{{}}}".format(key), regex_pwds[key])
 
         return regex
+
 
 
     def _get_required_pwds(self):

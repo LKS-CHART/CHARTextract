@@ -7,7 +7,7 @@ class RegexClassifier(BaseClassifier):
     Class specialized in classifying patient data using regexes
     '''
 
-    def __init__(self, classifier_name="Classifier", regexes=None, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None, negative_label="None"):
+    def __init__(self, classifier_name="RegexClassifier", regexes=None, data=None, labels=None, ids=None, biases=None, multiclass=True, handler=None, negative_label="None"):
         '''
         Initializes RegexClassifier
 
@@ -20,6 +20,7 @@ class RegexClassifier(BaseClassifier):
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
 
         self.regexes = regexes
+        print(self.regexes)
         self.biases = {class_name: 0 for class_name in self.regexes}
         self.multiclass = multiclass
         self.negative_label = negative_label
