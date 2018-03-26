@@ -73,7 +73,9 @@ class CaptureClassifier(BaseClassifier):
                     #captures = {sentence_i: {matches}}
 
                     if len(self.regexes[class_name]) > 0:
-                        matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name], pwds=self.pwds, preprocess_func=preprocess_func)
+                        matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name],
+                                                                                                     pwds=self.pwds, preprocess_func=preprocess_func,
+                                                                                                     capture_convert=label_func)
                     class_matches[class_name] = matches
 
                     for bias in self.capture_biases:

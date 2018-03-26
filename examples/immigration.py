@@ -28,9 +28,6 @@ if __name__ == "__main__":
         #Reading excel data
         data, _, ids = di.data_from_csv(data_filenames, data_cols=2, id_cols=0, repeat_ids=False)
         _, temp_labels, temp_ids = di.data_from_excel(label_filenames, id_cols=1, label_cols=7, repeat_ids=False, first_row=2, check_col=1)
-        # print(temp_labels)
-        # print(len(temp_labels))
-        # print(np.sum([1 if label == 'Active TB' or  label == 'None' else 0 for label in temp_labels]))
         labels = ["None"] * len(data)
         count = 0
         for i, data_id in enumerate(ids):
@@ -40,15 +37,24 @@ if __name__ == "__main__":
                 count += 1
 
     else:
-        data = ["She migrated from Trinidad in 1999", "He immigrated from the US in 1920. He moved to Canada in 1920", "He is not an immigrant."]
+        data = ["She migrated from Trinidad in 1999", "He immigrated from the US in 1920. He moved to Canada in 1920", "He is Canadian."]
         labels = ["Trinidad", "US", "Canada"]
         ids = ["0", "1", "2"]
 
 
-    pwds = {"country": ["Canada", "US", "Tobago", "Trinidad", "Nigeria"]}
+    pwds = {"country": ["Canada", "US", "Trinidad", "Nigeria"], "ethnicity": ["Canadian", "American", "Trinidadian", "Nigerian"]}
+
+    ethnicity_to_country = {ethnicity: country for country,ethnicity in zip(pwds["country"],pwds["ethnicity"])}
+    def capture_convert(capture):
+        if capture in ethnicity_to_country:
+            return ethnicity_to_country[capture]
+
+        return capture
+
+
 
     #Creating Naive Regex Classifier
-    capture_biases = {"None": 1, "Canada": 2}
+    capture_biases = {"None": 1}
     tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes, capture_biases=capture_biases, pwds=pwds)
     tb_regex_naive.import_data(data, labels, ids)
 
@@ -62,7 +68,7 @@ if __name__ == "__main__":
 
     import time
     start = time.time()
-    tb_regex_naive.run_classifier(sets=["train", "valid"])
+    tb_regex_naive.run_classifier(sets=["train", "valid"], label_func=capture_convert)
     end = time.time()
 
     print("Total time:", end-start)
