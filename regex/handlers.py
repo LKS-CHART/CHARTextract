@@ -5,10 +5,11 @@ from collections import defaultdict
 
 class CaptureHandler(object):
     #TODO: Only works with primary regexes not secondary. Add this functionality later... Should pretty much be identical
+    #TODO: Add generic score_and_capture_text and have score_and_capture_sentence call that
     def __init__(self):
         pass
 
-    def score_and_capture_sentences(self, text, regexes, pwds=None, preprocess_func=None):
+    def score_and_capture_sentences(self, text, regexes, pwds=None, preprocess_func=None, capture_convert=None):
         '''
         Given regexes and text
         :param text: Text to be split into sentences
@@ -23,29 +24,32 @@ class CaptureHandler(object):
         capture_scores = defaultdict(int)
 
         for i, sentence in enumerate(sentences):
-            matches, captures, score = self.score_and_capture_sentence(sentence, regexes, capture_scores, pwds=pwds, preprocess_func=preprocess_func)
+            matches, captures, score = self.score_and_capture_sentence(sentence, regexes, capture_scores, pwds=pwds, preprocess_func=preprocess_func, capture_convert=capture_convert)
 
             if matches:
                 matches_scores_dict[i] = {"matches": matches, "text_score": score}
 
-        print(matches_scores_dict)
-        print(captures)
-        print(capture_scores)
         return matches_scores_dict, captures, capture_scores
 
-    def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None):
+    def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None, capture_convert=None):
         matches = []
         captures = []
         total_score = 0
 
-        # preprocessed_pwds = preprocess_func(text)
+        if preprocess_func:
+            text, preprocessed_pwds = preprocess_func(text, pwds)
 
         for regex in regexes:
             regex_matches, regex_captures = regex.determine_captures_w_matches(text, pwds=pwds)
             score = regex.score*len(regex_matches)
             primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": []}
 
+            #Used to convert related captures to general category
+            #E.g Canadian to Canada, CA to Canada etc..
             for capture in regex_captures:
+                if capture_convert:
+                    capture = capture_convert(capture)
+
                 capture_scores[capture] += regex.score
 
             if len(regex_matches) > 0:
