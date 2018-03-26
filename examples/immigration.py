@@ -14,7 +14,7 @@ if __name__ == "__main__":
     regexes = {}
 
 
-    file = os.path.join("..","examples","regexes","tb_regexes", "immigration.txt")
+    file = os.path.join("..","examples","regexes","tb_regexes", "immigration_country.txt")
     split_str = re.split(r'[\\/]+', file)
     key_name = split_str[-1].split('.')[0]
     _, _, regexes[key_name] = di.regexes_from_csv([file], [key_name], use_custom_score=True, all_matches=False)
@@ -42,14 +42,16 @@ if __name__ == "__main__":
                 count += 1
 
     else:
-        data = ['She migrated to Canada in 1999', 'He migrated to Canada in 1920. He moved to Canada in 1920', "He is an immigrant."]
-        labels = ['1999', '1920', 'None']
-        ids = ['0', '1', '2']
+        data = ["She migrated from Trinidad in 1999", "He immigrated from the US in 1920. He moved to Canada in 1920", "He is not an immigrant."]
+        labels = ["Trinidad", "US", "Canada"]
+        ids = ["0", "1", "2"]
 
+
+    pwds = {"country": ["Canada", "US", "Tobago", "Trinidad", "Nigeria"]}
 
     #Creating Naive Regex Classifier
-    capture_biases = {"None": 1}
-    tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes, capture_biases=capture_biases)
+    capture_biases = {"None": 1, "Canada": 2}
+    tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes, capture_biases=capture_biases, pwds=pwds)
     tb_regex_naive.import_data(data, labels, ids)
 
 

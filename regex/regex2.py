@@ -28,9 +28,9 @@ class Regex(object):
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
         self._should_compile = regex.find("dict:'") == -1 #Don't compile if it found dict:'
-        self._required_pwds = [] if self._should_compile else self._get_required_pwds()
         self.flags = combine_flags(flags) if flags else 0
-        self.regex = re.compile(regex, self.flags) if self._should_compile else self.regex
+        self.regex = re.compile(regex, self.flags) if self._should_compile else regex
+        self._required_pwds = [] if self._should_compile else self._get_required_pwds()
         self.secondary_regexes = tuple(secondary_regexes)
 
     def _add_dict_to_pattern(self, regex, required_pwds, pwds):
@@ -97,23 +97,26 @@ class Regex(object):
         self.matches = None
 
     #TODO: Temporary placeholder method. Transfer functionality into determine_matches (Maybe)
-    def determine_captures_w_matches(self, text):
+    def determine_captures_w_matches(self, text, pwds=None):
         '''
         Computer the matches and captures for a given text
         '''
 
-        #maybe pass in arg list instead of repeating self._match_func calls.. honestly just bein
+        if pwds:
+            regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
+
+        #maybe pass in arg list instead of repeating self._match_func calls.. honestly I'm just being picky now
         if self.all_matches:
-            matches = list(self._match_func(self.regex, text)) if self._should_compile else self._match_func(self.regex, text, self.flags)
+            matches = list(self._match_func(regex, text)) if self._should_compile else self._match_func(regex, text, self.flags)
         else:
-            matches = self._match_func(self.regex, text) if self._should_compile else self._match_func(self.regex, text, self.flags)
+            matches = self._match_func(regex, text) if self._should_compile else self._match_func(regex, text, self.flags)
             matches = [] if matches is None else [matches]
 
         captures = [capture for match in matches for capture in match.groups()]
 
         return matches, captures
 
-    def determine_matches(self, text):
+    def determine_matches(self, text, pwds=None):
         '''
         Compute the matches for a given text
 

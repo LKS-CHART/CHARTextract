@@ -23,7 +23,7 @@ class CaptureHandler(object):
         capture_scores = defaultdict(int)
 
         for i, sentence in enumerate(sentences):
-            matches, captures, score = self.score_and_capture_sentence(sentence, regexes, capture_scores)
+            matches, captures, score = self.score_and_capture_sentence(sentence, regexes, capture_scores, pwds=pwds, preprocess_func=preprocess_func)
 
             if matches:
                 matches_scores_dict[i] = {"matches": matches, "text_score": score}
@@ -41,7 +41,7 @@ class CaptureHandler(object):
         # preprocessed_pwds = preprocess_func(text)
 
         for regex in regexes:
-            regex_matches, regex_captures = regex.determine_captures_w_matches(text)
+            regex_matches, regex_captures = regex.determine_captures_w_matches(text, pwds=pwds)
             score = regex.score*len(regex_matches)
             primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": []}
 
