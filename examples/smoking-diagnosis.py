@@ -23,11 +23,8 @@ if __name__ == "__main__":
     regex_filenames = [os.path.join(regex_dir, fname) for fname in os.listdir(regex_dir)]
 
     for file in regex_filenames:
-        split_str = re.split(r'[\\/]+', file)
-        key_name = split_str[-1].split('.')[0]
-        _, _, regexes[key_name] = di.regexes_from_csv([file], [key_name], use_custom_score=True, all_matches=False)
+        _, _, class_name, regexes[class_name] = di.regexes_from_csv(file, use_custom_score=True, all_matches=False)
 
-    regexes["None"] = []
 
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
@@ -55,10 +52,6 @@ if __name__ == "__main__":
         data = ['I am not a smoker.', 'She does not smoke. This is a test', 'She used to smoke', 'Current smoker.', 'I am a patient.', 'Not a smoker']
         labels = ['Never smoked', 'Never smoked', 'Former smoker', 'Current smoker', 'None', 'Never smoked']
         ids = ['0', '1', '2', '3', '4', '5']
-
-        # data = ['Robert', 'Not a smoker', 'This is not a smoker not a smoker dog']
-        # labels = ['None', 'Never smoked', 'Never smoked']
-        # ids = ['0', '1', '2']
 
     #Creating TB Classifier
     # tb = NgramClassifier("TB Classifier 1")
@@ -107,15 +100,8 @@ if __name__ == "__main__":
 
     #Creating Naive Regex Classifier
     regex_biases = {regex_name: 0 for regex_name in regexes}
-    regex_biases["None"] = 1
-    tb_regex_naive = RegexClassifier("Basic Smoking Classifier", regexes, multiclass=True, biases=regex_biases)
+    tb_regex_naive = RegexClassifier("Basic Smoking Classifier", regexes)
     tb_regex_naive.import_data(data, labels, ids)
-
-    #Converting label names to values
-    tb_regex_naive.labels[tb_regex_naive.labels == 'None'] = 'None'
-    tb_regex_naive.labels[tb_regex_naive.labels == 'Former smoker'] = 'former_smoker'
-    tb_regex_naive.labels[tb_regex_naive.labels == 'Never smoked'] = 'never_smoker'
-    tb_regex_naive.labels[tb_regex_naive.labels == 'Current smoker'] = 'current_smoker'
 
     tb_regex_naive.create_train_and_valid(0.6, 0)
 
@@ -168,10 +154,6 @@ if __name__ == "__main__":
             data = tb_regex_naive.dataset[data_set]["data"][index]
 
             all_patients_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
-
-            # print(patient_id)
-            # print(match_obj)
-            # print(score)
 
         template_directory = os.path.join('..', 'web', 'templates')
         output_dir = os.path.join('..','generated_data', 'smoking', data_set)

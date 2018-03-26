@@ -1,9 +1,36 @@
-from variable_classifiers.base_runner import Runner, import_regexes, import_regex
+from variable_classifiers.base_runner import Runner
 from datahandler import data_import as di
 import os
 from tkinter import *
 from tkinter import filedialog
-from tkinter import ttk
+
+def import_regex(regex_file):
+
+    regexes = {}
+
+    classifier_type, classifier_args, class_name, regexes[class_name] = di.regexes_from_csv(regex_file, use_custom_score=True)
+
+    classifier_type = "RegexClassifier" if not classifier_type else classifier_type
+
+    return classifier_type, classifier_args, regexes
+
+def import_regexes(regex_directory):
+    file_names = os.listdir(regex_directory)
+    regex_filenames = [os.path.join(regex_directory, fname) for fname in file_names]
+
+    regexes = {}
+
+    classifier_type = None
+    classifier_args = {}
+
+    for file in regex_filenames:
+        _classifier_type, _classifier_args, _class_name, regexes[_class_name] = di.regexes_from_csv(file, use_custom_score=True)
+        classifier_type = _classifier_type if _classifier_type else classifier_type
+        classifier_args = _classifier_args if _classifier_args else classifier_args
+
+    classifier_type = "RegexClassifier" if not classifier_type else classifier_type
+
+    return classifier_type, classifier_args, regexes
 
 if __name__ == "__main__":
 
@@ -100,8 +127,9 @@ if __name__ == "__main__":
 
         rule_tups = [(fname, os.path.normpath(os.path.join(str_rules, fname))) for fname in os.listdir(str_rules)]
 
-        for rule_name,rule in rule_tups:
+        for rule_name, rule in rule_tups:
             classifier_type, classifier_args, regexes_dict = import_regexes(rule) if os.path.isdir(rule) else import_regex(rule)
+            print(regexes_dict)
             classifier_args.update({"regexes": regexes_dict})
             classifiers_args.append(classifier_args)
             classifiers.append(classifier_type)
