@@ -1,3 +1,4 @@
+!Former smoker
 "no longer a? smok",20
 "used to smoke",10
 "used to be a smoker", 20

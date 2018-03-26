@@ -1,3 +1,4 @@
+!Never smoked
 "does not smoke",100
 "has never smoked",100,
 "a smoker",1,"not","ab",100
