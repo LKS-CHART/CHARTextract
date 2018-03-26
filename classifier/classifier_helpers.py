@@ -1,4 +1,3 @@
-from regex.regex import Regex
 from copy import copy
 
 def get_matches_all_sentences(sentences, regexes):

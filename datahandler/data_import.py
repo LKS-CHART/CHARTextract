@@ -1,7 +1,7 @@
 import re
 import openpyxl
 import csv
-from regex.regex2 import Regex
+from regex.regex import Regex
 from time import time
 import ast
 

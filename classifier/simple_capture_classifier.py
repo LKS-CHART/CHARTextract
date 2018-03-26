@@ -1,6 +1,6 @@
 import numpy as np
 from .base_classifier import BaseClassifier
-from regex.handlers2 import CaptureHandler
+from regex.handlers import CaptureHandler
 
 class CaptureClassifier(BaseClassifier):
     '''
@@ -39,7 +39,7 @@ class CaptureClassifier(BaseClassifier):
         else:
             return self.negative_label, 0
 
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None):
         '''
         Runs the trained classifier on the given datasets. Note these datasets must be loaded into self.dataset object first
         or initialized in some other manner

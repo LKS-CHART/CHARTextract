@@ -1,6 +1,6 @@
 import numpy as np
 from .base_classifier import BaseClassifier
-from regex.handlers2 import RegexHandler
+from regex.handlers import RegexHandler
 
 class RegexClassifier(BaseClassifier):
     '''

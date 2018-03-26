@@ -1,14 +1,16 @@
 import re
 from regex.regex_functions import combine_flags
 from heapq import *
+from copy import copy
+
+class Default(dict):
+    def __missing__(self, k): return '{' + k + '}'
 
 class Regex(object):
-    #TODO: Horrible hack by using tuples to avoid mutability bug with secondary regexes list... bad design. Need to figure out mutability bug
-
     '''
     Container class for regexes, scores and matches
     '''
-    def __init__(self, name, regex, score, secondary_regexes=None, all_matches=False, flags=None):
+    def __init__(self, name, regex, effect, score, secondary_regexes=None, all_matches=False, flags=None):
         '''
         Initialize Regex object
 
@@ -22,15 +24,46 @@ class Regex(object):
         self.name = name
         self.score = score
         self.all_matches = all_matches
+        self.effect = effect
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
-
-        if flags is None:
-            self.regex = re.compile(regex)
-        else:
-            self.regex = re.compile(regex, combine_flags(flags))
-
+        self._should_compile = regex.find("dict:'") == -1 #Don't compile if it found dict:'
+        self.flags = combine_flags(flags) if flags else 0
+        self.regex = re.compile(regex, self.flags) if self._should_compile else regex
+        self._required_pwds = [] if self._should_compile else self._get_required_pwds()
         self.secondary_regexes = tuple(secondary_regexes)
+
+    def get_regex(self):
+        return self.regex.pattern if self._should_compile else self.regex
+
+    def _add_dict_to_pattern(self, regex, required_pwds, pwds):
+        #string.format can't work if we regexes which have curly braces like so \d{4} since str.format expects a value
+        #opting for a simple replace method
+
+        regex_pwds = {key: "|".join(pwds[key]) for key in required_pwds}
+
+        for key in regex_pwds:
+            regex = regex.replace("{{{}}}".format(key), regex_pwds[key])
+
+        return regex
+
+
+
+    def _get_required_pwds(self):
+        pwds = []
+
+        def replace_pattern(match_obj):
+            pwds.append((match_obj.group(2)))
+            if match_obj.group(1) == "\(":
+                return "({{{}}})".format(match_obj.group(2))
+            else:
+                return "{{{}}}".format(match_obj.group(2))
+
+        check_pattern = r"{}(\\\()?([^\s)]+)(\\\))?{}".format("dict:'", "'")
+        self.regex, n = re.subn(check_pattern, replace_pattern, self.regex)
+
+        return list(set(pwds))
+
 
     def set_match_all(self, all_matches):
         '''
@@ -67,107 +100,27 @@ class Regex(object):
     def clear_matches(self):
         self.matches = None
 
-    def determine_matches(self, text):
+    #TODO: Temporary placeholder method. Transfer functionality into determine_matches (Maybe)
+    def determine_captures_w_matches(self, text, pwds=None):
         '''
-        Compute the matches for a given text
-
-        :param text: A string of text for which you want to find matches for
-
-        :return: A list containing one MatchObject or multiple depending on all_matches parameter
+        Computer the matches and captures for a given text
         '''
 
+        if pwds:
+            regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
+
+        #maybe pass in arg list instead of repeating self._match_func calls.. honestly I'm just being picky now
         if self.all_matches:
-            self.matches = list(self._match_func(self.regex, text))
-
+            matches = list(self._match_func(regex, text)) if self._should_compile else self._match_func(regex, text, self.flags)
         else:
+            matches = self._match_func(regex, text) if self._should_compile else self._match_func(regex, text, self.flags)
+            matches = [] if matches is None else [matches]
 
-            self.matches = self._match_func(self.regex, text)
-            self.matches = [] if self.matches is None else [self.matches]
+        captures = [capture for match in matches for capture in match.groups()]
 
-        return self.matches
+        return matches, captures
 
-    def determine_secondary_matches(self, text, type_list=None):
-        '''
-        Compute secondary matches
-
-        :param text: A string of text for which you want to find secondary matches for
-        :param type_list: The effect types you want to find secondary matches for (default: None -> Searches all effect types)
-
-        :return: A priority queue where each element contains the (regex_priority, name, effect, matches, score)
-        '''
-
-        priority_queue = []
-
-        for i, secondary_regex in enumerate(self.secondary_regexes):
-            if secondary_regex.effect in type_list or not type_list:
-                matches = secondary_regex.determine_matches(text)
-                if matches:
-                    #TODO: Must fix this ugly thing... workaround for now :(
-                    secondary = SecondaryRegex(secondary_regex.name, secondary_regex.regex, secondary_regex.effect,
-                                               secondary_regex.score, secondary_regex.all_matches, secondary_regex.flags)
-
-                    secondary.matches = matches
-
-                    heappush(priority_queue, (i, secondary))
-
-        return priority_queue
-
-    def prune_secondary_regexes(self, regex_name_list, secondary_regexes, inverted=False):
-        return tuple(filter(lambda secondary_regex: inverted ^ (secondary_regex.name not in regex_name_list), secondary_regexes))
-
-#Note this does not inherit from Regex
-class SecondaryRegex(object):
-    '''
-    Container class for secondary regexes, scores and matches
-    '''
-
-    def __init__(self, name, regex, effect, score=None, all_matches=False, flags=None):
-        '''
-        Initialize SecondaryRegex object
-
-        :param name: SecondaryRegex name (string)
-        :param regex: Regular expression (string)
-        :param effect: Regular expression effect (string)
-        :param score: SecondaryRegex score (int)
-        :param all_matches: Return first match or all matches (bool)
-        :param flags: list of regex flags to be used for compilation e.g [re.IGNORECASE, re.DEBUG]
-        '''
-
-        self.name = name
-        self.effect = effect
-        self.score = score
-        self.all_matches = all_matches
-        self._match_func = re.finditer if all_matches else re.search
-        self.flags = flags
-
-        if self.flags is None and not isinstance(regex, re._pattern_type):
-            self.regex = re.compile(regex)
-        elif self.flags is not None and not isinstance(regex, re._pattern_type):
-            self.regex = re.compile(regex, combine_flags(self.flags))
-        else:
-            self.regex = regex
-
-        self.matches = None
-
-    def __str__(self):
-        '''
-        Returns stringified dict of SecondaryRegex object parameters and values
-
-        :return: Dictionary of regex_params->values
-        '''
-
-        return str({"name": self.name, "regex": self.regex.pattern, "effect": self.effect, "score": self.score, "matches": self.matches})
-
-    def __repr__(self):
-        '''
-        Returns object representation of SecondaryRegex object parameters and values
-
-        :return: Dictionary of regex_params->values
-        '''
-
-        return repr({"name": self.name, "regex": self.regex, "effect": self.effect, "score": self.score, "matches": self.matches})
-
-    def determine_matches(self, text):
+    def determine_matches(self, text, pwds=None):
         '''
         Compute the matches for a given text
 
@@ -175,14 +128,22 @@ class SecondaryRegex(object):
 
         :return: A list containing one MatchObject or multiple depending on all_matches parameter
         '''
-
 
         if self.all_matches:
             matches = list(self._match_func(self.regex, text))
 
         else:
-
             matches = self._match_func(self.regex, text)
             matches = [] if matches is None else [matches]
 
         return matches
+
+    def get_secondary_regexes(self, type_list=None):
+        secondary_regexes = []
+
+        for secondary_regex in self.secondary_regexes:
+            if secondary_regex.effect in type_list or not type_list:
+                secondary_regexes.append(secondary_regex)
+
+        return tuple(secondary_regexes)
+
