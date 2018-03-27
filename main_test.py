@@ -36,7 +36,8 @@ def create_regex_based_classifier(rule_path, ids, data, training_mode=False, l_i
     classifier_runner = Runner(classifier_type, **classifier_args)
 
     if training_mode:
-        _, temp_labels, temp_ids = di.data_from_excel([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
+        dataloader = di.data_from_csv if label_file.endswith('.csv') else di.data_from_excel
+        _, temp_labels, temp_ids = dataloader([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
 
         labels = ["None"] * len(data)
         for i, data_id in enumerate(ids):
@@ -56,8 +57,8 @@ if __name__ == "__main__":
         filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv')
         label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx')
 
-        data, _, ids = di.data_from_csv([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=False) if filename.endswith('.csv') \
-            else di.data_from_excel([filename], data_cols=3, id_cols=1, repeat_ids=False, first_row=1)
+        dataloader = di.data_from_csv if filename.endswith('.csv') else di.data_from_excel
+        data, _, ids = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=False)
 
         smoking_rules = os.path.join('regexes', 'tb_regexes', 'smoking_new')
         smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_filename=smoking_rules)
