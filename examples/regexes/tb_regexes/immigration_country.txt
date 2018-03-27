@@ -1,3 +1,3 @@
-!Immigration Country
+!Immigration Country,CaptureClassifier,capture_biases,{"Dummy Country":300}
 "migrat.* [^\\]* dict:'\(country\)'",2
 "is[^\\]*dict:'\(ethnicity\)'",2
