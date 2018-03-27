@@ -2,19 +2,23 @@ import re
 from regex.regex_functions import combine_flags
 
 class Regex(object):
-    '''
-    Container class for regexes, scores and matches
-    '''
-    def __init__(self, name, regex, effect, score, secondary_regexes=None, all_matches=False, flags=None):
-        '''
-        Initialize Regex object
+    """Container class for regexes, scores and matches
+    """
 
-        :param name: Regex name (string)
-        :param regex: Regular expression (string)
-        :param score: Regex score (int)
-        :param all_matches: Return first match or all matches (bool)
-        :param flags: list of regex flags to be used for compilation e.g [re.IGNORECASE, re.DEBUG]
-        '''
+    def __init__(self, name, regex, effect, score, secondary_regexes=None, all_matches=False, flags=None):
+        """Initialize Regex object
+        
+        Arguments:
+            name {String} -- Regex name
+            regex {String} -- Regular expression
+            effect {String} -- Effect e.g "rb"
+            score {int} -- Regex score
+        
+        Keyword Arguments:
+            secondary_regexes {list} -- List of secondary Regex objects (default: {None})
+            all_matches {bool} -- Return first match or all matches (default: {False})
+            flags {list} -- List of regex flags to be used for compilation e.g [re.IGNORECASE, re.DEBUG] (default: {None})
+        """
 
         self.name = name
         self.score = score
@@ -29,9 +33,26 @@ class Regex(object):
         self.secondary_regexes = tuple(secondary_regexes)
 
     def get_regex(self):
+        """Return the regex pattern
+        
+        Returns:
+            regex {String} -- Regex pattern
+        """
+
         return self.regex.pattern if self._should_compile else self.regex
 
     def _add_dict_to_pattern(self, regex, required_pwds, pwds):
+        """Inserts the required dictionary lists into the pattern. E.g "(He|She) is from {country}" -> country_list
+        
+        Arguments:
+            regex {String} -- Regex
+            required_pwds {list} -- List of required pwds
+            pwds {dict} -- Personalized word dictionary {"dict_name" -> list}
+        
+        Returns:
+            regex {String} -- Modified regex with dictionary inserted
+        """
+
         #string.format can't work if we regexes which have curly braces like so \d{4} since str.format expects a value
         #opting for a simple replace method
 
@@ -45,6 +66,13 @@ class Regex(object):
 
 
     def _get_required_pwds(self):
+        """Removes dict:\(dictionary_name\) from the regex and replaces it with {dictionary_name}. Also returns the dictionaries that are required by the
+        regex
+        
+        Returns:
+            Required Pwds {list} -- List of required pwds
+        """
+
         pwds = []
 
         def replace_pattern(match_obj):
@@ -61,6 +89,15 @@ class Regex(object):
 
 
     def set_match_all(self, all_matches):
+        """Sets the type of match function used by the regex
+        
+        Arguments:
+            all_matches {bool} -- If all_matches is True, returns all the matches in the text
+        
+        Returns:
+            all_matches {bool} -- Returns all_matches state
+        """
+
         '''
         Set the all_matches parameter in Regex object
 
@@ -75,39 +112,47 @@ class Regex(object):
         return self.all_matches
 
     def __str__(self):
-        '''
-        Returns stringified dict of Regex object parameters and values
-
-        :return: Dictionary of regex_params->values
-        '''
-
+        """Returns stringified dict of Regex object parameters and values
+        
+        Returns:
+            String -- Stringified version of Regex object
+        """
         return str({"name": self.name, "regex": self.regex.pattern, "score": self.score, "matches": self.matches, "secondary_regexes": self.secondary_regexes})
 
     def __repr__(self):
-        '''
-        Returns object representation of Regex object parameters and values
 
-        :return: Dictionary of regex_params->values
-        '''
+        """Returns stringified dict of Regex object parameters and values
+        
+        Returns:
+            String -- Repr of Regex object
+        """
 
         return repr({"name": self.name, "regex": self.regex, "score": self.score, "matches": self.matches, "secondary_regexes": self.secondary_regexes})
 
-    def clear_matches(self):
-        self.matches = None
-
     #TODO: Temporary placeholder method. Transfer functionality into determine_matches (Maybe)
     def determine_captures_w_matches(self, text, pwds=None):
-        '''
-        Computer the matches and captures for a given text
-        '''
+        """Compute the matches and captures for a given text
+        
+        Arguments:
+            text {String} -- Text
+        
+        Keyword Arguments:
+            pwds {dict} -- Personalized word dictionary (default: {None})
+        
+        Returns:
+            matches {list} -- List of MatchObjects
+            captures {list} -- List of captured strings
+        """
 
         if pwds:
             regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
 
-        #maybe pass in arg list instead of repeating self._match_func calls.. honestly I'm just being picky now
+        #Want to keep format for re.iter and re.search the same so that's why I'm returning lists
         if self.all_matches:
+            #Use re.iter if all matches and return a list version
             matches = list(self._match_func(regex, text)) if self._should_compile else self._match_func(regex, text, self.flags)
         else:
+            #Use re.search if not and return a list version
             matches = self._match_func(regex, text) if self._should_compile else self._match_func(regex, text, self.flags)
             matches = [] if matches is None else [matches]
 
@@ -116,13 +161,18 @@ class Regex(object):
         return matches, captures
 
     def determine_matches(self, text, pwds=None):
-        '''
-        Compute the matches for a given text
 
-        :param text: A string of text for which you want to find matches for
-
-        :return: A list containing one MatchObject or multiple depending on all_matches parameter
-        '''
+        """Compute the matches a given text
+        
+        Arguments:
+            text {String} -- Text
+        
+        Keyword Arguments:
+            pwds {dict} -- Personalized word dictionary (default: {None})
+        
+        Returns:
+            matches {list} -- List of MatchObjects
+        """
 
         if self.all_matches:
             matches = list(self._match_func(self.regex, text))
@@ -134,6 +184,15 @@ class Regex(object):
         return matches
 
     def get_secondary_regexes(self, type_list=None):
+        """Returns a list of secondary regexes with the given effect type. If type_list is None return all
+        
+        Keyword Arguments:
+            type_list {list} -- List of regex effects (default: {None})
+        
+        Returns:
+            secondary_regexes {tuple} -- List of secondary regexes with the given effect
+        """
+
         secondary_regexes = []
 
         for secondary_regex in self.secondary_regexes:

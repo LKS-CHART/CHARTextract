@@ -7,34 +7,37 @@ import ast
 import os
 
 def preprocess_data(data):
-    '''
-    Preprocesses datta
-
-    :param data: data (string)
-
-    :return: modified data
-    '''
-
+    """Preprocesses data
+    
+    Arguments:
+        data {string} -- data to be preprocessed
+    
+    Returns:
+        modified_data {string} -- modified data
+    """
     data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n+','\n')
     data, num_subs = re.subn(r'\s{3,}', " ", data)
     return data
 
 
 def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_process_func):
-    '''
-    Gets data, label and id from a row
-
-    :param data_col: data column number (int)
-    :param label_col: label column number (int)
-    :param id_col: id column number (int)
-    :param data: list of data so far (list)
-    :param labels: list of labels so far (list)
-    :param ids: list of ids so far (ids)
-    :param repeat_ids: should repeated ids be allowed (bool)
-    :param row_process_func: function that extracts a value from a row
-
-    :return: modified data, labels, ids arrays
-    '''
+    """Gets data, label and id from a row
+    
+    Arguments:
+        data_col {int} -- data column number
+        label_col {int} -- label column number
+        id_col {int} -- id column number
+        data {list} -- list of data so far
+        labels {list} -- list of labels so far
+        ids {list} -- list of ids so far
+        repeat_ids {boolean} -- if False, data is concatenated
+        row_process_func {function} -- function that extracts a value from a row
+    
+    Returns:
+        data {list} -- list of data
+        labels {list} -- list of labels
+        ids {list} -- list of ids
+    """
     concat_index = None
 
     if id_col is not None:
@@ -67,21 +70,30 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
 
 
 def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
-    '''
-    Initializes data, labels and ids and data_cols, label_cols, id_cols as a list
-
-    :param num_files:  number of files
-    :param data_cols: location of data (int or list of int)
-    :param label_cols: location of labels (int or list of ints)
-    :param id_cols: location of ids (int or list of ints)
-
-    :return: data, labels, ids, data_cols, label_cols, id_cols
-    '''
+    """Initializes data, labels, ids, data_cols, label_cols, id_cols as list
+    
+    Arguments:
+        num_files {int} -- number of files
+    
+    Keyword Arguments:
+        data_cols {int or list of int} -- location of data (default: {None})
+        label_cols {int of list of ints} -- location of labels (default: {None})
+        id_cols {int or list of ints} -- location of ids (default: {None})
+    
+    Returns:
+        data {list} -- empty data list
+        labels {list} -- empty labels list
+        ids {list} -- empty ids list
+        data_cols {list} -- location of data
+        label_cols {list} -- location of labels
+        id_cols {list} -- location of ids
+    """
     data = None
     labels = None
     ids = None
 
     if data_cols is not None:
+        #duplicating int. i.e assuming that every file has the same data col
         if type(data_cols) == int:
             data_cols = [data_cols]*num_files
         data = []
@@ -106,20 +118,26 @@ def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
 
 
 def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
-    '''
-    Reads data from the excel files
-
-    :param filenames: List of Excel filenames (List of strings)
-    :param data_cols: List of location of data columns in each file  (List of int or int)
-    :param label_cols: List of location of label columns in each file  (List of int or int)
-    :param id_cols: List of location of id columns in each file  (List of int or int)
-    :param repeat_ids: If False, data corresponding to already existing ids are concatenated (Boolean)
-    :param first_row: Starts reading from specified row number (int)
-    :param limit: Stops reading after specified number of lines have been read (int)
-    :param preprocess_func: Applies preprocess_func to each row in a file
-
-    :return: list of data, list of labels, list of ids
-    '''
+    """Reads data from excel files
+    
+    Arguments:
+        filenames {list of string} -- List of Excel filenames
+    
+    Keyword Arguments:
+        data_cols {list of int or int} -- List of location of data columns in each file (default: {None})
+        label_cols {list of int or int} -- List of location of label columns in each file (default: {None})
+        id_cols {list of int or int} -- List of location of id columns in each file (default: {None})
+        repeat_ids {bool} -- If False, data corresponding to already existing ids are concatenated (default: {True})
+        first_row {int} -- Starts reading from specified row number (default: {1})
+        limit {int} -- Stops reading after specified number of lines have been read (default: {None})
+        preprocess_func {function} -- Applies preprocess function to each row in a file (default: {None})
+        check_col {int} -- Data column to check whether to continue evaluation (default: {0})
+    
+    Returns:
+        data {list} -- list of data
+        labels {list} -- list of labels
+        ids {list} -- list of ids
+    """
 
     data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
 
@@ -152,6 +170,18 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
     return data, labels, ids
 
 def import_pwds(filenames, pwd_names=None):
+    """Imports personal word dictionaries
+    
+    Arguments:
+        filenames {list of str} -- list of filepaths
+    
+    Keyword Arguments:
+        pwd_names {string} -- personal word dictionary names (default: {None})
+    
+    Returns:
+        pwds {dict} -- Personal word dictionary which is a dictionary which maps pwd_name -> list of words
+    """
+
     pwds = {}
     pwd_names = [(lambda f: f.split(os.sep)[-1].split(".")[0])(file) for file in filenames] if not pwd_names else pwd_names
 
@@ -164,20 +194,27 @@ def import_pwds(filenames, pwd_names=None):
     return pwds
 
 def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
-    '''
-    Reads data from the csv files
 
-    :param filenames: List of Excel filenames (List of strings)
-    :param data_cols: List of location of data columns in each file  (List of int or int)
-    :param label_cols: List of location of label columns in each file  (List of int or int)
-    :param id_cols: List of location of id columns in each file  (List of int or int)
-    :param repeat_ids: If False, data corresponding to already existing ids are concatenated (Boolean)
-    :param first_row: Starts reading from specified row number (int)
-    :param limit: Stops reading after specified number of lines have been read (int)
-    :param preprocess_func: Applies preprocess_func to each row in a file
-
-    :return: list of data, list of labels, list of ids
-    '''
+    """Reads data from excel files
+    
+    Arguments:
+        filenames {list of string} -- List of Excel filenames
+    
+    Keyword Arguments:
+        data_cols {list of int or int} -- List of location of data columns in each file (default: {None})
+        label_cols {list of int or int} -- List of location of label columns in each file (default: {None})
+        id_cols {list of int or int} -- List of location of id columns in each file (default: {None})
+        repeat_ids {bool} -- If False, data corresponding to already existing ids are concatenated (default: {True})
+        first_row {int} -- Starts reading from specified row number (default: {1})
+        limit {int} -- Stops reading after specified number of lines have been read (default: {None})
+        preprocess_func {function} -- Applies preprocess function to each row in a file (default: {None})
+        check_col {int} -- Data column to check whether to continue evaluation (default: {0})
+    
+    Returns:
+        data {list} -- list of data
+        labels {list} -- list of labels
+        ids {list} -- list of ids
+    """
 
     data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
 
@@ -207,15 +244,27 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
 
     return data, labels, ids
 
+#TODO: Probably shouldn't have default mutable args. Change later
 def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
-    '''
-    Given a file containing regexes, returns a list of Regex objects
-
-    :param filename: A rule file which contains regexes
-    :param use_custom_score: if True user specified scores are given when creating regexes
-
-    :return: A list of Regex objects
-    '''
+    """Given a file containing regexes, returns the classifier name, its arguments, class name, list of Regex objects
+    
+    Arguments:
+        filename {string} -- Regex filename
+    
+    Keyword Arguments:
+        use_custom_score {bool} -- If True, use user defined score (default: {False})
+        all_matches {bool} -- If True, regex will return all matches (default: {False})
+        flags {list} -- List of regex flags (default: {[re.IGNORECASE]})
+    
+    Raises:
+        Exception -- Raises exception if label name not specified at the start of the file
+    
+    Returns:
+        classifier_type {String} -- The type of classifier specified in the file if any
+        classifier_args {list} -- List of classifier arguments specified in the file if any
+        class_name {String} -- Name of class
+        regexes {list} -- List of Regex objects
+    """
 
     regexes = []
     classifier_type = None
@@ -229,9 +278,12 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
                 if not line[0].startswith("!"):
                     raise Exception("Rule file requires label name at start of file. Specify as !label_name")
 
+                #Name of class
                 class_name = line[0][1:]
                 if len(line) > 1:
+                    #Type of classifier
                     classifier_type = line[1]
+                    #Looping through remaining pairs of arg_name, arg_val and evaluating using ast.literal_eval
                     for j in range(2, len(line) - 1, 2):
                         classifier_args[line[j]] = ast.literal_eval(line[j+1])
 
@@ -247,6 +299,7 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
 
             secondary_regexes = []
 
+            #Creating list of secondary regexes for the primary regex
             for j in range(2, len(line) - 2, 3):
                 pattern = line[j]
                 effect = line[j+1]
@@ -258,9 +311,10 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
                 secondary_regexes.append(secondary_regex)
 
 
-            #creating regex objects
+            #Creating regex
             cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
                               secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
+
 
             regexes.append(cur_regex)
 

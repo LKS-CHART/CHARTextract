@@ -12,19 +12,21 @@ if __name__ == "__main__":
     #Reading regex files
     regexes = {}
 
-
-    file = os.path.join("..","examples","regexes","tb_regexes", "immigration_country.txt")
-    _, _, class_name, regexes[class_name] = di.regexes_from_csv(file, use_custom_score=True, all_matches=False)
+    #Importing immigration regexes
+    filename = os.path.join("..","examples","regexes","tb_regexes", "immigration_country.txt")
+    _, _, class_name, regexes[class_name] = di.regexes_from_csv(filename, use_custom_score=True, all_matches=False)
 
     if not debug:
+        #Location of TB_DATA_FOLDER
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
-        # filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
+
+        #Label files and data files
         data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
         label_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx'))]
         print("Files of interest: {!r}\n".format(data_filenames))
         print("Files of interest: {!r}\n".format(label_filenames))
 
-        #Reading excel data
+        #Reading label data and importing data
         data, _, ids = di.data_from_csv(data_filenames, data_cols=2, id_cols=0, repeat_ids=False)
         _, temp_labels, temp_ids = di.data_from_excel(label_filenames, id_cols=1, label_cols=7, repeat_ids=False, first_row=2, check_col=1)
         labels = ["None"] * len(data)
@@ -41,8 +43,10 @@ if __name__ == "__main__":
         ids = ["0", "1", "2"]
 
 
+    #Dummy pwds
     pwds = {"country": ["Canada", "US", "Trinidad", "Nigeria"], "ethnicity": ["Canadian", "American", "Trinidadian", "Nigerian"]}
 
+    #Convert ethnicities to country namse
     ethnicity_to_country = {ethnicity: country for country,ethnicity in zip(pwds["country"],pwds["ethnicity"])}
     def capture_convert(capture):
         if capture in ethnicity_to_country:
@@ -50,21 +54,10 @@ if __name__ == "__main__":
 
         return capture
 
-
-
     #Creating Naive Regex Classifier
-    capture_biases = {"None": 1}
-    tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes, capture_biases=capture_biases)
+    tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes)
     tb_regex_naive.import_data(data, labels, ids)
-
-
-    #Converting label names to values
-
     tb_regex_naive.create_train_and_valid(0.6, 0)
-    print(tb_regex_naive.dataset["valid"]["ids"])
-
-    #Running Naive Smoking Classifier
-
     import time
     start = time.time()
     tb_regex_naive.run_classifier(sets=["train", "valid"], label_func=capture_convert, pwds=pwds)

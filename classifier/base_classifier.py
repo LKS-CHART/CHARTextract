@@ -1,18 +1,18 @@
 import numpy as np
 
 class BaseClassifier(object):
-    '''
+    """
     BaseClassifier from which all classifier objects inherit from
-    '''
-    def __init__(self, classifier_name=None, data=None, labels=None, ids=None):
-        '''
-        Initializes BaseClassifier
+    """
+    def __init__(self, classifier_name="Classifier", data=None, labels=None, ids=None):
+        """Initializaes BaseClassifier
 
-        :param classifier_name: Name of classifier
-        :param data: List of data
-        :param labels: List of labels
-        :param ids: List of ids
-        '''
+        Keyword Arguments:
+            classifier_name {String} -- Name of the classifier (default: {None})
+            data {list} -- List of data (default: {None})
+            labels {list} -- List of labels (default: {None})
+            ids {list} -- List of ids (default: {None})
+        """
 
         self.name = classifier_name
         self.data = data
@@ -23,32 +23,43 @@ class BaseClassifier(object):
                            "test": {"ids": [], "labels": [], "data": [], "preds": [], "matches": []}}
 
     def load_dataset(self, dataset_name, data=None, labels=None, ids=None):
+        """Load a dataset into classifier object
+        
+        Arguments:
+            dataset_name {String} -- Name of the dataset that is being loaded. Used as a key to a dictionary
+        
+        Keyword Arguments:
+            data {numpy array} -- np array of data (default: {None})
+            labels {numpy array} -- np array of labels (default: {None})
+            ids {numpy array} -- np array of ids (default: {None})
+        """
+
         self.dataset[dataset_name] = {"ids": ids, "labels": labels, "data": data,
                                                      "preds": [], "matches": []}
 
     def import_data(self, data=None, labels=None, ids=None):
-        '''
-        Imports data into classifier
-
-        :param data: list of data
-        :param labels: list of labels
-        :param ids: list of ids
-        '''
-
+        """Import data into the classifier
+        
+        Keyword Arguments:
+            data {list} -- list of data (default: {None})
+            labels {list} -- list of labels (default: {None})
+            ids {list} -- list of ids (default: {None})
+        """
         self.data = np.array(data) if data else None
         self.labels = np.array(labels) if labels else None
         self.ids = np.array(ids) if ids else None
 
     def create_train_and_valid(self, train_percent=.6, random_seed=None):
-        '''
-        Splits data in train and valid
-
-        :param train_percent: Ratio of train/total
-        :param random_seed: Seed for RandomState
-        :return: List train ids, list of valid ids
-
-        '''
-
+        """Splits data in train and valid
+        
+        Keyword Arguments:
+            train_percent {float} -- Ratio of train/total (default: {.6})
+            random_seed {int} -- Seed for RandomState (default: {None})
+        
+        Returns:
+            train ids{list} -- List of train ids
+            valid ids{list} -- List of valid ids
+        """
         if random_seed is not None:
             randomizer = np.random.RandomState(random_seed)
         else:
@@ -74,8 +85,7 @@ class BaseClassifier(object):
         return self.ids[train], self.ids[valid]
 
     def run_classifier(self):
-        '''
-        Runs the classifier
-        '''
+        """Runs the classifier
+        """
 
         pass

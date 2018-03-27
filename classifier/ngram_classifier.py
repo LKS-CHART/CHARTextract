@@ -1,4 +1,3 @@
-import numpy as np
 from .base_classifier import BaseClassifier
 from ngram.base_ngram import *
 from ngram.ngram_functions import get_unique_keys

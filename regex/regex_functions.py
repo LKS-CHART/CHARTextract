@@ -2,14 +2,15 @@ import functools
 import operator
 
 def combine_flags(flag_list):
-    '''
-    Combines regex flags using bitwise or
+    """Combines regex flags using bitwise or
+    
+    Arguments:
+        flag_list {list} -- List of flags e.g [re.IGNORECASE, re.DEBUG]
+    
+    Returns:
+        int -- Bitwise or of flags
+    """
 
-    :param flag_list: list of flags e.g [re.IGNORECASE, re.DEBUG]
-
-    :return: int
-
-    '''
-
+    #Or operator applied to flag_list
     return functools.reduce(operator.or_, flag_list)
 
