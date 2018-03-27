@@ -30,7 +30,7 @@ def import_regexes(regex_directory):
 
     return classifier_type, classifier_args, regexes
 
-def create_classifier(rule_path, ids, data, training_mode=False, l_id_col=None, l_label_col=None, l_first_row=None, label_file=None, repeat_ids=False, train_percent=0.6):
+def create_regex_based_classifier(rule_path, ids, data, training_mode=False, l_id_col=None, l_label_col=None, l_first_row=None, label_file=None, repeat_ids=False, train_percent=0.6):
     classifier_type, classifier_args, regexes_dict = import_regexes(rule_path) if os.path.isdir(rule_path) else import_regex(rule_path)
     classifier_args.update({"regexes": regexes_dict})
     classifier_runner = Runner(classifier_type, **classifier_args)
@@ -60,5 +60,5 @@ if __name__ == "__main__":
             else di.data_from_excel([filename], data_cols=3, id_cols=1, repeat_ids=False, first_row=1)
 
         smoking_rules = os.path.join('regexes', 'tb_regexes', 'smoking_new')
-        smoking_classifier = create_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_filename=smoking_rules)
+        smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_filename=smoking_rules)
         smoking_classifier.run(datasets=["train", "valid"])
