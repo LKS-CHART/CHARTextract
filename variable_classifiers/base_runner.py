@@ -17,5 +17,6 @@ class Runner(object):
 
         self.classifier = self.classifier_type(**self.classifier_parameters)
 
-    def run(self, datasets=None):
-        self.classifier.run_classifier(sets=datasets, **self.additional_params)
+    def run(self, datasets=None, **kwargs):
+        runtime_params = {key: kwargs[key] if key in kwargs else self.additional_params[key] for key in (set(kwargs) | set(self.additional_params))}
+        self.classifier.run_classifier(sets=datasets, **runtime_params)

@@ -54,20 +54,20 @@ if __name__ == "__main__":
 
     #Creating Naive Regex Classifier
     capture_biases = {"None": 1}
-    tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes, capture_biases=capture_biases, pwds=pwds)
+    tb_regex_naive = CaptureClassifier("Basic Immigration Classifier", regexes, capture_biases=capture_biases)
     tb_regex_naive.import_data(data, labels, ids)
 
 
     #Converting label names to values
 
-    tb_regex_naive.create_train_and_valid(0.8, 0)
+    tb_regex_naive.create_train_and_valid(0.6, 0)
     print(tb_regex_naive.dataset["valid"]["ids"])
 
     #Running Naive Smoking Classifier
 
     import time
     start = time.time()
-    tb_regex_naive.run_classifier(sets=["train", "valid"], label_func=capture_convert)
+    tb_regex_naive.run_classifier(sets=["train", "valid"], label_func=capture_convert, pwds=pwds)
     end = time.time()
 
     print("Total time:", end-start)

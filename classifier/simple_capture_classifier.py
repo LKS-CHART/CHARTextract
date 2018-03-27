@@ -7,7 +7,7 @@ class CaptureClassifier(BaseClassifier):
     Class specialized in capturing information of interest. E.g Country of birth
     '''
 
-    def __init__(self, classifier_name="CaptureClassifier", regexes=None, data=None, labels=None, ids=None, capture_biases=None, handler=None, negative_label="None", pwds=None):
+    def __init__(self, classifier_name="CaptureClassifier", regexes=None, data=None, labels=None, ids=None, capture_biases=None, handler=None, negative_label="None"):
         '''
         Initializes Capture Classifier
 
@@ -23,7 +23,6 @@ class CaptureClassifier(BaseClassifier):
         self.capture_biases = {capture: capture_biases[capture] for capture in capture_biases}
         self.negative_label = negative_label
         self.handler = CaptureHandler() if handler is None else handler
-        self.pwds = pwds
 
     def classify(self, class_to_scores, threshold=0):
         '''
@@ -39,7 +38,7 @@ class CaptureClassifier(BaseClassifier):
         else:
             return self.negative_label, 0
 
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None, pwds=None):
         '''
         Runs the trained classifier on the given datasets. Note these datasets must be loaded into self.dataset object first
         or initialized in some other manner
@@ -74,7 +73,7 @@ class CaptureClassifier(BaseClassifier):
 
                     if len(self.regexes[class_name]) > 0:
                         matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name],
-                                                                                                     pwds=self.pwds, preprocess_func=preprocess_func,
+                                                                                                     pwds=pwds, preprocess_func=preprocess_func,
                                                                                                      capture_convert=label_func)
                     class_matches[class_name] = matches
 

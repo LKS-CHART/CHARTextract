@@ -4,6 +4,7 @@ import csv
 from regex.regex import Regex
 from time import time
 import ast
+import os
 
 def preprocess_data(data):
     '''
@@ -150,6 +151,17 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
 
     return data, labels, ids
 
+def import_pwds(filenames, pwd_names=None):
+    pwds = {}
+    pwd_names = [(lambda f: f.split(os.sep)[-1].split(".")[0])(file) for file in filenames] if not pwd_names else pwd_names
+
+    for file, pwd_name in zip(filenames, pwd_names):
+        pwds[pwd_name] = []
+        with open(file, 'r', encoding='utf8') as csv_file:
+            rows = csv.reader(csv_file, delimiter=',', quotechar='"')
+            pwds[pwd_name] = [word.strip() for row in rows for word in row]
+
+    return pwds
 
 def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
     '''
