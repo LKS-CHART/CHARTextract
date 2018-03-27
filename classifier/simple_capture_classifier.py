@@ -20,7 +20,7 @@ class CaptureClassifier(BaseClassifier):
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
 
         self.regexes = regexes
-        self.capture_biases = {capture: capture_biases[capture] for capture in capture_biases}
+        self.capture_biases = {capture: capture_biases[capture] for capture in capture_biases} if capture_biases else {}
         self.negative_label = negative_label
         self.handler = CaptureHandler() if handler is None else handler
 
@@ -31,6 +31,10 @@ class CaptureClassifier(BaseClassifier):
 
         :return: (class_name, score) where class_name is the class with the highest score
         '''
+
+        if len(class_to_scores) == 0:
+            return self.negative_label, 0
+
         class_name, score = max(class_to_scores.items(), key=lambda i: i[1])
 
         if score > threshold:
@@ -83,7 +87,7 @@ class CaptureClassifier(BaseClassifier):
                 self.dataset[data_set]["matches"].append(class_matches)
                 self.dataset[data_set]["scores"].append(capture_scores)
 
-                preds.append(self.classify(capture_scores)[0])
+                preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
