@@ -1,6 +1,5 @@
 from classifier.simple_capture_classifier import CaptureClassifier
 from datahandler import data_import as di
-import re
 from stats.basic import calculate_accuracy
 from web.report_generator import generate_error_report
 from web.report_generator import generate_classification_report

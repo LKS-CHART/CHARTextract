@@ -1,8 +1,6 @@
 from variable_classifiers.base_runner import Runner, import_regexes, import_regex
 from datahandler import data_import as di
 import os
-import time
-import sys
 import argparse
 
 if __name__ == "__main__":

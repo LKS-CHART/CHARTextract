@@ -2,7 +2,6 @@ from classifier.svm_regex_classifier import SVMRegexClassifier
 from classifier.simple_regex_classifier import RegexClassifier
 from classifier.ngram_classifier import NgramClassifier
 from datahandler import data_import as di
-import re
 from stats.basic import calculate_accuracy
 from web.report_generator import generate_error_report
 from web.report_generator import generate_classification_report

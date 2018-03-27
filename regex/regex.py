@@ -1,10 +1,5 @@
 import re
 from regex.regex_functions import combine_flags
-from heapq import *
-from copy import copy
-
-class Default(dict):
-    def __missing__(self, k): return '{' + k + '}'
 
 class Regex(object):
     '''
