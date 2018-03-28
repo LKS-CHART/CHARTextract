@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
         all_classifications = []
         all_classifications.append(ids)
-        excel_column_headers = ["Ids", "Smoking Status", "Immigration Year"]
+        excel_column_headers = ["Ids"]
 
         #Creating and running smoking classifier
         smoking_rules = os.path.join(rules_path, 'smoking_new')
@@ -158,12 +158,19 @@ if __name__ == "__main__":
         ####################################################################################################
 
         tb_rules = os.path.join(rules_path, "tb")
+        txt_file_to_header = {"smoking_new": "Smoking Status", "country.txt": "Country of Birth", "diag_active.txt": "Active TB Diagnosis",
+                              "diag_ltbi.txt": "LTBI Diagnosis", "diag_method_clinical.txt": "Method of Diagnosis Clinical",
+                              "diag_method_culture.txt": "Method of Diagnosis Culture", "diag_method_pcr.txt": "Method of Diagnosis PCR",
+                              "diag_ntm.txt": "NTM Diagnosis", "hiv_negative.txt": "Hiv Status Negative", "hiv_positive.txt": "Hiv Status Positive",
+                              "hiv_not_dictated.txt":"Hiv Status Not Dictated", "hiv_unknown.txt":"Hiv Status Unknown", "immigration.txt": "Date of Immigration",
+                              "sensitivity_full.txt": "Sensitivity Full", "sensitivity_inh.txt": "Sensitivity INH", "sputum_conversion.txt": "Sputum Conversion date",
+                              "tb_contact.txt": "TB Contact History", "tb_old.txt": "Old TB"}
 
         for rule in os.listdir(tb_rules):
-            print(rule)
             rule_file = os.path.join(tb_rules, rule)
             classifier_runner = create_regex_based_classifier(rule_file, ids, data)
             classifier_runner.run(datasets=["test"], pwds=pwds)
             all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
+            excel_column_headers.append(txt_file_to_header[rule])
 
-        de.export_data_to_excel("nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
+        de.export_data_to_excel("new_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
