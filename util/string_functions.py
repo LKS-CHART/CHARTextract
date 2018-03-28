@@ -1,5 +1,17 @@
 import re
 
+def as_text(value):
+    """Returns the string representation of given value
+    
+    Arguments:
+        value {any} -- Value to get the string representation for
+    
+    Returns:
+        stringified text {String} -- String representation of given value
+    """
+
+    return "" if value is None else str(value)
+
 def split_string_into_sentences(text):
     """Given a string of text, splits it into sentences
     
