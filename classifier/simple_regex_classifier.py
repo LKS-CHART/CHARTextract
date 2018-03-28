@@ -59,7 +59,7 @@ class RegexClassifier(BaseClassifier):
             return self.negative_label, score
 
     #TODO: Add preprocessing function
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, pwds=None, label_func=None):
 
         """Runs the trained classifier on the given datasets. Note this datasets must be loaded into self.dataset object first or
         intialized in some other manner

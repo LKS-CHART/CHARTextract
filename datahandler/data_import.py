@@ -285,6 +285,7 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
                     classifier_type = line[1]
                     #Looping through remaining pairs of arg_name, arg_val and evaluating using ast.literal_eval
                     for j in range(2, len(line) - 1, 2):
+                        print(line[j+1])
                         classifier_args[line[j]] = ast.literal_eval(line[j+1])
 
                 continue

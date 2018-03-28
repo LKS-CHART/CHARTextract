@@ -1,6 +1,7 @@
 #MAIN RUNNING CODE
 from variable_classifiers.base_runner import Runner
 from datahandler import data_import as di
+from datahandler import data_export as de
 import os
 
 def import_regex(regex_file):
@@ -121,11 +122,17 @@ if __name__ == "__main__":
             labels = ["Trinidad", "US", "Canada"]
             ids = ["0", "1", "2"]
 
+
+        all_classifications = []
+        all_classifications.append(ids)
+        excel_column_headers = ["Ids", "Smoking Status", "Immigration Year"]
+
         #Creating and running smoking classifier
         smoking_rules = os.path.join(rules_path, 'smoking_new')
-        smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_file=label_filename)
-        smoking_classifier.run(datasets=["train", "valid"])
-        print(smoking_classifier.classifier.dataset["train"]["preds"])
+        # smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_file=label_filename)
+        smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data)
+        smoking_classifier.run(datasets=["test"])
+        # all_classifications.append(smoking_classifier.classifier.dataset["test"]["preds"].tolist())
 
         #Dictionary mapping from ethnicity to country
         ethnicity_to_country = {ethnicity: country for country,ethnicity in zip(pwds["country"],pwds["ethnicity"])}
@@ -141,9 +148,22 @@ if __name__ == "__main__":
         immigration_rules = os.path.join(dummy_rules_path, "immigration_country.txt")
         # immigration_classifier = create_regex_based_classifier(immigration_rules, ids, data, labels, training_mode=True)
         immigration_classifier = create_regex_based_classifier(immigration_rules, ids, data)
-        
         #Passing in the personal word dictionaries and labelling function
         immigration_classifier.run(datasets=["test"], pwds=pwds, label_func=country_capture_convert)
-        print(immigration_classifier.classifier.dataset["test"]["preds"])
+        # all_classifications.append(immigration_classifier.classifier.dataset["test"]["preds"].tolist())
 
-        
+        ####################################################################################################
+        #WIP - example run on all tbs
+        #Note - tb country functionality not implemented. Will do later
+        ####################################################################################################
+
+        tb_rules = os.path.join(rules_path, "tb")
+
+        for rule in os.listdir(tb_rules):
+            print(rule)
+            rule_file = os.path.join(tb_rules, rule)
+            classifier_runner = create_regex_based_classifier(rule_file, ids, data)
+            classifier_runner.run(datasets=["test"], pwds=pwds)
+            all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
+
+        de.export_data_to_excel("nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
