@@ -164,6 +164,7 @@ class RegexHandler(object):
 
             #only adding sentences that matched
             if matches:
+                print("Above results for sentence: ", i)
                 matches_score_dict[i] = {"matches": matches, "text_score": score}
 
             total_score += score
@@ -196,6 +197,10 @@ class RegexHandler(object):
             #If the primary matches
             if len(regex_matches) > 0:
 
+                print("Regex: ", regex.get_regex())
+                print("TEXT: ", text)
+                print("Before filter:", regex_matches)
+
                 #Getting all the secondary regexes grouped by effect
                 ignore_regexes = regex.get_secondary_regexes(type_list=["i", "ib", "ia"])
                 replace_regexes = regex.get_secondary_regexes(type_list=["r", "rb", "ra"])
@@ -212,9 +217,6 @@ class RegexHandler(object):
                     secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": regex.get_regex(), "score": secondary_regex.score, "matches": []}
                     secondary_match = self._match_secondary(secondary_regex, text, regex_matches)
 
-                    print("Regex: ", regex.get_regex())
-                    print("TEXT: ", text)
-                    print("Before filter:", regex_matches)
                     #If there was a secondary match
                     if secondary_match:
                         print("After filter", regex_matches)
@@ -243,6 +245,7 @@ class RegexHandler(object):
 
                 #Add the primary regex to the list of matches for the sentence
                 matches.append(primary_match)
+                print("REGEX_SCORE: ", score)
 
             total_score += score
 
