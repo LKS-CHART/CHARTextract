@@ -80,11 +80,13 @@ class RegexClassifier(BaseClassifier):
             preds = []
 
             data = self.dataset[data_set]["data"]
+            ids = self.dataset[data_set]["ids"]
 
             self.dataset[data_set]["matches"] = []
             self.dataset[data_set]["scores"] = []
 
-            for datum in data:
+            for id,datum in zip(ids,data):
+                print("Classifying id: ", id)
                 class_scores = {}
                 class_matches = {}
                 for class_name in self.regexes:
