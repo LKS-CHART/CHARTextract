@@ -15,8 +15,12 @@ def preprocess_data(data):
     Returns:
         modified_data {string} -- modified data
     """
-    data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n+','\n')
+    print("HER")
+    data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n')
+    #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
     data, num_subs = re.subn(r'\s{3,}', " ", data)
+    data, _ = re.subn(r' M.{1,2}\.', ' ', data, flags=re.IGNORECASE)
+    data, _ = re.subn(r' D.{1,2}\.', ' ', data, flags=re.IGNORECASE)
     return data
 
 

@@ -125,6 +125,7 @@ class RegexHandler(object):
 
         #Getting secondary matches
         secondary_matches = secondary_regex.determine_matches(text)
+        print("SECONDARY_MATCHES IN FUNC:", secondary_matches)
 
         if secondary_matches:
             #If regex has a before or after effect e.g rb, ia etc.. do some extra checks based on effect
@@ -210,6 +211,11 @@ class RegexHandler(object):
                 for i, secondary_regex in enumerate(ignore_regexes): heappush(priority_queue, (i, secondary_regex))
                 for i, secondary_regex in enumerate(replace_regexes): heappush(priority_queue, (i+len(ignore_regexes), secondary_regex))
                 for i, secondary_regex in enumerate(add_regexes): heappush(priority_queue, (i+len(ignore_regexes) + len(replace_regexes), secondary_regex))
+
+                print("IGNORE REGEXES:", ignore_regexes)
+                print("REPLACE REGEXES:", replace_regexes)
+                print("ADD REGEXES:", add_regexes)
+                print("PRIORITY QUEUE:", priority_queue)
 
                 for i in range(len(priority_queue)):
                     #Pop the secondary regex off the queue and compute the secondary matches

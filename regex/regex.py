@@ -27,6 +27,7 @@ class Regex(object):
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
         self._should_compile = regex.find("dict:'") == -1 #Don't compile if it found dict:'
+        self._should_compile = False
         self.flags = combine_flags(flags) if flags else 0
         self.regex = re.compile(regex, self.flags) if self._should_compile else regex
         self._required_pwds = [] if self._should_compile else self._get_required_pwds()
@@ -175,10 +176,10 @@ class Regex(object):
         """
 
         if self.all_matches:
-            matches = list(self._match_func(self.regex, text))
+            matches = list(self._match_func(self.regex, text, self.flags))
 
         else:
-            matches = self._match_func(self.regex, text)
+            matches = self._match_func(self.regex, text, self.flags)
             matches = [] if matches is None else [matches]
 
         return matches

@@ -23,7 +23,7 @@ def split_string_into_sentences(text):
     """
 
     #TODO: Add lookbehind for Mr. Ms. etc..
-    return text.split(".")
+    return text.replace("\n", " ").replace("  ", " ").split(".")
 
 def split_string_into_words(text):
     """Given a string of text, splits it into words
