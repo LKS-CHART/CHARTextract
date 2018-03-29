@@ -104,7 +104,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
     return classifier_runner
 
 if __name__ == "__main__":
-        debug=False
+        debug=True
 
         #Setup code
         pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
@@ -191,18 +191,23 @@ if __name__ == "__main__":
         # txt_file_to_args = {"immigration.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
         # txt_file_to_args = {"diag_method_culture.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
 
-        for rule in os.listdir(tb_rules):
-            rule_file = os.path.join(tb_rules, rule)
-            classifier_runner = create_regex_based_classifier(rule_file, ids, data)
-            classifier_runner.run(datasets=["test"], pwds=pwds)
-            all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
-            excel_column_headers.append(txt_file_to_header[rule])
-        
-        # for rule in txt_file_to_args:
+        # for rule in os.listdir(tb_rules):
         #     rule_file = os.path.join(tb_rules, rule)
-        #     classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
-        #     classifier_runner.run(datasets=["valid"], pwds=pwds)
-        #     all_classifications.append(classifier_runner.classifier.dataset["valid"]["preds"].tolist())
+        #     classifier_runner = create_regex_based_classifier(rule_file, ids, data)
+        #     classifier_runner.run(datasets=["test"], pwds=pwds)
+        #     all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
         #     excel_column_headers.append(txt_file_to_header[rule])
+        
+        for rule in txt_file_to_args:
 
-        de.export_data_to_excel("valid4_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
+            rule_file = os.path.join(tb_rules, rule)
+            classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
+            classifier_runner.run(datasets=["valid"], pwds=pwds)
+
+            if not all_classifications:
+                all_classifications.append(classifier_runner.classifier.dataset["valid"]["ids"].tolist())
+
+            all_classifications.append(classifier_runner.classifier.dataset["valid"]["preds"].tolist())
+            excel_column_headers.append(txt_file_to_header[rule])
+
+        de.export_data_to_excel("valid6_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
