@@ -42,6 +42,7 @@ class CaptureHandler(object):
             if matches:
                 matches_scores_dict[i] = {"matches": matches, "text_score": score}
 
+        print(capture_scores)
         return matches_scores_dict, captures, capture_scores
 
     def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None, capture_convert=None):
@@ -211,8 +212,13 @@ class RegexHandler(object):
                     secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": regex.get_regex(), "score": secondary_regex.score, "matches": []}
                     secondary_match = self._match_secondary(secondary_regex, text, regex_matches)
 
+                    print("Regex: ", regex.get_regex())
+                    print("TEXT: ", text)
+                    print("Before filter:", regex_matches)
                     #If there was a secondary match
                     if secondary_match:
+                        print("After filter", regex_matches)
+                        print("Secondary Match: ", secondary_match)
                         #Update secondary_regex_obj matches component
                         secondary_regex_obj["matches"] = secondary_match
                         #Add the secondary_regex_obj to the list of secondary_matches for the primary_regex_obj

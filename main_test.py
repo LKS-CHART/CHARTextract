@@ -53,7 +53,7 @@ def import_regexes(regex_directory):
 
     return classifier_type, classifier_args, regexes
 
-def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=None, l_label_col=None, l_first_row=None, label_file=None, repeat_ids=False, train_percent=0.6):
+def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
     
     Arguments:
@@ -95,7 +95,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
 
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
-        classifier_runner.classifier.create_train_and_valid(train_percent=train_percent)
+        classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
 
     #Otherwise, just load it into test
     else:
@@ -131,7 +131,7 @@ if __name__ == "__main__":
         smoking_rules = os.path.join(rules_path, 'smoking_new')
         # smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_file=label_filename)
         smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data)
-        smoking_classifier.run(datasets=["test"])
+        # smoking_classifier.run(datasets=["test"])
         # all_classifications.append(smoking_classifier.classifier.dataset["test"]["preds"].tolist())
 
         #Dictionary mapping from ethnicity to country
@@ -149,7 +149,7 @@ if __name__ == "__main__":
         # immigration_classifier = create_regex_based_classifier(immigration_rules, ids, data, labels, training_mode=True)
         immigration_classifier = create_regex_based_classifier(immigration_rules, ids, data)
         #Passing in the personal word dictionaries and labelling function
-        immigration_classifier.run(datasets=["test"], pwds=pwds, label_func=country_capture_convert)
+        # immigration_classifier.run(datasets=["test"], pwds=pwds, label_func=country_capture_convert)
         # all_classifications.append(immigration_classifier.classifier.dataset["test"]["preds"].tolist())
 
         ####################################################################################################
@@ -166,11 +166,43 @@ if __name__ == "__main__":
                               "sensitivity_full.txt": "Sensitivity Full", "sensitivity_inh.txt": "Sensitivity INH", "sputum_conversion.txt": "Sputum Conversion date",
                               "tb_contact.txt": "TB Contact History", "tb_old.txt": "Old TB"}
 
-        for rule in os.listdir(tb_rules):
+
+        #TODO: Constantly reopening the file - fix later
+        txt_file_to_args = {"smoking_new": {"training_mode": True, "l_label_col": 7, "label_file": label_filename},
+                            "country.txt": {"training_mode": True, "l_label_col": 2, "label_file": label_filename},
+                            "diag_active.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename},
+                            "diag_ltbi.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename},
+                            "diag_method_clinical.txt": {"training_mode": True, "l_label_col": 10, "label_file": label_filename},
+                            "diag_method_culture.txt": {"training_mode": True, "l_label_col": 10, "label_file": label_filename},
+                            "diag_method_pcr.txt": {"training_mode": True, "l_label_col": 10,"label_file": label_filename},
+                            "diag_ntm.txt": {"training_mode": True, "l_label_col": 9,"label_file": label_filename},
+                            "hiv_negative.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
+                            "hiv_positive.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
+                            "hiv_not_dictated.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
+                            "hiv_unknown.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
+                            "immigration.txt": {"training_mode": True, "l_label_col": 3,"label_file": label_filename},
+                            "sensitivity_full.txt": {"training_mode": True, "l_label_col": 11,"label_file": label_filename},
+                            "sensitivity_inh.txt": {"training_mode": True, "l_label_col": 11,"label_file": label_filename},
+                            "sputum_conversion.txt": {"training_mode": True, "l_label_col": 12,"label_file": label_filename},
+                            "tb_contact.txt": {"training_mode": True, "l_label_col": 5,"label_file": label_filename},
+                            "tb_old.txt": {"training_mode": True, "l_label_col": 6,"label_file": label_filename}}
+
+        # txt_file_to_args = {"diag_ltbi.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}}
+        # txt_file_to_args = {"immigration.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
+        txt_file_to_args = {"diag_method_culture.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
+
+        # for rule in os.listdir(tb_rules):
+        #     rule_file = os.path.join(tb_rules, rule)
+        #     classifier_runner = create_regex_based_classifier(rule_file, ids, data)
+        #     classifier_runner.run(datasets=["test"], pwds=pwds)
+        #     all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
+        #     excel_column_headers.append(txt_file_to_header[rule])
+        
+        for rule in txt_file_to_args:
             rule_file = os.path.join(tb_rules, rule)
-            classifier_runner = create_regex_based_classifier(rule_file, ids, data)
-            classifier_runner.run(datasets=["test"], pwds=pwds)
-            all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
+            classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
+            classifier_runner.run(datasets=["valid"], pwds=pwds)
+            all_classifications.append(classifier_runner.classifier.dataset["valid"]["preds"].tolist())
             excel_column_headers.append(txt_file_to_header[rule])
 
-        de.export_data_to_excel("new_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
+        de.export_data_to_excel("valid3_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")

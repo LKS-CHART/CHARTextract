@@ -27,8 +27,11 @@ class RegexClassifier(BaseClassifier):
         self.negative_label = negative_label
         self.handler = handler
 
-        self.biases.update({negative_label: 0})
-        self.regexes.update({negative_label: []})
+
+        #TODO: Think about this
+        if biases:
+            self.biases.update({negative_label: 0})
+            self.regexes.update({negative_label: []})
 
         if biases:
             self.set_biases(biases)
@@ -51,7 +54,7 @@ class RegexClassifier(BaseClassifier):
             score {int} -- Assigned score
         """
         label, score = max(class_to_scores.items(), key=lambda i: i[1])
-
+        print(class_to_scores.items())
         #Return negative label if less than threshold
         if score > threshold:
             return label, score
@@ -91,6 +94,7 @@ class RegexClassifier(BaseClassifier):
                     #matching sentences and computing scores
                     if len(self.regexes[class_name]) > 0:
                         matches, score = self.handler.score_and_match_sentences(datum, self.regexes[class_name])
+                        # print(score)
 
                     #adding biases
                     class_scores[class_name] = self.biases[class_name] + score
@@ -103,5 +107,9 @@ class RegexClassifier(BaseClassifier):
                 classification, score = self.classify(class_scores, class_threshold)
                 preds.append(classification)
 
+                print("Score: ", score)
+                print("Classification: ", classification)
+                print("END DATUM\n\n")
             preds = np.array(preds)
+            print(preds)
             self.dataset[data_set]["preds"] = preds

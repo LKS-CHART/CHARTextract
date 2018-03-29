@@ -129,7 +129,6 @@ if __name__ == "__main__":
 
         for rule_name, rule in rule_tups:
             classifier_type, classifier_args, regexes_dict = import_regexes(rule) if os.path.isdir(rule) else import_regex(rule)
-            print(regexes_dict)
             classifier_args.update({"regexes": regexes_dict})
             classifiers_args.append(classifier_args)
             classifiers.append(classifier_type)

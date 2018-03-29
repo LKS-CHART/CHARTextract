@@ -93,7 +93,6 @@ class CaptureClassifier(BaseClassifier):
                         matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name],
                                                                                                      pwds=pwds, preprocess_func=preprocess_func,
                                                                                                      capture_convert=label_func)
-                    
                     #Storing matches in object
                     class_matches[class_name] = matches
 
@@ -108,4 +107,5 @@ class CaptureClassifier(BaseClassifier):
                 preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
 
             preds = np.array(preds)
+            print(preds)
             self.dataset[data_set]["preds"] = preds
