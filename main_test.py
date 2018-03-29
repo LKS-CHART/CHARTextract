@@ -187,9 +187,9 @@ if __name__ == "__main__":
                             "tb_contact.txt": {"training_mode": True, "l_label_col": 5,"label_file": label_filename},
                             "tb_old.txt": {"training_mode": True, "l_label_col": 6,"label_file": label_filename}}
 
-        # txt_file_to_args = {"diag_ltbi.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}}
+        txt_file_to_args = {"diag_ltbi.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}}
         # txt_file_to_args = {"immigration.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
-        txt_file_to_args = {"diag_method_culture.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
+        # txt_file_to_args = {"diag_method_culture.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
 
         # for rule in os.listdir(tb_rules):
         #     rule_file = os.path.join(tb_rules, rule)
