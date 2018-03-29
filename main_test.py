@@ -95,7 +95,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
 
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
-        classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
+        train_ids, valid_ids = classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
 
     #Otherwise, just load it into test
     else:
@@ -124,8 +124,8 @@ if __name__ == "__main__":
 
 
         all_classifications = []
-        all_classifications.append(ids)
         excel_column_headers = ["Ids"]
+        all_classifications.append(ids)
 
         #Creating and running smoking classifier
         smoking_rules = os.path.join(rules_path, 'smoking_new')
@@ -191,18 +191,18 @@ if __name__ == "__main__":
         # txt_file_to_args = {"immigration.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
         # txt_file_to_args = {"diag_method_culture.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
 
-        # for rule in os.listdir(tb_rules):
-        #     rule_file = os.path.join(tb_rules, rule)
-        #     classifier_runner = create_regex_based_classifier(rule_file, ids, data)
-        #     classifier_runner.run(datasets=["test"], pwds=pwds)
-        #     all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
-        #     excel_column_headers.append(txt_file_to_header[rule])
-        
-        for rule in txt_file_to_args:
+        for rule in os.listdir(tb_rules):
             rule_file = os.path.join(tb_rules, rule)
-            classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
-            classifier_runner.run(datasets=["valid"], pwds=pwds)
-            all_classifications.append(classifier_runner.classifier.dataset["valid"]["preds"].tolist())
+            classifier_runner = create_regex_based_classifier(rule_file, ids, data)
+            classifier_runner.run(datasets=["test"], pwds=pwds)
+            all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
             excel_column_headers.append(txt_file_to_header[rule])
+        
+        # for rule in txt_file_to_args:
+        #     rule_file = os.path.join(tb_rules, rule)
+        #     classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
+        #     classifier_runner.run(datasets=["valid"], pwds=pwds)
+        #     all_classifications.append(classifier_runner.classifier.dataset["valid"]["preds"].tolist())
+        #     excel_column_headers.append(txt_file_to_header[rule])
 
-        de.export_data_to_excel("valid3_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
+        de.export_data_to_excel("valid4_nlp_chart_extraction_cohort_2.xlsx", all_classifications, excel_column_headers, mode="r")
