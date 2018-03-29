@@ -46,8 +46,8 @@ class BaseClassifier(object):
             ids {list} -- list of ids (default: {None})
         """
         self.data = np.array(data) if data else None
-        self.labels = np.array(labels) if labels else None
-        self.ids = np.array(ids) if ids else None
+        self.labels = np.array(labels) if labels else [None]*len(data)
+        self.ids = np.array(ids) if ids else [None]*len(data)
 
     def create_train_and_valid(self, train_percent=.6, random_seed=None):
         """Splits data in train and valid
