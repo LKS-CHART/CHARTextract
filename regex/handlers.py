@@ -37,6 +37,8 @@ class CaptureHandler(object):
 
         #Scoring and capturing each sentence
         for i, sentence in enumerate(sentences):
+            #Mimicing preprocessing from old tool
+            sentence = " {} ".format(sentence)
             matches, captures, score = self.score_and_capture_sentence(sentence, regexes, capture_scores, pwds=pwds, preprocess_func=preprocess_func, capture_convert=capture_convert)
 
             if matches:
@@ -161,6 +163,8 @@ class RegexHandler(object):
         total_score = 0
 
         for i, sentence in enumerate(sentences):
+            #Mimicing preprocessing from old tool
+            sentence = " {} ".format(sentence)
             matches, score = self.score_and_match_sentence(sentence, regexes)
 
             #only adding sentences that matched
