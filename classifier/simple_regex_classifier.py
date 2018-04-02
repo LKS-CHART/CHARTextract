@@ -95,7 +95,7 @@ class RegexClassifier(BaseClassifier):
 
                     #matching sentences and computing scores
                     if len(self.regexes[class_name]) > 0:
-                        matches, score = self.handler.score_and_match_sentences(datum, self.regexes[class_name])
+                        matches, score = self.handler.score_and_match_sentences(datum, self.regexes[class_name], pwds=pwds)
                         # print(score)
 
                     #adding biases
