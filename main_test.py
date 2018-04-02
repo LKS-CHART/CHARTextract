@@ -87,6 +87,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
         if label_file:
             dataloader = di.data_from_csv if label_file.endswith('.csv') else di.data_from_excel
             _, temp_labels, temp_ids = dataloader([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
+            print(temp_labels)
 
             labels = ["None"] * len(data)
             for i, data_id in enumerate(ids):
@@ -96,7 +97,6 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
         train_ids, valid_ids = classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
-        print("VALID IDS: ", valid_ids)
 
     #Otherwise, just load it into test
     else:

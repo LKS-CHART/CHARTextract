@@ -15,7 +15,6 @@ def preprocess_data(data):
     Returns:
         modified_data {string} -- modified data
     """
-    print("HER")
     data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n')
     #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
     data, num_subs = re.subn(r'\s{3,}', " ", data)
@@ -159,7 +158,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
             cur_ws = workbook[sheet_name].rows
             for i, row in enumerate(cur_ws):
                 if i >= first_row:
-                   #If label column is empty don't include it
+                   #If check column is empty don't include it
                     if row[check_col].value is None:
                         continue
                     count += 1
@@ -171,6 +170,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
         for i in range(len(data)):
             data[i] = preprocess_func(data[i])
 
+    print(labels)
     return data, labels, ids
 
 def import_pwds(filenames, pwd_names=None):
@@ -246,6 +246,7 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
         for i in range(len(data)):
             data[i] = preprocess_func(data[i])
 
+    print(labels)
     return data, labels, ids
 
 #TODO: Probably shouldn't have default mutable args. Change later
