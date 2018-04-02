@@ -147,6 +147,7 @@ class Regex(object):
 
         if pwds:
             regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
+            print(regex)
 
         #Want to keep format for re.iter and re.search the same so that's why I'm returning lists
         if self.all_matches:
@@ -175,12 +176,15 @@ class Regex(object):
             matches {list} -- List of MatchObjects
         """
 
+        if pwds:
+            regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
+
         if self.all_matches:
             #Use re.iter if all matches and return a list version
-            matches = list(self._match_func(self.regex, text)) if self._should_compile else self._match_func(self.regex, text, self.flags)
+            matches = list(self._match_func(self.regex, text)) if self._should_compile else self._match_func(regex, text, self.flags)
         else:
             #Use re.search if not and return a list version
-            matches = self._match_func(self.regex, text) if self._should_compile else self._match_func(self.regex, text, self.flags)
+            matches = self._match_func(self.regex, text) if self._should_compile else self._match_func(regex, text, self.flags)
             matches = [] if matches is None else [matches]
 
         return matches

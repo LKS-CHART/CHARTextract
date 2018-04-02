@@ -204,6 +204,7 @@ if __name__ == "__main__":
 
             rule_file = os.path.join(tb_rules, rule)
             classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
+            print(classifier_runner.classifier.dataset["train"]["ids"])
             classifier_runner.run(datasets=["valid"], pwds=pwds)
 
             if not all_classifications:
