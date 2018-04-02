@@ -15,6 +15,7 @@ def preprocess_data(data):
     Returns:
         modified_data {string} -- modified data
     """
+    #print("HER")
     data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n')
     #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
     data, num_subs = re.subn(r'\s{3,}', " ", data)
@@ -43,6 +44,8 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
     """
     concat_index = None
 
+
+    # id_col which is a list
     if id_col is not None:
         cur_id = row_process_func(id_col)
 
@@ -53,21 +56,32 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
             ids.append(cur_id)
 
     if label_col is not None:
-        #If we are concatenating data (i.e repeat_ids = False), use the latest diagnoses
+        #If we are concatenating data (i.e repeat_ids = False), use all the diagnoses
+        cur_label = []
+        for actual_label_col in label_col:
+            cur_label.append(row_process_func(actual_label_col))
         if concat_index is not None:
-            labels[concat_index] = row_process_func(label_col)
+            if type(labels[concat_index]) == list:
+                labels[concat_index].extend(cur_label)
+            else:
+                labels[concat_index] = list(labels[concat_index]).extend(cur_label)
         else:
-            labels.append(row_process_func(label_col))
+            if len(cur_label) == 1:
+                labels.append(cur_label[0])
+            else:
+                labels.append(cur_label)
 
     if data_col is not None:
-        datum = row_process_func(data_col)
+        data_string = row_process_func(data_col[0])
+        for i in range(1, len(data_col)):
+            data_string += "\n{}".format(row_process_func(data_col[i]))
         # print("-"*100)
         # print('NoneType has been found' if datum is None else datum)
 
         if concat_index is not None:
-            data[concat_index] += "{}\n".format(preprocess_data(datum))
+            data[concat_index] += "{}\n".format(preprocess_data(data_string))
         else:
-            data.append(preprocess_data(datum))
+            data.append(preprocess_data(data_string))
 
     return data, labels, ids
 
@@ -98,14 +112,18 @@ def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
     if data_cols is not None:
         #duplicating int. i.e assuming that every file has the same data col
         if type(data_cols) == int:
-            data_cols = [data_cols]*num_files
+            data_cols = [[data_cols]]*num_files
+        else:
+            data_cols = [data_cols] * num_files
         data = []
     else:
         data_cols = [None]*num_files
 
     if label_cols is not None:
         if type(label_cols) == int:
-            label_cols = [label_cols]*num_files
+            label_cols = [[label_cols]]*num_files
+        else:
+            label_cols = [label_cols] * num_files
         labels = []
     else:
         label_cols = [None]*num_files
@@ -170,7 +188,6 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
         for i in range(len(data)):
             data[i] = preprocess_func(data[i])
 
-    print(labels)
     return data, labels, ids
 
 def import_pwds(filenames, pwd_names=None):

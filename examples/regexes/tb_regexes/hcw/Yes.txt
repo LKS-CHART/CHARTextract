@@ -1,0 +1,23 @@
+!Yes,RegexClassifier
+" is a .*Health-care worker",4
+" is a .*Doctor",4
+" is a .*Physician",4
+" is a .*Respiratory Therapist",4
+" is a .*Physiotherapist",4
+" is a .*Nurse",4
+" is a .*Nurse practitioner",4
+" is a .*Nursing student",4
+" is a .*Medical student",4
+" is a .*Occupational therapist",4
+" is a .*Pharmacist",4
+"Health-care worker at ",4
+"Doctor at ",4
+"Physician at ",4
+"Respiratory Therapist at ",4
+"Physiotherapist at ",4
+"Nurse at ",4
+"Nurse practitioner at ",4
+"Nursing student at ",4
+"Medical student at ",4
+"Occupational therapist at ",4
+"Pharmacist at ",4
