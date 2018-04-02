@@ -215,7 +215,11 @@ if __name__ == "__main__":
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["ids"].tolist())
 
                 all_classifications.append(classifier_runner.classifier.dataset[dataset]["preds"].tolist())
-                print(classifier_runner.classifier.dataset[dataset]["labels"])
+
+                if dataset != "valid" or "test":
+                    all_classifications.append(classifier_runner.classifier.dataset[dataset]["labels"].tolist())
+                # print(classifier_runner.classifier.dataset[dataset]["labels"])
                 excel_column_headers.append(txt_file_to_header[rule])
+                excel_column_headers.append("Label")
 
             de.export_data_to_excel("inh_medication_{}.xlsx".format(dataset), all_classifications, excel_column_headers, mode="r")
