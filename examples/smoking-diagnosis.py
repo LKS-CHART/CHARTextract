@@ -13,7 +13,7 @@ if __name__ == "__main__":
 
     process = psutil.Process(os.getpid())
     pr = profile.Profile()
-    debug = True
+    debug = False
 
     #Reading regex files
     regexes = {}

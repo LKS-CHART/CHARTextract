@@ -3,6 +3,9 @@ from variable_classifiers.base_runner import Runner
 from datahandler import data_import as di
 from datahandler import data_export as de
 import os
+from web.report_generator import generate_error_report
+from stats.basic import calculate_accuracy
+
 
 def import_regex(regex_file):
     """Import a single regex rule file
@@ -53,6 +56,7 @@ def import_regexes(regex_directory):
 
     return classifier_type, classifier_args, regexes
 
+
 def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
     
@@ -93,6 +97,8 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
             for i, data_id in enumerate(ids):
                 if data_id in temp_ids:
                     labels[i] = temp_labels[temp_ids.index(data_id)]
+        print(type(data))
+        print(len(data))
 
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
@@ -107,10 +113,16 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
 if __name__ == "__main__":
         debug=False
 
+        # Web setup
+        template_directory = os.path.join('web', 'templates')
+        effects = ["a", "aa", "ab", "r", "rb", "ra"]
+        effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
+        effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
+
         #Setup code
         pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
         filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv')
-        label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx')
+        label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions', 'labelling_cohort_2-s.xlsx')
         rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
         dummy_rules_path = os.path.join(*["examples", "regexes", "tb_regexes"])
 
@@ -155,7 +167,7 @@ if __name__ == "__main__":
         #Note - tb country functionality not implemented. Will do later
         ####################################################################################################
 
-        tb_rules = os.path.join(rules_path, "new_tb_rules_s")
+        tb_rules = os.path.join(rules_path, "tb_rules")
         txt_file_to_header = {"smoking_new": "Smoking Status", "country.txt": "Country of Birth", "diag_active.txt": "Active TB Diagnosis",
                               "diag_ltbi.txt": "LTBI Diagnosis", "diag_method_clinical.txt": "Method of Diagnosis Clinical",
                               "diag_method_culture.txt": "Method of Diagnosis Culture", "diag_method_pcr.txt": "Method of Diagnosis PCR",
@@ -164,7 +176,7 @@ if __name__ == "__main__":
                               "sensitivity_full.txt": "Sensitivity Full", "sensitivity_inh.txt": "Sensitivity INH", "sputum_conversion.txt": "Sputum Conversion date",
                               "tb_contact.txt": "TB Contact History", "tb_old.txt": "Old TB"}
 
-        txt_file_to_header = {"inh_medication.txt": "INH Medication"}
+        txt_file_to_header = {"inh_medication.txt": "INH Medication", "hcw":"Health Care Worker"}
 
 
         #TODO: Constantly reopening the file - fix later
@@ -200,16 +212,32 @@ if __name__ == "__main__":
         #     classifier_runner.run(datasets=["test"], pwds=pwds)
         #     all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
         #     excel_column_headers.append(txt_file_to_header[rule])
-
+        txt_file_to_args = {"hcw": {"training_mode": True, "l_label_col": 1, "label_file": label_filename}}
         datasets = ["train", "valid"]
 
         for dataset in datasets:
             all_classifications = []
             excel_column_headers = ["Ids"]
             for rule in txt_file_to_args:
+                rulename = rule.split(sep=".txt")[0]
                 rule_file = os.path.join(tb_rules, rule)
                 classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
                 classifier_runner.run(datasets=[dataset], pwds=pwds)
+
+                accuracy, incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[dataset]["preds"],
+                                                                 classifier_runner.classifier.dataset[dataset]["labels"])
+
+                failures_dict = {}
+                for index in incorrect_indices:
+                    patient_id = classifier_runner.classifier.dataset[dataset]["ids"][index]
+                    pred = classifier_runner.classifier.dataset[dataset]["preds"][index]
+                    label = classifier_runner.classifier.dataset[dataset]["labels"][index]
+                    match_obj = classifier_runner.classifier.dataset[dataset]["matches"][index]
+                    score = classifier_runner.classifier.dataset[dataset]["scores"][index]
+                    text = classifier_runner.classifier.dataset[dataset]["data"][index]
+
+                    failures_dict[patient_id] = {"label": label, "data": text, "pred": pred, "matches": match_obj,
+                                                 "score": score}
 
                 if not all_classifications:
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["ids"].tolist())
@@ -222,4 +250,14 @@ if __name__ == "__main__":
                 excel_column_headers.append(txt_file_to_header[rule])
                 excel_column_headers.append("Label")
 
-            de.export_data_to_excel("inh_medication_{}.xlsx".format(dataset), all_classifications, excel_column_headers, mode="r")
+                generate_error_report(os.path.join("generated_data", rulename, dataset), "hcw_error_report.html",
+                                      template_directory, 'error_report.html',
+                                      "HCW", classifier_runner.classifier.regexes.keys(), failures_dict, effects,
+                                      custom_effect_colours=effect_colours)
+                '''
+                generate_error_report(os.path.join("generated_data", rulename, dataset),
+                                      "{}_error_report.html".format(rulename), template_directory, 'error_report.html',
+                                      "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict,
+                                      effects, custom_effect_colours=effect_colours)
+                '''
+            #de.export_data_to_excel("hcw_{}.xlsx".format(dataset), all_classifications, excel_column_headers, mode="r")

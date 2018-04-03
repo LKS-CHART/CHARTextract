@@ -28,7 +28,7 @@ if __name__ == "__main__":
     if not debug:
         print("Current data folder: {!r}\n".format(os.getenv('TB_DATA_FOLDER')))
         # filenames = [os.path.normpath(os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.140.xlsx'))]
-        data_filenames = [os.path.normpath(os.path.join(os.getenv('DATAFOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
+        data_filenames = [os.path.normpath(os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv'))]
         label_filenames = [os.path.normpath(os.path.join(os.getenv('LABELSFOLDER'), 'labelling_cohort_2-s.xlsx'))]
         print("Files of interest: {!r}\n".format(data_filenames))
         print("Files of interest: {!r}\n".format(label_filenames))
