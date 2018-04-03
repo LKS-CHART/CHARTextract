@@ -1,4 +1,4 @@
-!Current smoker
+!Current smoker,RegexClassifier,negative_label,'Not Recorded',biases,{'Current smoker': 100}
 "currently smok",10
 "is a smoker",20
 "smokes[^\,]*frequently",20

@@ -53,7 +53,7 @@ class CaptureClassifier(BaseClassifier):
         else:
             return self.negative_label, 0
 
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None, pwds=None):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None, pwds=None, classify_func=None):
         """Runs the trained classifier on the given datasets. Note this datasets must be loaded into self.dataset object first or
         intialized in some other manner
         

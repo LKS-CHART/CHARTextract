@@ -2,6 +2,7 @@
 from variable_classifiers.base_runner import Runner
 from datahandler import data_import as di
 from datahandler import data_export as de
+import functools
 import os
 from web.report_generator import generate_error_report
 from stats.basic import calculate_accuracy
@@ -57,7 +58,7 @@ def import_regexes(regex_directory):
     return classifier_type, classifier_args, regexes
 
 
-def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=0, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6):
+def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6, label_func=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
     
     Arguments:
@@ -91,12 +92,13 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
         if label_file:
             dataloader = di.data_from_csv if label_file.endswith('.csv') else di.data_from_excel
             _, temp_labels, temp_ids = dataloader([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
-
             labels = ["None"] * len(data)
             for i, data_id in enumerate(ids):
                 if data_id in temp_ids:
                     labels[i] = temp_labels[temp_ids.index(data_id)]
 
+            if label_func:
+                label_func(labels)
 
 
         #Storing data within classifier and creating validation and training sets
@@ -121,7 +123,8 @@ if __name__ == "__main__":
         #Setup code
         pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
         filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv')
-        label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions', 'labelling_decisions_cohort_2-s.xlsx')
+        label_filename2 = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions', 'labelling_decisions_cohort_2-s.xlsx')
+        label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx')
         rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
         dummy_rules_path = os.path.join(*["examples", "regexes", "tb_regexes"])
 
@@ -166,8 +169,10 @@ if __name__ == "__main__":
         #Note - tb country functionality not implemented. Will do later
         ####################################################################################################
 
+
+
         tb_rules = os.path.join(rules_path, "tb_rules")
-        txt_file_to_header = {"smoking_new": "Smoking Status", "country.txt": "Country of Birth", "diag_active.txt": "Active TB Diagnosis",
+        file_to_header = {"smoking_new": "Smoking Status", "country.txt": "Country of Birth", "diag_active.txt": "Active TB Diagnosis",
                               "diag_ltbi.txt": "LTBI Diagnosis", "diag_method_clinical.txt": "Method of Diagnosis Clinical",
                               "diag_method_culture.txt": "Method of Diagnosis Culture", "diag_method_pcr.txt": "Method of Diagnosis PCR",
                               "diag_ntm.txt": "NTM Diagnosis", "hiv_negative.txt": "Hiv Status Negative", "hiv_positive.txt": "Hiv Status Positive",
@@ -175,54 +180,54 @@ if __name__ == "__main__":
                               "sensitivity_full.txt": "Sensitivity Full", "sensitivity_inh.txt": "Sensitivity INH", "sputum_conversion.txt": "Sputum Conversion date",
                               "tb_contact.txt": "TB Contact History", "tb_old.txt": "Old TB"}
 
-        txt_file_to_header = {"inh_medication.txt": "INH Medication", "hcw":"Health Care Worker"}
+        file_to_header = {"inh_medication.txt": "INH Medication", "hcw": "Health Care Worker"}
 
+
+        def replace_labels_with_required(label_of_interest, negative_label, labels_array):
+            for i, label_list in enumerate(labels_array):
+                labels_array[i] = label_of_interest if label_of_interest in label_list else negative_label
 
         #TODO: Constantly reopening the file - fix later
-        txt_file_to_args = {"smoking_new": {"training_mode": True, "l_label_col": 7, "label_file": label_filename},
-                            "country.txt": {"training_mode": True, "l_label_col": 2, "label_file": label_filename},
-                            "diag_active.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename},
-                            "diag_ltbi.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename},
-                            "diag_method_clinical.txt": {"training_mode": True, "l_label_col": 10, "label_file": label_filename},
-                            "diag_method_culture.txt": {"training_mode": True, "l_label_col": 10, "label_file": label_filename},
-                            "diag_method_pcr.txt": {"training_mode": True, "l_label_col": 10,"label_file": label_filename},
-                            "diag_ntm.txt": {"training_mode": True, "l_label_col": 9,"label_file": label_filename},
-                            "hiv_negative.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
-                            "hiv_positive.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
-                            "hiv_not_dictated.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
-                            "hiv_unknown.txt": {"training_mode": True, "l_label_col": 4,"label_file": label_filename},
-                            "immigration.txt": {"training_mode": True, "l_label_col": 3,"label_file": label_filename},
-                            "sensitivity_full.txt": {"training_mode": True, "l_label_col": 11,"label_file": label_filename},
-                            "sensitivity_inh.txt": {"training_mode": True, "l_label_col": 11,"label_file": label_filename},
-                            "sputum_conversion.txt": {"training_mode": True, "l_label_col": 12,"label_file": label_filename},
-                            "tb_contact.txt": {"training_mode": True, "l_label_col": 5,"label_file": label_filename},
-                            "tb_old.txt": {"training_mode": True, "l_label_col": 6,"label_file": label_filename}}
+        file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
+                        "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
+                        "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
+                        "diag_method_clinical.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
+                        "diag_method_culture.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
+                        "diag_method_pcr.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
+                        "diag_ntm.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 9, "label_file": label_filename}},
+                        "hiv_negative.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "hiv_positive.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "hiv_not_dictated.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "hiv_unknown.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "immigration.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}},
+                        "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename}},
+                        "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename}},
+                        "sputum_conversion.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 12, "label_file": label_filename}},
+                        "tb_contact.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 5, "label_file": label_filename}},
+                        "tb_old.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}},
+                        "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
+                        "inh_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
+                                                   "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
+                                                   "Runtime Params": {"label_func": None, "pwds": pwds}}}
 
-        # txt_file_to_args = {"diag_ltbi.txt": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}}
-        # txt_file_to_args = {"immigration.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
-        # txt_file_to_args = {"diag_method_culture.txt": {"training_mode": True, "l_label_col": 3, "label_file": label_filename}}
-        # txt_file_to_args = {"sputum_conversion.txt": {"training_mode": True, "l_label_col": 12, "label_file": label_filename}}
-        #
-        # txt_file_to_args = {"tb_old.txt": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}}
-        txt_file_to_args = {"inh_medication.txt": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename}}
-        # for rule in os.listdir(tb_rules):
-        #     rule_file = os.path.join(tb_rules, rule)
-        #     classifier_runner = create_regex_based_classifier(rule_file, ids, data)
-        #     classifier_runner.run(datasets=["test"], pwds=pwds)
-        #     all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
-        #     excel_column_headers.append(txt_file_to_header[rule])
-        txt_file_to_args = {"hcw": {"training_mode": True, "l_label_col": 1, "label_file": label_filename, "l_first_row": 1}}
         datasets = ["train", "valid"]
+        cur_run = ["hcw", "inh_medication.txt"]
 
         for dataset in datasets:
             all_classifications = []
             excel_column_headers = ["Ids"]
-            for rule in txt_file_to_args:
+            for rule in cur_run:
                 rulename = rule.split(sep=".txt")[0]
+                print("="*100)
+                print("\nRunning on rule: {} - {}".format( rulename, dataset))
                 rule_file = os.path.join(tb_rules, rule)
-                classifier_runner = create_regex_based_classifier(rule_file, ids, data, **txt_file_to_args[rule])
-                classifier_runner.run(datasets=[dataset], pwds=pwds)
+                classifier_runner = create_regex_based_classifier(rule_file, ids, data, **file_to_args[rule]["Runner Initialization Params"])
 
+                if "Runtime Params" in file_to_args:
+                    classifier_runner.run(datasets=[dataset], **file_to_args[rule]["Runtime Params"])
+                else:
+                    classifier_runner.run(datasets=[dataset])
                 accuracy, incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[dataset]["preds"],
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
 
@@ -246,10 +251,10 @@ if __name__ == "__main__":
                 if dataset != "test":
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["labels"].tolist())
 
-                excel_column_headers.append(txt_file_to_header[rule])
+                excel_column_headers.append(file_to_header[rule])
                 excel_column_headers.append("Label")
                 if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
-                    os.makedirs(os.path.exists(os.path.join("generated_data", rulename, dataset)))
+                    os.makedirs(os.path.join("generated_data", rulename, dataset))
                 generate_error_report(os.path.join("generated_data", rulename, dataset), "{}_error_report.html".format(rulename),
                                       template_directory, 'error_report.html',
                                       "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict, effects,
@@ -260,5 +265,5 @@ if __name__ == "__main__":
                                       "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict,
                                       effects, custom_effect_colours=effect_colours)
                 '''
-                print(accuracy)
-            #de.export_data_to_excel("hcw_{}.xlsx".format(dataset), all_classifications, excel_column_headers, mode="r")
+                print("Accuracy: ", accuracy)
+            #de.export_data_to_excel("{}_{}.xlsx".format(rulename, dataset), all_classifications, excel_column_headers, mode="r")
