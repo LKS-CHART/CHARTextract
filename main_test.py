@@ -216,7 +216,7 @@ if __name__ == "__main__":
 
                 all_classifications.append(classifier_runner.classifier.dataset[dataset]["preds"].tolist())
 
-                if dataset != "valid" or "test":
+                if dataset != "test":
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["labels"].tolist())
                 # print(classifier_runner.classifier.dataset[dataset]["labels"])
                 excel_column_headers.append(txt_file_to_header[rule])
