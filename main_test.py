@@ -260,7 +260,8 @@ if __name__ == "__main__":
                 accuracy, incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[dataset]["preds"],
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
 
-                print("\nPredictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
+                print("\nIds: ", classifier_runner.classifier.dataset[dataset]["ids"])
+                print("Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
                 print("Labels: ", classifier_runner.classifier.dataset[dataset]["labels"])
                 failures_dict = {}
                 for index in incorrect_indices:
@@ -296,5 +297,5 @@ if __name__ == "__main__":
                                       "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict,
                                       effects, custom_effect_colours=effect_colours)
                 '''
-                print("Accuracy: ", accuracy)
+                print("\nAccuracy: ", accuracy)
             #de.export_data_to_excel("{}_{}.xlsx".format(rulename, dataset), all_classifications, excel_column_headers, mode="r")
