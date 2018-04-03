@@ -57,7 +57,7 @@ def import_regexes(regex_directory):
     return classifier_type, classifier_args, regexes
 
 
-def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6):
+def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=0, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
     
     Arguments:
@@ -91,12 +91,13 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
         if label_file:
             dataloader = di.data_from_csv if label_file.endswith('.csv') else di.data_from_excel
             _, temp_labels, temp_ids = dataloader([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
-            print(temp_labels)
 
             labels = ["None"] * len(data)
             for i, data_id in enumerate(ids):
                 if data_id in temp_ids:
                     labels[i] = temp_labels[temp_ids.index(data_id)]
+
+            print("HEREARASDASD", labels)
         print(type(data))
         print(len(data))
 

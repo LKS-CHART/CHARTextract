@@ -154,7 +154,7 @@ if __name__ == "__main__":
             data = tb_regex_naive.dataset[data_set]["data"][index]
 
             all_patients_dict[patient_id] = {"label": label, "data": data, "pred": pred, "matches": match_obj, "score": score}
-        print("HEREHERHERHERHEHREHRERE",len(all_patients_dict))
+
         template_directory = os.path.join('..', 'web', 'templates')
         output_dir = os.path.join('..','generated_data', 'hcw', data_set)
 
