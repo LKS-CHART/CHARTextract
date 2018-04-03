@@ -64,7 +64,7 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
             if type(labels[concat_index]) == list:
                 labels[concat_index].extend(cur_label)
             else:
-                labels[concat_index] = list(labels[concat_index]).extend(cur_label)
+                labels[concat_index] = [labels[concat_index]].extend(cur_label)
         else:
             if len(cur_label) == 1:
                 labels.append(cur_label[0])
