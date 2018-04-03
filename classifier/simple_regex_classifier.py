@@ -21,7 +21,7 @@ class RegexClassifier(BaseClassifier):
 
         """
         super().__init__(classifier_name=classifier_name, data=data, labels=labels, ids=ids)
-
+        self.DEBUG = False
         self.regexes = regexes
         self.biases = {class_name: 0 for class_name in self.regexes}
         self.negative_label = negative_label
@@ -54,7 +54,8 @@ class RegexClassifier(BaseClassifier):
             score {int} -- Assigned score
         """
         label, score = max(class_to_scores.items(), key=lambda i: i[1])
-        print(class_to_scores.items())
+        if self.DEBUG:
+            print(class_to_scores.items())
         #Return negative label if less than threshold
         if score > threshold:
             return label, score
@@ -86,7 +87,8 @@ class RegexClassifier(BaseClassifier):
             self.dataset[data_set]["scores"] = []
 
             for id,datum in zip(ids,data):
-                print("Classifying id: ", id)
+                if self.DEBUG:
+                    print("Classifying id: ", id)
                 class_scores = {}
                 class_matches = {}
                 for class_name in self.regexes:
@@ -108,10 +110,12 @@ class RegexClassifier(BaseClassifier):
 
                 classification, score = self.classify(class_scores, class_threshold)
                 preds.append(classification)
+                if self.DEBUG:
+                    print("Score: ", score)
+                    print("Classification: ", classification)
+                    print("END DATUM\n\n")
 
-                print("Score: ", score)
-                print("Classification: ", classification)
-                print("END DATUM\n\n")
             preds = np.array(preds)
-            print(preds)
+            if self.DEBUG:
+                print(preds)
             self.dataset[data_set]["preds"] = preds

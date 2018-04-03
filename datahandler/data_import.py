@@ -263,7 +263,6 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
         for i in range(len(data)):
             data[i] = preprocess_func(data[i])
 
-    print(labels)
     return data, labels, ids
 
 #TODO: Probably shouldn't have default mutable args. Change later

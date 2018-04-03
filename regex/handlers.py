@@ -11,6 +11,7 @@ class CaptureHandler(object):
     """
 
     def __init__(self):
+        self.DEBUG = False
         pass
 
     def score_and_capture_sentences(self, text, regexes, pwds=None, preprocess_func=None, capture_convert=None):
@@ -43,8 +44,8 @@ class CaptureHandler(object):
 
             if matches:
                 matches_scores_dict[i] = {"matches": matches, "text_score": score}
-
-        print(capture_scores)
+        if self.DEBUG:
+            print(capture_scores)
         return matches_scores_dict, captures, capture_scores
 
     def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None, capture_convert=None):
@@ -110,6 +111,7 @@ class RegexHandler(object):
     """
 
     def __init__(self):
+        self.DEBUG = False
         pass
 
     #TODO: Maybe create an effect handler
@@ -127,7 +129,8 @@ class RegexHandler(object):
 
         #Getting secondary matches
         secondary_matches = secondary_regex.determine_matches(text, pwds=pwds)
-        print("SECONDARY_MATCHES IN FUNC:", secondary_matches)
+        if self.DEBUG:
+            print("SECONDARY_MATCHES IN FUNC:", secondary_matches)
 
         if secondary_matches:
             #If regex has a before or after effect e.g rb, ia etc.. do some extra checks based on effect
@@ -169,7 +172,8 @@ class RegexHandler(object):
 
             #only adding sentences that matched
             if matches:
-                print("Above results for sentence: ", i)
+                if self.DEBUG:
+                    print("Above results for sentence: ", i)
                 matches_score_dict[i] = {"matches": matches, "text_score": score}
 
             total_score += score
@@ -202,9 +206,7 @@ class RegexHandler(object):
             #If the primary matches
             if len(regex_matches) > 0:
 
-                print("Regex: ", regex.get_regex())
-                print("TEXT: ", text)
-                print("Before filter:", regex_matches)
+
 
                 #Getting all the secondary regexes grouped by effect
                 ignore_regexes = regex.get_secondary_regexes(type_list=["i", "ib", "ia"])
@@ -215,11 +217,14 @@ class RegexHandler(object):
                 for i, secondary_regex in enumerate(ignore_regexes): heappush(priority_queue, (i, secondary_regex))
                 for i, secondary_regex in enumerate(replace_regexes): heappush(priority_queue, (i+len(ignore_regexes), secondary_regex))
                 for i, secondary_regex in enumerate(add_regexes): heappush(priority_queue, (i+len(ignore_regexes) + len(replace_regexes), secondary_regex))
-
-                print("IGNORE REGEXES:", ignore_regexes)
-                print("REPLACE REGEXES:", replace_regexes)
-                print("ADD REGEXES:", add_regexes)
-                print("PRIORITY QUEUE:", priority_queue)
+                if self.DEBUG:
+                    print("Regex: ", regex.get_regex())
+                    print("TEXT: ", text)
+                    print("Before filter:", regex_matches)
+                    print("IGNORE REGEXES:", ignore_regexes)
+                    print("REPLACE REGEXES:", replace_regexes)
+                    print("ADD REGEXES:", add_regexes)
+                    print("PRIORITY QUEUE:", priority_queue)
 
                 for i in range(len(priority_queue)):
                     #Pop the secondary regex off the queue and compute the secondary matches
@@ -229,8 +234,9 @@ class RegexHandler(object):
 
                     #If there was a secondary match
                     if secondary_match:
-                        print("After filter", regex_matches)
-                        print("Secondary Match: ", secondary_match)
+                        if self.DEBUG:
+                            print("After filter", regex_matches)
+                            print("Secondary Match: ", secondary_match)
                         #Update secondary_regex_obj matches component
                         secondary_regex_obj["matches"] = secondary_match
                         #Add the secondary_regex_obj to the list of secondary_matches for the primary_regex_obj
@@ -255,7 +261,8 @@ class RegexHandler(object):
 
                 #Add the primary regex to the list of matches for the sentence
                 matches.append(primary_match)
-                print("REGEX_SCORE: ", score)
+                if self.DEBUG:
+                    print("REGEX_SCORE: ", score)
 
             total_score += score
 
