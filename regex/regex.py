@@ -147,7 +147,6 @@ class Regex(object):
 
         if pwds:
             regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
-            print(regex)
 
         #Want to keep format for re.iter and re.search the same so that's why I'm returning lists
         if self.all_matches:

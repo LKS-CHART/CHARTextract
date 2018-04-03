@@ -101,6 +101,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
                 label_func(labels)
 
 
+
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
         train_ids, valid_ids = classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
@@ -189,7 +190,7 @@ if __name__ == "__main__":
 
         #TODO: Constantly reopening the file - fix later
         file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
-                        "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
+                        # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
                         "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
                         "diag_method_clinical.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
                         "diag_method_culture.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
@@ -208,11 +209,39 @@ if __name__ == "__main__":
                         "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
                         "inh_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "pyrazinamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Pyrazinamide (Z/Pza)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "rifampin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifampin (RIF)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "ethambutol_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Ethambutol (E/Emb)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "rifabutin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifabutin (Rfb)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "moxifloxacin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Moxifloxacin (Mfx)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "rifapentine_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifapentine (RPT)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "capreomycin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Capreomycin (Cm)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "amikacin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Amikacin (Amk)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "pas_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Para-aminosalicylic acid (Pas)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "cycloserine_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Cycloserine (Dcs)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "ethionamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Ethionamide (Eto)", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "vitamin_b6_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Vitamin B6", "None"])},
+                                               "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}}}
 
         datasets = ["train", "valid"]
         cur_run = ["hcw", "inh_medication.txt"]
+        # cur_run = file_to_args.keys()
+
+        #TODO: Add functools label_funcs for some of the classifier
+        #TODO: Use country preprocessor from old code
 
         for dataset in datasets:
             all_classifications = []
@@ -231,6 +260,8 @@ if __name__ == "__main__":
                 accuracy, incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[dataset]["preds"],
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
 
+                print("\nPredictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
+                print("Labels: ", classifier_runner.classifier.dataset[dataset]["labels"])
                 failures_dict = {}
                 for index in incorrect_indices:
                     patient_id = classifier_runner.classifier.dataset[dataset]["ids"][index]
@@ -251,8 +282,8 @@ if __name__ == "__main__":
                 if dataset != "test":
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["labels"].tolist())
 
-                excel_column_headers.append(file_to_header[rule])
-                excel_column_headers.append("Label")
+                # excel_column_headers.append(file_to_header[rule])
+                # excel_column_headers.append("Label")
                 if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
                     os.makedirs(os.path.join("generated_data", rulename, dataset))
                 generate_error_report(os.path.join("generated_data", rulename, dataset), "{}_error_report.html".format(rulename),

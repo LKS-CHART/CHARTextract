@@ -84,7 +84,7 @@ class CaptureHandler(object):
             score = regex.score*len(regex_matches)
 
             #match_obj
-            primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": []}
+            primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": [], "pattern": regex.get_regex()}
 
             #Converting the capture using the capture_convert function
             #E.g Canadian -> Canada, Trinidadian -> Trinidad

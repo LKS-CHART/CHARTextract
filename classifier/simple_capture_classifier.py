@@ -107,5 +107,4 @@ class CaptureClassifier(BaseClassifier):
                 preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
 
             preds = np.array(preds)
-            print(preds)
             self.dataset[data_set]["preds"] = preds
