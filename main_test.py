@@ -68,8 +68,8 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
     Keyword Arguments:
         labels {list} -- List of labels (default: {None})
         training_mode {bool} -- Whether to run the classifier in training mode. If in training mode creates training and validation datasets (default: {False})
-        l_id_col {int} -- Column in which label_file's ids are located (default: {None})
-        l_label_col {int} -- Column in which label_file's labels are located (default: {None})
+        l_id_col {int} -- Column in which label_file's ids are located starting from 0 (default: {None})
+        l_label_col {int} -- Column in which label_file's labels are located starting from 0 (default: {None})
         l_first_row {int} -- From which row to start reading the data (default: {None})
         label_file {String} -- Path pointing to label file (default: {None})
         repeat_ids {bool} -- If False, ids are not considered unique and the data is appended (default: {False})
@@ -211,7 +211,7 @@ if __name__ == "__main__":
         #     classifier_runner.run(datasets=["test"], pwds=pwds)
         #     all_classifications.append(classifier_runner.classifier.dataset["test"]["preds"].tolist())
         #     excel_column_headers.append(txt_file_to_header[rule])
-        txt_file_to_args = {"hcw": {"training_mode": True, "l_label_col": 1, "label_file": label_filename}}
+        txt_file_to_args = {"hcw": {"training_mode": True, "l_label_col": 1, "label_file": label_filename, "l_first_row": 1}}
         datasets = ["train", "valid"]
 
         for dataset in datasets:
@@ -245,7 +245,7 @@ if __name__ == "__main__":
 
                 if dataset != "test":
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["labels"].tolist())
-                # print(classifier_runner.classifier.dataset[dataset]["labels"])
+
                 excel_column_headers.append(txt_file_to_header[rule])
                 excel_column_headers.append("Label")
                 if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
