@@ -250,10 +250,11 @@ if __name__ == "__main__":
                 # print(classifier_runner.classifier.dataset[dataset]["labels"])
                 excel_column_headers.append(txt_file_to_header[rule])
                 excel_column_headers.append("Label")
-
-                generate_error_report(os.path.join("generated_data", rulename, dataset), "hcw_error_report.html",
+                if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
+                    os.makedirs(os.path.exists(os.path.join("generated_data", rulename, dataset)))
+                generate_error_report(os.path.join("generated_data", rulename, dataset), "{}_error_report.html".format(rulename),
                                       template_directory, 'error_report.html',
-                                      "HCW", classifier_runner.classifier.regexes.keys(), failures_dict, effects,
+                                      "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                       custom_effect_colours=effect_colours)
                 '''
                 generate_error_report(os.path.join("generated_data", rulename, dataset),
