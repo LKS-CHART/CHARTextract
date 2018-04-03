@@ -97,9 +97,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
                 if data_id in temp_ids:
                     labels[i] = temp_labels[temp_ids.index(data_id)]
 
-            print("HEREARASDASD", labels)
-        print(type(data))
-        print(len(data))
+
 
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
@@ -123,7 +121,7 @@ if __name__ == "__main__":
         #Setup code
         pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
         filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Cohort 2 (really cleansed).csv')
-        label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions', 'labelling_cohort_2-s.xlsx')
+        label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions', 'labelling_decisions_cohort_2-s.xlsx')
         rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
         dummy_rules_path = os.path.join(*["examples", "regexes", "tb_regexes"])
 
@@ -262,4 +260,5 @@ if __name__ == "__main__":
                                       "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict,
                                       effects, custom_effect_colours=effect_colours)
                 '''
+                print(accuracy)
             #de.export_data_to_excel("hcw_{}.xlsx".format(dataset), all_classifications, excel_column_headers, mode="r")
