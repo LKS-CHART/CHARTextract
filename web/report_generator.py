@@ -39,7 +39,7 @@ def _generate_match_for_json(match_obj):
                 for secondary_regex in regex_obj["secondary_matches"]:
                     secondary_dict = [{"name": secondary_regex["name"], "score": secondary_regex["score"],
                                                     "pattern": secondary_regex["pattern"], "effect": secondary_regex["effect"], "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group()} for match in secondary_regex["matches"]]
+                                                    "match_end": match.end(), "matched_string": match.group(), "primary_pattern": regex_obj["pattern"]} for match in secondary_regex["matches"]]
                     matches.extend(secondary_dict)
 
     return match_dict

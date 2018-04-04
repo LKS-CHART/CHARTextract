@@ -229,7 +229,7 @@ class RegexHandler(object):
                 for i in range(len(priority_queue)):
                     #Pop the secondary regex off the queue and compute the secondary matches
                     secondary_regex = heappop(priority_queue)[1]
-                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": regex.get_regex(), "score": secondary_regex.score, "matches": []}
+                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.get_regex(), "score": secondary_regex.score, "matches": []}
                     secondary_match = self._match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
 
                     #If there was a secondary match

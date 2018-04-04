@@ -243,10 +243,17 @@ if __name__ == "__main__":
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
                                                                                     "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "Yes",
-                                                                                                                                                 "Other": "No", "None": "No", "Chemotherapy": "No", "TNF alpha inhibitors": "No"})}}}
+                                                                                                                                                 "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "No"})}},
+                        "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
+                                                                                    "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "No",
+                                                                                                                                                 "Other": "No", 'None': "No", "Chemotherapy": "Yes", "TNF alpha inhibitors": "No"})}},
+                        "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
+                                                                                    "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "No",
+                                                                                                                                                 "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "Yes"})}},
+                        "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "label_file": label_filename2}}}
 
         datasets = ["train", "valid"]
-        cur_run = ["hcw", "inh_medication.txt", "corticosteroids_immuno"]
+        cur_run = ["hcw", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
         # cur_run = file_to_args.keys()
 
         #TODO: Add functools label_funcs for some of the classifiers
