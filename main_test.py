@@ -91,6 +91,7 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
         #If a label_file was specified, read the labels from the file
         if label_file:
             dataloader = di.data_from_csv if label_file.endswith('.csv') else di.data_from_excel
+            #TODO: accordingly increment/decrement l_id_col, l_label_col, l_first_row, check_col depending on filetype
             _, temp_labels, temp_ids = dataloader([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
             labels = ["None"] * len(data)
             for i, data_id in enumerate(ids):
@@ -171,6 +172,7 @@ if __name__ == "__main__":
         ####################################################################################################
 
 
+        #TODO: Update Headers
 
         tb_rules = os.path.join(rules_path, "tb_rules")
         file_to_header = {"smoking_new": "Smoking Status", "country.txt": "Country of Birth", "diag_active.txt": "Active TB Diagnosis",
@@ -187,6 +189,10 @@ if __name__ == "__main__":
         def replace_labels_with_required(label_of_interest, negative_label, labels_array):
             for i, label_list in enumerate(labels_array):
                 labels_array[i] = label_of_interest if label_of_interest in label_list else negative_label
+
+        def replace_label_with_required(mapping_dict, labels_array):
+            for i, label in enumerate(labels_array):
+                labels_array[i] = mapping_dict[label]
 
         #TODO: Constantly reopening the file - fix later
         file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
@@ -234,13 +240,16 @@ if __name__ == "__main__":
                         "vitamin_b6_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Vitamin B6", "None"])},
                                                "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
-                                                   "Runtime Params": {"label_func": None, "pwds": pwds}}}
+                                                   "Runtime Params": {"label_func": None, "pwds": pwds}},
+                        "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
+                                                                                    "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "Yes",
+                                                                                                                                                 "Other": "No", "None": "No", "Chemotherapy": "No", "TNF alpha inhibitors": "No"})}}}
 
         datasets = ["train", "valid"]
-        cur_run = ["hcw", "inh_medication.txt"]
+        cur_run = ["hcw", "inh_medication.txt", "corticosteroids_immuno"]
         # cur_run = file_to_args.keys()
 
-        #TODO: Add functools label_funcs for some of the classifier
+        #TODO: Add functools label_funcs for some of the classifiers
         #TODO: Use country preprocessor from old code
 
         for dataset in datasets:
@@ -275,6 +284,9 @@ if __name__ == "__main__":
                     failures_dict[patient_id] = {"label": label, "data": text, "pred": pred, "matches": match_obj,
                                                  "score": score}
 
+                print("\nIncorrect Ids: ", classifier_runner.classifier.dataset[dataset]["ids"][incorrect_indices])
+                print("Incorrect Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"][incorrect_indices])
+                print("Incorrect Labels: ", classifier_runner.classifier.dataset[dataset]["labels"][incorrect_indices])
                 if not all_classifications:
                     all_classifications.append(classifier_runner.classifier.dataset[dataset]["ids"].tolist())
 
