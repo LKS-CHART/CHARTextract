@@ -104,7 +104,9 @@ class CaptureClassifier(BaseClassifier):
                 self.dataset[data_set]["scores"].append(capture_scores)
 
                 #getting prediction
-                preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
+
+                if not classify_func:
+                    preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
