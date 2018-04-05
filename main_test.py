@@ -259,7 +259,6 @@ if __name__ == "__main__":
         #                                                                                                                                          "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "Yes"})}},
         #                 "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "label_file": label_filename2}}}
 
-
         file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
                         # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
                         "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
@@ -304,16 +303,23 @@ if __name__ == "__main__":
                                                "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "vitamin_b6_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Vitamin B6", "None"])},
                                                "Runtime Params": {"label_func": None, "pwds": pwds}},
-                        "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
+                        "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "l_first_row": 1, "label_file": label_filename2},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
                         "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
                         "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
-                        "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "label_file": label_filename2}}}
+                        "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "l_first_row": 1, "label_file": label_filename2}},
+                        "smh": {"Runner Initialization Params": {"training_mode": True,"l_id_col": 0,
+                                "l_label_col": 3,
+                                "label_file": label_filename2,
+                                "l_first_row": 1
+                                }}}
+
 
         datasets = ["valid"]
-        # cur_run = ["hcw", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
+
         cur_run = file_to_args.keys()
+        cur_run = ["smh"]
 
         #TODO: Add functools label_funcs for some of the classifiers
         #TODO: Use country preprocessor from old code
@@ -336,9 +342,9 @@ if __name__ == "__main__":
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
 
 
-                # cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[dataset]["labels"], classifier_runner.classifier.dataset[dataset]["preds"])
+                cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[dataset]["labels"], classifier_runner.classifier.dataset[dataset]["preds"])
                 labels_list = sorted(list(set(classifier_runner.classifier.dataset[dataset]["preds"].tolist()) | set(classifier_runner.classifier.dataset[dataset]["labels"].tolist())))
-                # plot_confusion_matrix(cnf_matrix, classes=labels_list)
+
 
                 print("\nIds: ", classifier_runner.classifier.dataset[dataset]["ids"])
                 print("Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
@@ -381,7 +387,10 @@ if __name__ == "__main__":
                                       effects, custom_effect_colours=effect_colours)
                 '''
                 print("\nAccuracy: ", accuracy)
+                print(cnf_matrix)
+                plot_confusion_matrix(cnf_matrix, classes=labels_list)
+                
                 headers = ["ID", "Prediction", "Actual"]
                 excel_path = os.path.join("generated_data", rulename, dataset, rulename)
-                de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
+                #de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
 

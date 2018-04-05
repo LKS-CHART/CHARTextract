@@ -21,6 +21,7 @@ def preprocess_data(data):
     data, num_subs = re.subn(r'\s{3,}', " ", data)
     data, _ = re.subn(r' M.{1,2}\.', ' ', data, flags=re.IGNORECASE)
     data, _ = re.subn(r' D.{1,2}\.', ' ', data, flags=re.IGNORECASE)
+    data = data.replace(' St.', ' St')
     return data
 
 
