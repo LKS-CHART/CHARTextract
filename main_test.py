@@ -308,10 +308,10 @@ if __name__ == "__main__":
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
                         "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
-                        "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21}},
+                        "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
                         "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "label_file": label_filename2}}}
 
-        datasets = ["train", "valid"]
+        datasets = ["valid"]
         # cur_run = ["hcw", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
         cur_run = file_to_args.keys()
 
@@ -336,9 +336,9 @@ if __name__ == "__main__":
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
 
 
-                cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[dataset]["labels"], classifier_runner.classifier.dataset[dataset]["preds"])
+                # cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[dataset]["labels"], classifier_runner.classifier.dataset[dataset]["preds"])
                 labels_list = sorted(list(set(classifier_runner.classifier.dataset[dataset]["preds"].tolist()) | set(classifier_runner.classifier.dataset[dataset]["labels"].tolist())))
-                plot_confusion_matrix(cnf_matrix, classes=labels_list)
+                # plot_confusion_matrix(cnf_matrix, classes=labels_list)
 
                 print("\nIds: ", classifier_runner.classifier.dataset[dataset]["ids"])
                 print("Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
@@ -381,4 +381,6 @@ if __name__ == "__main__":
                                       effects, custom_effect_colours=effect_colours)
                 '''
                 print("\nAccuracy: ", accuracy)
-            #de.export_data_to_excel("{}_{}.xlsx".format(rulename, dataset), all_classifications, excel_column_headers, mode="r")
+                excel_path = os.path.join("generated_data", rulename, dataset, rulename)
+                de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, mode="r")
+
