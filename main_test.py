@@ -6,6 +6,7 @@ import functools
 import os
 from web.report_generator import generate_error_report
 from stats.basic import calculate_accuracy
+from sklearn.metrics import confusion_matrix
 
 
 def import_regex(regex_file):
@@ -200,24 +201,82 @@ if __name__ == "__main__":
                 labels_array[i] = filter_func(label)
 
         #TODO: Constantly reopening the file - fix later
+        # file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
+        #                 # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
+        #                 "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"LTBI": "None"})}},
+        #                 "diag_method_clinical.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"PCR positive": "None", "Culture positive": "None"})}},
+        #                 "diag_method_culture.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"PCR positive": "None", "Clinical diagnosis": "None"})}},
+        #                 "diag_method_pcr.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Clinical diagnosis": "None", "Culture positive": "None"})}},
+        #                 "diag_ntm.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 9, "label_file": label_filename}},
+        #                 "hiv_negative.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Positive": "None", "Unknown": "None"})}},
+        #                 "hiv_positive.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Negative": "None", "Unknown": "None"})}},
+        #                 "hiv_not_dictated.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Positive": "None", "Unknown": "None", "Negative": "None", "None": "Not dictated"})}},
+        #                 "hiv_unknown.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Positive": "None", "Negative": "None"})}},
+        #                 "immigration.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 3, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
+        #                 "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"INH resistant": "None"})}},
+        #                 "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Fully sensitive": "None"})}},
+        #                 "sputum_conversion.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
+        #                 "tb_contact.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 5, "label_file": label_filename}},
+        #                 "tb_old.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}},
+        #                 "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Active TB": "None"})}},
+        #                 "inh_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
+        #                                            "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "pyrazinamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Pyrazinamide (Z/Pza)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "rifampin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifampin (RIF)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "ethambutol_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Ethambutol (E/Emb)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "rifabutin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifabutin (Rfb)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "moxifloxacin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Moxifloxacin (Mfx)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "rifapentine_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifapentine (RPT)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "capreomycin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Capreomycin (Cm)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "amikacin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Amikacin (Amk)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "pas_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Para-aminosalicylic acid (Pas)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "cycloserine_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Cycloserine (Dcs)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "ethionamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Ethionamide (Eto)", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "vitamin_b6_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Vitamin B6", "None"])},
+        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
+        #                                            "Runtime Params": {"label_func": None, "pwds": pwds}},
+        #                 "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
+        #                                                                             "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "Yes",
+        #                                                                                                                                          "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "No"})}},
+        #                 "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
+        #                                                                             "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "No",
+        #                                                                                                                                          "Other": "No", 'None': "No", "Chemotherapy": "Yes", "TNF alpha inhibitors": "No"})}},
+        #                 "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
+        #                                                                             "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "No",
+        #                                                                                                                                          "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "Yes"})}},
+        #                 "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "label_file": label_filename2}}}
+
+
         file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
                         # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
-                        "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"LTBI": "None"})}},
-                        "diag_method_clinical.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"PCR positive": "None", "Culture positive": "None"})}},
-                        "diag_method_culture.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"PCR positive": "None", "Clinical diagnosis": "None"})}},
-                        "diag_method_pcr.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Clinical diagnosis": "None", "Culture positive": "None"})}},
+                        "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
+                        "diag_method_clinical.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
+                        "diag_method_culture.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
+                        "diag_method_pcr.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
                         "diag_ntm.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 9, "label_file": label_filename}},
-                        "hiv_negative.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Positive": "None", "Unknown": "None"})}},
-                        "hiv_positive.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Negative": "None", "Unknown": "None"})}},
-                        "hiv_not_dictated.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Positive": "None", "Unknown": "None", "Negative": "None", "None": "Not dictated"})}},
-                        "hiv_unknown.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Positive": "None", "Negative": "None"})}},
+                        "hiv_negative.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "hiv_positive.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "hiv_not_dictated.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
+                        "hiv_unknown.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
                         "immigration.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 3, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
-                        "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"INH resistant": "None"})}},
-                        "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Fully sensitive": "None"})}},
+                        "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename}},
+                        "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename}},
                         "sputum_conversion.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
                         "tb_contact.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 5, "label_file": label_filename}},
                         "tb_old.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}},
-                        "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Active TB": "None"})}},
+                        "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
                         "inh_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "pyrazinamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Pyrazinamide (Z/Pza)", "None"])},
@@ -246,15 +305,9 @@ if __name__ == "__main__":
                                                "Runtime Params": {"label_func": None, "pwds": pwds}},
                         "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}},
-                        "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
-                                                                                    "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "Yes",
-                                                                                                                                                 "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "No"})}},
-                        "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
-                                                                                    "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "No",
-                                                                                                                                                 "Other": "No", 'None': "No", "Chemotherapy": "Yes", "TNF alpha inhibitors": "No"})}},
-                        "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename,
-                                                                                    "label_func": functools.partial(replace_label_with_required, {"Corticosteroids (prednisone)": "No",
-                                                                                                                                                 "Other": "No", 'None': "No", "Chemotherapy": "No", "TNF alpha inhibitors": "Yes"})}},
+                        "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
+                        "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
+                        "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21}},
                         "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "label_file": label_filename2}}}
 
         datasets = ["train", "valid"]
@@ -280,6 +333,9 @@ if __name__ == "__main__":
                     classifier_runner.run(datasets=[dataset])
                 accuracy, incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[dataset]["preds"],
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
+
+                cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[dataset]["labels"], classifier_runner.classifier.dataset[dataset]["preds"])
+                print(cnf_matrix)
 
                 print("\nIds: ", classifier_runner.classifier.dataset[dataset]["ids"])
                 print("Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
