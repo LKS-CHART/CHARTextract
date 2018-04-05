@@ -319,9 +319,9 @@ if __name__ == "__main__":
         #TODO: Use country preprocessor from old code
 
         for dataset in datasets:
-            all_classifications = []
             excel_column_headers = ["Ids"]
             for rule in cur_run:
+                all_classifications = []
                 rulename = rule.split(sep=".txt")[0]
                 print("="*100)
                 print("\nRunning on rule: {} - {}".format( rulename, dataset))
@@ -381,6 +381,7 @@ if __name__ == "__main__":
                                       effects, custom_effect_colours=effect_colours)
                 '''
                 print("\nAccuracy: ", accuracy)
+                headers = ["ID", "Prediction", "Actual"]
                 excel_path = os.path.join("generated_data", rulename, dataset, rulename)
-                de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, mode="r")
+                de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
 
