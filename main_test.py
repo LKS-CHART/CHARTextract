@@ -7,6 +7,7 @@ import os
 from web.report_generator import generate_error_report
 from stats.basic import calculate_accuracy
 from sklearn.metrics import confusion_matrix
+from stats.basic import plot_confusion_matrix
 
 
 def import_regex(regex_file):
@@ -334,8 +335,10 @@ if __name__ == "__main__":
                 accuracy, incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[dataset]["preds"],
                                                                  classifier_runner.classifier.dataset[dataset]["labels"])
 
+
                 cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[dataset]["labels"], classifier_runner.classifier.dataset[dataset]["preds"])
-                print(cnf_matrix)
+                labels_list = sorted(list(set(classifier_runner.classifier.dataset[dataset]["preds"].tolist()) | set(classifier_runner.classifier.dataset[dataset]["labels"].tolist())))
+                plot_confusion_matrix(cnf_matrix, classes=labels_list)
 
                 print("\nIds: ", classifier_runner.classifier.dataset[dataset]["ids"])
                 print("Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"])
