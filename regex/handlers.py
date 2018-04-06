@@ -138,10 +138,10 @@ class RegexHandler(object):
             if len(secondary_regex.effect) == 2:
                 effect_modifier = secondary_regex.effect[1]
                 #If secondary match appears before any of the primary matches
-                if effect_modifier == "b" and any(map(lambda tup: tup[0].start() < tup[1].start(), product(secondary_matches, primary_regex_matches))):
+                if effect_modifier == "b" and any(map(lambda tup: tup[0].start() <= tup[1].start(), product(secondary_matches, primary_regex_matches))):
                     secondary_matches = secondary_matches
                 #If it appears after any of the primary matches
-                elif effect_modifier == "a" and any(map(lambda tup: tup[0].start() > tup[1].end(), product(secondary_matches, primary_regex_matches))):
+                elif effect_modifier == "a" and any(map(lambda tup: tup[0].start() >= tup[1].end(), product(secondary_matches, primary_regex_matches))):
                     secondary_matches = secondary_matches
                 #If the above two were not satisfied, the secondary regex failed to satisfy its after effect
                 else:
@@ -248,7 +248,6 @@ class RegexHandler(object):
                             break
 
                         #If replace, replace score and stop eval of remaining secondary regexes
-                        #TODO: ASK UJASH TO CONTINUE CHECKING OR STOP IF REPLACE - I REMOVED THE BREAK FOR NOW
                         elif secondary_regex.effect.startswith("r"):
                             score = secondary_regex.score
 
