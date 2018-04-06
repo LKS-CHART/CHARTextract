@@ -98,3 +98,4 @@ def plot_confusion_matrix(cm, classes,
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.savefig(os.path.join(output_directory, title + '.png'))
+    plt.clf()
