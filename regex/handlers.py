@@ -256,6 +256,10 @@ class RegexHandler(object):
                         elif secondary_regex.effect.startswith("a"):
                             score += secondary_regex.score
 
+                    else:
+                        if secondary_regex.effect.startswith("r"):
+                            break
+
                 #Setting primary regex's secondary matches param
                 primary_match["secondary_matches"] = secondary_matches
 

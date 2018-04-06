@@ -53,7 +53,7 @@ class CaptureClassifier(BaseClassifier):
         else:
             return self.negative_label, 0
 
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None, pwds=None, classify_func=None):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, preprocess_func=None, label_func=None, pwds=None, classify_func=None, *kwargs):
         """Runs the trained classifier on the given datasets. Note this datasets must be loaded into self.dataset object first or
         intialized in some other manner
         
@@ -107,6 +107,8 @@ class CaptureClassifier(BaseClassifier):
 
                 if not classify_func:
                     preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
+                else:
+                    preds.append(classify_func(matches, captures, capture_scores, **kwargs))
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
