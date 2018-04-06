@@ -248,9 +248,9 @@ class RegexHandler(object):
                             break
 
                         #If replace, replace score and stop eval of remaining secondary regexes
+                        #TODO: ASK UJASH TO CONTINUE CHECKING OR STOP IF REPLACE - I REMOVED THE BREAK FOR NOW
                         elif secondary_regex.effect.startswith("r"):
                             score = secondary_regex.score
-                            break
 
                         #If add, add to the score
                         elif secondary_regex.effect.startswith("a"):
