@@ -265,7 +265,8 @@ if __name__ == "__main__":
                                 }},
                         "afb_positive.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 25, "label_file": label_filename}},
                         "disseminated.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 25, "label_file": label_filename}},
-                        "extra_pulmonary.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 25, "label_file": label_filename}}}
+                        "extra_pulmonary.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 25, "label_file": label_filename}},
+                        "other_tb_risk_factors": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 23, "label_file": label_filename}}}
 
         # file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
         #                 # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
@@ -328,8 +329,9 @@ if __name__ == "__main__":
 
         # cur_run = file_to_args.keys()
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
-        cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
+        # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
         # cur_run = ["hcw", "smh"]
+        cur_run = ["other_tb_risk_factors"]
 
         #TODO: Add functools label_funcs for some of the classifiers
         #TODO: Use country preprocessor from old code
@@ -385,6 +387,8 @@ if __name__ == "__main__":
 
                     failures_dict[patient_id] = {"label": label, "data": text, "pred": pred, "matches": match_obj,
                                                  "score": score}
+
+                print(failures_dict)
 
                 print("\nIncorrect Ids: ", classifier_runner.classifier.dataset[dataset]["ids"][incorrect_indices])
                 print("Incorrect Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"][incorrect_indices])

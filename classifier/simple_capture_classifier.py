@@ -23,6 +23,8 @@ class CaptureClassifier(BaseClassifier):
 
         self.regexes = regexes
         self.capture_biases = {capture: capture_biases[capture] for capture in capture_biases} if capture_biases else {}
+        self.capture_biases.update({negative_label: 0})
+        self.regexes.update({negative_label: []})
         self.negative_label = negative_label
         self.handler = handler 
 
