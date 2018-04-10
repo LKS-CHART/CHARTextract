@@ -63,7 +63,7 @@ def _generate_hsl_colour_dictionary(keys, lightness=85):
 
     return colour_dict
 
-def generate_error_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, failures_dict, effects, custom_class_colours=None, custom_effect_colours=None):
+def generate_error_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, failures_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):
     """Generates an error report html file and corresponding json file
     
     Arguments:
@@ -86,9 +86,9 @@ def generate_error_report(output_directory, html_output_filename, template_direc
     #generating report
     generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
     #generating json
-    generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours)
+    generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours, addition_json_params=addition_json_params)
 
-def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, effects, custom_class_colours=None, custom_effect_colours=None):
+def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):
     """Generates a json file for the html
     
     Arguments:
@@ -113,6 +113,9 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
     data["var_name"] = variable_name
     data["classes"] = _generate_hsl_colour_dictionary(class_names) if not custom_class_colours else custom_class_colours
     data["effects"] = _generate_hsl_colour_dictionary(effects, lightness=0) if not custom_effect_colours else custom_effect_colours
+    if addition_json_params:
+        data.update(addition_json_params)
+
     data["patient_cases"] = {}
 
     #Generating information for each patient
@@ -127,7 +130,7 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
     with open(json_fname, 'w') as outfile:
         json.dump(data, outfile, indent=4)
 
-def generate_classification_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, all_patients, effects, custom_class_colours=None, custom_effect_colours=None):
+def generate_classification_report(output_directory, html_output_filename, template_directory, html_template, variable_name, class_names, all_patients, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):
     """Generates a classification report html file and corresponding json file
 
     Arguments:
@@ -146,7 +149,7 @@ def generate_classification_report(output_directory, html_output_filename, templ
     """
     json_filename = html_output_filename.split('.')[0] + '.json'
     generate_generic_report(output_directory, html_output_filename, template_directory, html_template, json_file=json_filename)
-    generate_json(output_directory, json_filename, variable_name, class_names, all_patients, effects, custom_class_colours, custom_effect_colours)
+    generate_json(output_directory, json_filename, variable_name, class_names, all_patients, effects, custom_class_colours, custom_effect_colours, addition_json_params=addition_json_params)
 
 def generate_generic_report(output_directory, html_output_filename, template_folder, html_template, **template_args):
     """Given a tempalte, create a report with the given template_args

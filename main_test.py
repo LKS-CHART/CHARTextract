@@ -324,11 +324,12 @@ if __name__ == "__main__":
         #                         }}}
 
 
-        datasets = ["valid"]
+        datasets = ["train", "valid"]
 
-        cur_run = file_to_args.keys()
+        # cur_run = file_to_args.keys()
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
-        # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
+        cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
+        # cur_run = ["hcw", "smh"]
 
         #TODO: Add functools label_funcs for some of the classifiers
         #TODO: Use country preprocessor from old code
@@ -402,10 +403,14 @@ if __name__ == "__main__":
                 if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
                     os.makedirs(os.path.join("generated_data", rulename, dataset))
 
+                error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases, "Predicted Negative Cases": predicted_negative_cases,
+                              "Negative Cases": negative_cases, "Confusion Matrix": cnf_matrix.tolist(), "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": labels_list}
+
                 generate_error_report(os.path.join("generated_data", rulename, dataset), "{}_error_report.html".format(rulename),
                                       template_directory, 'error_report.html',
                                       "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict, effects,
-                                      custom_effect_colours=effect_colours)
+                                      custom_effect_colours=effect_colours, addition_json_params=error_data)
+
                 '''
                 generate_error_report(os.path.join("generated_data", rulename, dataset),
                                       "{}_error_report.html".format(rulename), template_directory, 'error_report.html',

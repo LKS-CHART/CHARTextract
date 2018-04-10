@@ -23,20 +23,20 @@ def calculate_accuracy(preds, labels):
 def get_classification_stats(cnf, labels):
     positive_cases = {label: 0 for label in labels}
     predicted_positive = {label: 0 for label in labels}
-    negative_cases = {label: 0 for label in labels}
-    predicted_negative_cases = {label: 0 for label in labels}
+    negative_cases = {"Not " + label: 0 for label in labels}
+    predicted_negative_cases = {"Not " + label: 0 for label in labels}
 
     for i, label in enumerate(labels):
-        positive_cases[label] = np.sum(cnf[i,:])
-        predicted_positive[label] = np.sum(cnf[:,i])
+        positive_cases[label] = int(np.sum(cnf[i,:]))
+        predicted_positive[label] = int(np.sum(cnf[:,i]))
 
         negative_cases_indices = np.ones_like(cnf)
         negative_cases_indices[i] = 0
-        negative_cases[label] = np.sum(negative_cases_indices*cnf)
+        negative_cases["Not " + label] = int(np.sum(negative_cases_indices*cnf))
 
         predicted_negative_cases_indices = np.ones_like(cnf)
         predicted_negative_cases_indices[:,i] = 0
-        predicted_negative_cases[label] = np.sum(predicted_negative_cases_indices*cnf)
+        predicted_negative_cases["Not " + label] = int(np.sum(predicted_negative_cases_indices*cnf))
 
     return predicted_positive, positive_cases, predicted_negative_cases, negative_cases
 
@@ -57,7 +57,7 @@ def compute_ppv_accuracy_ova(cnf, labels):
         true_neg = np.sum(masked)
 
         accuracy = 1
-        ppv = np.nan
+        ppv = "nan"
 
         if np.sum(cnf) > 0:
             accuracy = (true_pos + true_neg)/np.sum(cnf)
