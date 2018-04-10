@@ -23,8 +23,10 @@ def calculate_accuracy(preds, labels):
 def get_classification_stats(cnf, labels):
     positive_cases = {label: 0 for label in labels}
     predicted_positive = {label: 0 for label in labels}
-    negative_cases = {"Not " + label: 0 for label in labels}
-    predicted_negative_cases = {"Not " + label: 0 for label in labels}
+    negative_cases = {label: 0 for label in labels}
+    predicted_negative_cases = {label: 0 for label in labels}
+    false_positives = {label: 0 for label in labels}
+    false_negatives = {label: 0 for label in labels}
 
     for i, label in enumerate(labels):
         positive_cases[label] = int(np.sum(cnf[i,:]))
@@ -32,17 +34,26 @@ def get_classification_stats(cnf, labels):
 
         negative_cases_indices = np.ones_like(cnf)
         negative_cases_indices[i] = 0
-        negative_cases["Not " + label] = int(np.sum(negative_cases_indices*cnf))
+        negative_cases[label] = int(np.sum(negative_cases_indices*cnf))
+
+        false_negative_cases_indices = ~negative_cases_indices.astype(bool)
+        false_negative_cases_indices[i,i] = False
+        false_negatives[label] = int(np.sum(cnf*false_negative_cases_indices))
+
+        false_positive_cases_indices = np.zeros_like(cnf)
+        false_positive_cases_indices[:,i] = 1
+        false_positive_cases_indices[i,i] = 0
+        false_positives[label] = int(np.sum(cnf*false_positive_cases_indices))
 
         predicted_negative_cases_indices = np.ones_like(cnf)
         predicted_negative_cases_indices[:,i] = 0
-        predicted_negative_cases["Not " + label] = int(np.sum(predicted_negative_cases_indices*cnf))
+        predicted_negative_cases[label] = int(np.sum(predicted_negative_cases_indices*cnf))
 
-    return predicted_positive, positive_cases, predicted_negative_cases, negative_cases
+    return predicted_positive, positive_cases, predicted_negative_cases, negative_cases, false_positives, false_negatives
 
 def compute_ppv_accuracy_ova(cnf, labels):
 
-    ppv_and_accuracy = {label: {"ppv": 0, "accuracy": 0} for label in labels}
+    ppv_and_accuracy = {label: {"ppv": 0, "accuracy": 0, "num_correct": 0} for label in labels}
     total_accuracy = 0
     total_ppv = 0
 
@@ -62,6 +73,7 @@ def compute_ppv_accuracy_ova(cnf, labels):
         if np.sum(cnf) > 0:
             accuracy = (true_pos + true_neg)/np.sum(cnf)
             total_accuracy += accuracy
+            num_correct = true_pos + true_neg
 
         if np.sum(pos_calls) > 0:
             ppv = true_pos/sum(pos_calls)
@@ -69,6 +81,7 @@ def compute_ppv_accuracy_ova(cnf, labels):
 
         ppv_and_accuracy[label]["ppv"] = ppv
         ppv_and_accuracy[label]["accuracy"] = accuracy
+        ppv_and_accuracy[label]["num_correct"] = int(num_correct)
 
 
     return ppv_and_accuracy

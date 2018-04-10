@@ -366,7 +366,7 @@ if __name__ == "__main__":
                 print(cnf_matrix)
 
                 ppv_and_accuracy = compute_ppv_accuracy_ova(cnf_matrix, labels_list)
-                predicted_positive, positive_cases, predicted_negative_cases, negative_cases = get_classification_stats(cnf_matrix, labels_list)
+                predicted_positive, positive_cases, predicted_negative_cases, negative_cases, false_positives, false_negatives = get_classification_stats(cnf_matrix, labels_list)
 
                 print("OVA PPV and Accuracy: ", ppv_and_accuracy)
 
@@ -403,12 +403,12 @@ if __name__ == "__main__":
                 if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
                     os.makedirs(os.path.join("generated_data", rulename, dataset))
 
-                error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases, "Predicted Negative Cases": predicted_negative_cases,
-                              "Negative Cases": negative_cases, "Confusion Matrix": cnf_matrix.tolist(), "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": labels_list}
+                error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases, "Predicted Negative": predicted_negative_cases,
+                              "Negative Cases": negative_cases, "False Positives": false_positives, "False Negatives": false_negatives,
+                              "Confusion Matrix": cnf_matrix.tolist(), "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": labels_list}
 
-                generate_error_report(os.path.join("generated_data", rulename, dataset), "{}_error_report.html".format(rulename),
-                                      template_directory, 'error_report.html',
-                                      "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict, effects,
+                generate_error_report(os.path.join("generated_data", rulename, dataset),template_directory, "{}".format(rulename),
+                                      classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                       custom_effect_colours=effect_colours, addition_json_params=error_data)
 
                 '''

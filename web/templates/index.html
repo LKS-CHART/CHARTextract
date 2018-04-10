@@ -1,0 +1,88 @@
+{% raw %}
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <script src="https://d3js.org/d3.v3.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/mathjs/3.20.1/math.min.js"></script>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+        <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
+        <script src="main.js"></script>
+        <script src="DataService.js"></script>
+        <script src="ErrorController.js"></script>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <style>
+        .line-break-and-tab {
+            white-space: pre-line;
+            word-break: break-all;
+        }
+
+        .id-active {
+            border: 1px solid #000;
+        }
+    </style>
+    <body ng-app="app" ng-controller="ErrorController">
+        <div class="container-fluid">
+            <nav class="navbar navbar-default navbar-static-top">
+                <div class="container-fluid">
+                    <div class="nav navbar-nav">
+                        <ul class="list-unstyled" style="max-width:20%">
+                            <li>
+                                <ul class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                                    <li class="page-item">
+                                        <a href="#overview" style="min-width: 90px">
+                                            <p align="center" style="margin: 0 0">
+                                            Overview</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <ul class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                                    <li class="page-item">
+                                        <a  href="regexes.html" style="min-width: 90px">
+                                            <p align="center" style="margin: 0 0">
+                                            Regexes</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="nav navbar-nav" style="padding-left:20px; max-width:80%">
+                        <ul class="list-unstyled">
+                            <li style="display: block; min-height:35px;" ng-repeat="(class, colour) in classes">
+                                <ul class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                                    <li style="margin-top: 8px; min-width:100px">{{class}}: </li>
+                                    <li class="page-item" ng-repeat="error in errors[class]" ><a class="page-link" href="#view" ng-click="setSelected(error)" style="background: {{classes[getIdInfo(error).pred]}}">{{error}}</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <!-- Show legend -->
+                    <div class="nav navbar-nav navbar-right" style="padding-top:5px;">
+                        <div class="nav navbar-nav">
+                        <p ng-repeat="(class, colour) in classes"align="right" style="padding: 1px 1px">{{class}}: </p>
+                        </div>
+                        <div class="nav navbar-nav navbar-right" style="padding-right: 20px">
+                        <p ng-repeat="(class, colour) in classes" class="rounded" style="border: 1px solid #000; border-radius: 5px; padding: 10px 10px; background-color:{{colour}}; max-height: 10px; min-width: 10px; max-width: 10px"></p>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div ng-view></div>
+        </div>
+    </body>
+</html>
+{% endraw %}

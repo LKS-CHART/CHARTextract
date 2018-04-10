@@ -1,0 +1,16 @@
+{% raw %}
+<div ng-if="selected">
+    <div>
+        <h1 align="center">{{selected_id}}</h1>
+    </div>
+    <div>
+        <h3>Final Score</h3>
+        <p>Score: {{selected.score[selected.pred]}}</p>
+        <p>was determined to be {{selected.pred}}<b></b>, should be <b>{{selected.actual}}</b></p>
+    </div>
+    <h3>Letter Text</h3>
+    <p class="line-break-and-tab">
+        {{selected.data}}
+    </p>
+</div>
+{% endraw %}
