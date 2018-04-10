@@ -328,7 +328,7 @@ if __name__ == "__main__":
 
         # cur_run = file_to_args.keys()
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
-        cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
+        cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
         # cur_run = ["hcw", "smh"]
 
         #TODO: Add functools label_funcs for some of the classifiers
@@ -403,6 +403,7 @@ if __name__ == "__main__":
                 if not os.path.exists(os.path.join("generated_data", rulename, dataset)):
                     os.makedirs(os.path.join("generated_data", rulename, dataset))
 
+                #TODO: FIX STAT CREATION FOR CAPTURE CLASSIFIERS
                 error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases, "Predicted Negative": predicted_negative_cases,
                               "Negative Cases": negative_cases, "False Positives": false_positives, "False Negatives": false_negatives,
                               "Confusion Matrix": cnf_matrix.tolist(), "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": labels_list}
