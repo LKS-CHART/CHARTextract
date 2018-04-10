@@ -63,7 +63,7 @@ class RegexClassifier(BaseClassifier):
             return self.negative_label, score
 
     #TODO: Add preprocessing function
-    def run_classifier(self, sets=["train", "valid"], class_threshold=0, pwds=None, label_func=None, classify_func=None):
+    def run_classifier(self, sets=["train", "valid"], class_threshold=0, pwds=None, label_func=None, classify_func=None, **kwargs):
 
         """Runs the trained classifier on the given datasets. Note this datasets must be loaded into self.dataset object first or
         intialized in some other manner
@@ -108,7 +108,13 @@ class RegexClassifier(BaseClassifier):
                 self.dataset[data_set]["matches"].append(class_matches)
                 self.dataset[data_set]["scores"].append(class_scores)
 
-                classification, score = self.classify(class_scores, class_threshold)
+                #getting prediction
+
+                if not classify_func:
+                    classification, score = self.classify(class_scores, class_threshold)
+                else:
+                    classification, score = classify_func(matches, class_scores, **kwargs)
+
                 preds.append(classification)
                 if self.DEBUG:
                     print("Score: ", score)
