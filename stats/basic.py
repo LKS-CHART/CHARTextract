@@ -62,26 +62,23 @@ def compute_ppv_accuracy_ova(cnf, labels):
         neg_calls = np.copy(cnf)
         neg_calls[:,i] = 0
 
-        true_neg_bool = np.ones_like(cnf)
-        true_neg_bool[i,:] = 0
-        true_neg_bool[:,i] = 0
-
-        masked = true_neg_bool*cnf
-        true_neg = np.sum(masked)
+        true_neg = np.copy(cnf)
+        true_neg[i,:] = 0
+        true_neg[:,i] = 0
 
         accuracy = 1
         ppv = "nan"
         npv = "nan"
 
         if np.sum(cnf) > 0:
-            accuracy = (true_pos + true_neg)/np.sum(cnf)
-            num_correct = true_pos + true_neg
+            accuracy = (true_pos + np.sum(true_neg))/np.sum(cnf)
+            num_correct = true_pos + np.sum(true_neg)
 
         if np.sum(pos_calls) > 0:
             ppv = true_pos/sum(pos_calls)
 
         if np.sum(neg_calls) > 0:
-            npv = true_neg/np.sum(neg_calls)
+            npv = np.sum(true_neg)/np.sum(neg_calls)
 
         ppv_and_accuracy[label]["ppv"] = ppv
         ppv_and_accuracy[label]["npv"] = npv
