@@ -83,13 +83,13 @@ class CaptureClassifier(BaseClassifier):
 
             for datum in data:
                 capture_scores = defaultdict(int) 
-                matches = {}
                 captures = {}
                 class_matches = {}
 
                 #Forced to do this because self.regexes stored as {"class": [Regex Objects list]}
                 for class_name in self.regexes:
-                    
+
+                    matches = {}
                     #Ask handler to get capture_scores, captures, and matches
                     if len(self.regexes[class_name]) > 0:
                         matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name],
@@ -110,7 +110,7 @@ class CaptureClassifier(BaseClassifier):
                 if not classify_func:
                     preds.append(self.classify(capture_scores, threshold=class_threshold)[0])
                 else:
-                    preds.append(classify_func(matches, captures, capture_scores, **kwargs))
+                    preds.append(classify_func(class_matches, captures, capture_scores, **kwargs))
 
             preds = np.array(preds)
             self.dataset[data_set]["preds"] = preds
