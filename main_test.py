@@ -12,16 +12,16 @@ from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_labels_with_required,replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 
 
-def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6, label_func=None):
+def create_regex_based_classifier(rule_path=None, ids_list=None, data_list=None, labels_list=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6, label_func=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
     
     Arguments:
         rule_path {String} -- Path to the rule directory (in the case of multiclass classification) or a rule file (in the case of single class classificatoin)
-        ids {list} -- List of ids
-        data {list} -- List of data (string) for each id
+        ids_list {list} -- List of ids
+        data_list {list} -- List of data (string) for each id
     
     Keyword Arguments:
-        labels {list} -- List of labels (default: {None})
+        labels_list {list} -- List of labels (default: {None})
         training_mode {bool} -- Whether to run the classifier in training mode. If in training mode creates training and validation datasets (default: {False})
         l_id_col {int} -- Column in which label_file's ids are located starting from 0 (default: {None})
         l_label_col {int} -- Column in which label_file's labels are located starting from 0 (default: {None})
@@ -47,22 +47,24 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
             dataloader = di.data_from_csv if label_file.endswith('.csv') else di.data_from_excel
             #TODO: accordingly increment/decrement l_id_col, l_label_col, l_first_row, check_col depending on filetype
             _, temp_labels, temp_ids = dataloader([label_file], id_cols=l_id_col, label_cols=l_label_col, repeat_ids=repeat_ids, first_row=l_first_row, check_col=1)
-            labels = ["None"] * len(data)
-            for i, data_id in enumerate(ids):
+
+            labels_list = ["None"] * len(data_list)
+            for i, data_id in enumerate(ids_list):
                 if data_id in temp_ids:
-                    labels[i] = temp_labels[temp_ids.index(data_id)]
+                    labels_list[i] = temp_labels[temp_ids.index(data_id)]
 
             if label_func:
-                label_func(labels)
+                label_func(labels_list)
 
+        print(labels_list)
 
         #Storing data within classifier and creating validation and training sets
-        classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
+        classifier_runner.classifier.import_data(data=data_list, labels=labels_list, ids=ids_list)
         train_ids, valid_ids = classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
 
     #Otherwise, just load it into test
     else:
-        classifier_runner.classifier.load_dataset("test", data=data, ids=ids)
+        classifier_runner.classifier.load_dataset("test", data=data_list, ids=ids_list)
 
     return classifier_runner
 
@@ -131,7 +133,7 @@ if __name__ == "__main__":
                         "immigration.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 3, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
                         "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"INH resistant": "None"})}},
                         "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Fully sensitive": "None"})}},
-                        "sputum_conversion.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
+                        # "sputum_conversion.txt": {"Runner Initialization Params": {"ids_list": ids, "data_list": repeated_data_list, "training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
                         "tb_contact.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 5, "label_file": label_filename}},
                         "tb_old.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}},
                         "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Active TB": "None"})}},
@@ -186,6 +188,7 @@ if __name__ == "__main__":
         datasets = ["valid"]
 
         cur_run = file_to_args.keys()
+        # cur_run = ["sputum_conversion.txt"]
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
         # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
         # cur_run = ["hcw", "smh"]
@@ -201,9 +204,13 @@ if __name__ == "__main__":
                 rulename = rule.split(sep=".txt")[0]
 
                 print("="*100)
-                print("\nRunning on rule: {} - {}".format( rulename, dataset))
+                print("\nRunning on rule: {} - {}".format(rulename, dataset))
                 rule_file = os.path.join(tb_rules, rule)
-                classifier_runner = create_regex_based_classifier(rule_file, ids, data, **file_to_args[rule]["Runner Initialization Params"])
+
+                if "data_list" and "ids_list" not in file_to_args[rule]["Runner Initialization Params"]:
+                    classifier_runner = create_regex_based_classifier(rule_file, ids, data, **file_to_args[rule]["Runner Initialization Params"])
+                else:
+                    classifier_runner = create_regex_based_classifier(rule_file, **file_to_args[rule]["Runner Initialization Params"])
 
                 if "Runtime Params" in file_to_args:
                     classifier_runner.run(datasets=[dataset], **file_to_args[rule]["Runtime Params"])
