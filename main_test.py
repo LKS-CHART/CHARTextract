@@ -9,7 +9,7 @@ from stats.basic import calculate_accuracy
 from sklearn.metrics import confusion_matrix
 from stats.basic import plot_confusion_matrix, get_classification_stats, compute_ppv_accuracy_ova
 from datahandler.helpers import import_regex, import_regexes
-from datahandler.preprocessors import replace_labels_with_required,replace_label_with_required, replace_filter
+from datahandler.preprocessors import replace_labels_with_required,replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 
 
 def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6, label_func=None):
@@ -92,9 +92,8 @@ if __name__ == "__main__":
             dataloader = di.data_from_csv if filename.endswith('.csv') else di.data_from_excel
             data, _, ids = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=False)
             data_repeated, _, ids_repeated = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=True)
-
-
-        else: 
+            _, repeated_data_list, repeated_labels_list = convert_repeated_data_to_sublist(ids_repeated, repeated_data=data_repeated)
+        else:
             data = ["She migrated from Trinidad in 1999", "He immigrated from the US in 1920. He moved to Canada in 1920", "He is Canadian."]
             labels = ["Trinidad", "US", "Canada"]
             ids = ["0", "1", "2"]
@@ -185,7 +184,6 @@ if __name__ == "__main__":
                         "other_tb_risk_factors": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 23, "label_file": label_filename}}}
 
         datasets = ["valid"]
-        datasets = []
 
         cur_run = file_to_args.keys()
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
