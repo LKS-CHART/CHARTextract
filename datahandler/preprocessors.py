@@ -9,3 +9,6 @@ def replace_label_with_required(mapping_dict, labels_array):
 def replace_filter(filter_func, labels_array):
     for i, label in enumerate(labels_array):
         labels_array[i] = filter_func(label)
+
+def convert_repeated_data_to_sublist(repeated_data, repeated_labels, repeated_ids):
+    pass

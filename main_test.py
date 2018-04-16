@@ -67,7 +67,11 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
     return classifier_runner
 
 if __name__ == "__main__":
-        debug=False
+        debug = False
+
+        print_none = False
+        print_minimal = False
+        print_verbose = False
 
         # Web setup
         template_directory = os.path.join('web', 'templates')
@@ -87,10 +91,19 @@ if __name__ == "__main__":
         if not debug:
             dataloader = di.data_from_csv if filename.endswith('.csv') else di.data_from_excel
             data, _, ids = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=False)
+            data_repeated, _, ids_repeated = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=True)
+
+
         else: 
             data = ["She migrated from Trinidad in 1999", "He immigrated from the US in 1920. He moved to Canada in 1920", "He is Canadian."]
             labels = ["Trinidad", "US", "Canada"]
             ids = ["0", "1", "2"]
+
+        if not print_none and print_verbose:
+            for data_repeated, id_repeated in zip(data_repeated, ids_repeated):
+                print("="*100)
+                print(id_repeated)
+                print(data_repeated)
 
         #TODO: Update Headers
 
@@ -105,8 +118,6 @@ if __name__ == "__main__":
 
         file_to_header = {"inh_medication.txt": "INH Medication", "hcw": "Health Care Worker"}
 
-
-        #TODO: Constantly reopening the file - fix later
         file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
                         # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
                         "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"LTBI": "None"})}},
@@ -174,6 +185,7 @@ if __name__ == "__main__":
                         "other_tb_risk_factors": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 23, "label_file": label_filename}}}
 
         datasets = ["valid"]
+        datasets = []
 
         cur_run = file_to_args.keys()
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
@@ -189,6 +201,7 @@ if __name__ == "__main__":
             for rule in cur_run:
                 all_classifications = []
                 rulename = rule.split(sep=".txt")[0]
+
                 print("="*100)
                 print("\nRunning on rule: {} - {}".format( rulename, dataset))
                 rule_file = os.path.join(tb_rules, rule)
