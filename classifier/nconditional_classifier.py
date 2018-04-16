@@ -30,8 +30,8 @@ class NConditionalClassifier(BaseClassifier):
 
             for datum in data:
                 class_capture_scores = defaultdict(int)
-                class_matches = {}
-                class_captures = {}
+                class_matches = {} #Regex -> list of list of matches? - probably want one match in each sublist
+                class_captures = {} #Same as class_matches
                 for case in datum:
                     for class_name in self.regexes:
                         #Ask handler to et capture_scores, captures, and matches
@@ -41,9 +41,16 @@ class NConditionalClassifier(BaseClassifier):
 
                         if len(case_matches) == 0:
                             if self.DEBUG:
-                                print("NConditionalClassifier: {} regex failed to match".format(self.regexes[class_name]))
+                                print("NConditionalClassifier: {} regex failed to match".format(class_name))
                             break
 
-                classify_func(class_matches, class_captures, class_capture_scores)
+                if classify_func:
+                    classify_func(class_matches, class_captures, class_capture_scores)
+                else:
+                    pred = None
+
+
+
+
 
 

@@ -8,56 +8,8 @@ from web.report_generator import generate_error_report
 from stats.basic import calculate_accuracy
 from sklearn.metrics import confusion_matrix
 from stats.basic import plot_confusion_matrix, get_classification_stats, compute_ppv_accuracy_ova
-
-
-def import_regex(regex_file):
-    """Import a single regex rule file
-    
-    Arguments:
-        regex_file {string} -- Path to the regex rule file
-    
-    Returns:
-        classifier_type {string} -- The type of classifier that is required by the rule. E.g RegexClassifier, CaptureClassifier etc..
-        classifier_args {dictionary} -- A dictionary of arguments that will be used by the classifier
-        regexes {dictionary} -- A dictionary that maps the rule to a list of regexes for that rule
-    """
-
-    regexes = {}
-
-    #TODO: Check if tuple unpacking like this is an issue
-    classifier_type, classifier_args, class_name, regexes[class_name] = di.regexes_from_csv(regex_file, use_custom_score=True)
-
-    classifier_type = "RegexClassifier" if not classifier_type else classifier_type
-
-    return classifier_type, classifier_args, regexes
-
-def import_regexes(regex_directory):
-    """Import multiple regex rule files which will be used in multiclass classification
-    
-    Arguments:
-        regex_directory {string} -- Path to the directory which contains the rule files for a category e.g smoking status
-    
-    Returns:
-        classifier_type {string} -- The type of classifier that is required by the rule. E.g RegexClassifier, CaptureClassifier etc..
-        classifier_args {dictionary} -- A dictionary of arguments that will be used by the classifier
-        regexes {dictionary} -- A dictionary that maps the rule to a list of regexes for that rule
-    """
-    file_names = os.listdir(regex_directory)
-    regex_filenames = [os.path.join(regex_directory, fname) for fname in file_names]
-
-    regexes = {}
-
-    classifier_type = None
-    classifier_args = {}
-
-    for file in regex_filenames:
-        _classifier_type, _classifier_args, _class_name, regexes[_class_name] = di.regexes_from_csv(file, use_custom_score=True)
-        classifier_type = _classifier_type if _classifier_type else classifier_type
-        classifier_args = _classifier_args if _classifier_args else classifier_args
-
-    classifier_type = "RegexClassifier" if not classifier_type else classifier_type
-
-    return classifier_type, classifier_args, regexes
+from datahandler.helpers import import_regex, import_regexes
+from datahandler.preprocessors import replace_labels_with_required,replace_label_with_required, replace_filter
 
 
 def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6, label_func=None):
@@ -104,7 +56,6 @@ def create_regex_based_classifier(rule_path, ids, data, labels=None, training_mo
                 label_func(labels)
 
 
-
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data, labels=labels, ids=ids)
         train_ids, valid_ids = classifier_runner.classifier.create_train_and_valid(train_percent=train_percent, random_seed=0)
@@ -141,39 +92,6 @@ if __name__ == "__main__":
             labels = ["Trinidad", "US", "Canada"]
             ids = ["0", "1", "2"]
 
-
-
-        #Creating and running smoking classifier
-        # smoking_rules = os.path.join(rules_path, 'smoking_new')
-        # smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data, training_mode=True, l_id_col=1, l_label_col=7, l_first_row=2, label_file=label_filename)
-        # smoking_classifier = create_regex_based_classifier(smoking_rules, ids, data)
-        # smoking_classifier.run(datasets=["test"])
-        # all_classifications.append(smoking_classifier.classifier.dataset["test"]["preds"].tolist())
-
-        #Dictionary mapping from ethnicity to country
-        # ethnicity_to_country = {ethnicity: country for country,ethnicity in zip(pwds["country"],pwds["ethnicity"])}
-
-        #Convert the captured ethnicity into a country
-        # def country_capture_convert(capture):
-        #     if capture in ethnicity_to_country:
-        #         return ethnicity_to_country[capture]
-        #
-        #     return capture
-
-        #Creating and running immigration classifier
-        # immigration_rules = os.path.join(dummy_rules_path, "immigration_country.txt")
-        # immigration_classifier = create_regex_based_classifier(immigration_rules, ids, data, labels, training_mode=True)
-        # immigration_classifier = create_regex_based_classifier(immigration_rules, ids, data)
-        #Passing in the personal word dictionaries and labelling function
-        # immigration_classifier.run(datasets=["test"], pwds=pwds, label_func=country_capture_convert)
-        # all_classifications.append(immigration_classifier.classifier.dataset["test"]["preds"].tolist())
-
-        ####################################################################################################
-        #WIP - example run on all tbs
-        #Note - tb country functionality not implemented. Will do later
-        ####################################################################################################
-
-
         #TODO: Update Headers
 
         tb_rules = os.path.join(rules_path, "tb_rules")
@@ -187,19 +105,6 @@ if __name__ == "__main__":
 
         file_to_header = {"inh_medication.txt": "INH Medication", "hcw": "Health Care Worker"}
 
-
-        def replace_labels_with_required(label_of_interest, negative_label, labels_array):
-            for i, label_list in enumerate(labels_array):
-                labels_array[i] = label_of_interest if label_of_interest in label_list else negative_label
-
-
-        def replace_label_with_required(mapping_dict, labels_array):
-            for i, label in enumerate(labels_array):
-                labels_array[i] = mapping_dict[label] if label in mapping_dict else label
-
-        def replace_filter(filter_func, labels_array):
-            for i, label in enumerate(labels_array):
-                labels_array[i] = filter_func(label)
 
         #TODO: Constantly reopening the file - fix later
         file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
@@ -268,70 +173,13 @@ if __name__ == "__main__":
                         "extra_pulmonary.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 25, "label_file": label_filename}},
                         "other_tb_risk_factors": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 23, "label_file": label_filename}}}
 
-        # file_to_args = {"smoking_new": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 7, "label_file": label_filename}},
-        #                 # "country.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 2, "label_file": label_filename}},
-        #                 "diag_active.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
-        #                 "diag_method_clinical.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
-        #                 "diag_method_culture.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
-        #                 "diag_method_pcr.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 10, "label_file": label_filename}},
-        #                 "diag_ntm.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 9, "label_file": label_filename}},
-        #                 "hiv_negative.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
-        #                 "hiv_positive.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
-        #                 "hiv_not_dictated.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
-        #                 "hiv_unknown.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 4, "label_file": label_filename}},
-        #                 "immigration.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 3, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
-        #                 "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename}},
-        #                 "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename}},
-        #                 "sputum_conversion.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
-        #                 "tb_contact.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 5, "label_file": label_filename}},
-        #                 "tb_old.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}},
-        #                 "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename}},
-        #                 "inh_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
-        #                                            "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "pyrazinamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Pyrazinamide (Z/Pza)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "rifampin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifampin (RIF)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "ethambutol_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Ethambutol (E/Emb)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "rifabutin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifabutin (Rfb)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "moxifloxacin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Moxifloxacin (Mfx)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "rifapentine_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Rifapentine (RPT)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "capreomycin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Capreomycin (Cm)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "amikacin_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Amikacin (Amk)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "pas_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Para-aminosalicylic acid (Pas)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "cycloserine_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Cycloserine (Dcs)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "ethionamide_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Ethionamide (Eto)", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "vitamin_b6_medication.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": [13,14,15,16,17], "label_file": label_filename, "label_func": functools.partial(replace_labels_with_required, *["Vitamin B6", "None"])},
-        #                                        "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "hcw": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 1, "l_first_row": 1, "label_file": label_filename2},
-        #                                            "Runtime Params": {"label_func": None, "pwds": pwds}},
-        #                 "corticosteroids_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
-        #                 "chemotherapy_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
-        #                 "TNF_immuno": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 21, "label_file": label_filename}},
-        #                 "BCG": {"Runner Initialization Params": {"training_mode": True, "l_id_col": 0, "l_label_col": 7, "l_first_row": 1, "label_file": label_filename2}},
-        #                 "smh": {"Runner Initialization Params": {"training_mode": True,"l_id_col": 0,
-        #                         "l_label_col": 3,
-        #                         "label_file": label_filename2,
-        #                         "l_first_row": 1
-        #                         }}}
+        datasets = ["valid"]
 
-
-        datasets = ["train", "valid"]
-
-        # cur_run = file_to_args.keys()
+        cur_run = file_to_args.keys()
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
         # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
         # cur_run = ["hcw", "smh"]
-        cur_run = ["other_tb_risk_factors"]
+        # cur_run = ["other_tb_risk_factors"]
 
         #TODO: Add functools label_funcs for some of the classifiers
         #TODO: Use country preprocessor from old code
@@ -388,8 +236,6 @@ if __name__ == "__main__":
                     failures_dict[patient_id] = {"label": label, "data": text, "pred": pred, "matches": match_obj,
                                                  "score": score}
 
-                print(failures_dict)
-
                 print("\nIncorrect Ids: ", classifier_runner.classifier.dataset[dataset]["ids"][incorrect_indices])
                 print("Incorrect Predictions: ", classifier_runner.classifier.dataset[dataset]["preds"][incorrect_indices])
                 print("Incorrect Labels: ", classifier_runner.classifier.dataset[dataset]["labels"][incorrect_indices])
@@ -411,6 +257,8 @@ if __name__ == "__main__":
                 error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases, "Predicted Negative": predicted_negative_cases,
                               "Negative Cases": negative_cases, "False Positives": false_positives, "False Negatives": false_negatives,
                               "Confusion Matrix": cnf_matrix.tolist(), "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": labels_list}
+
+                print(ppv_and_accuracy)
 
                 generate_error_report(os.path.join("generated_data", rulename, dataset),template_directory, "{}".format(rulename),
                                       classifier_runner.classifier.regexes.keys(), failures_dict, effects,
