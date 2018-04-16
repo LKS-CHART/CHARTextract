@@ -1,5 +1,6 @@
 from classifier.simple_regex_classifier import RegexClassifier
 from classifier.simple_capture_classifier import CaptureClassifier
+from classifier.nconditional_classifier import NConditionalClassifier
 
 class Runner(object):
     """Generic Runner object used to initalize classifier with given args and run them
@@ -16,8 +17,8 @@ class Runner(object):
 
         if classifier_type == "RegexClassifier":
             self.classifier_type = RegexClassifier
-        elif classifier_type == "Svm":
-            pass
+        elif classifier_type == "NConditionalClassifier":
+            self.classifier_type = NConditionalClassifier
         elif classifier_type == "CaptureClassifier":
             self.classifier_type = CaptureClassifier
 

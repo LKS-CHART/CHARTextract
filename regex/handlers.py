@@ -3,6 +3,12 @@ from itertools import product
 from heapq import *
 from collections import defaultdict
 
+class TextCaptureHandler(object):
+
+    def __init__(self):
+        self.DEBUG = False
+        pass
+
 class CaptureHandler(object):
     #TODO: Only works with primary regexes not secondary. Add this functionality later... Should pretty much be identical
     #TODO: Add generic score_and_capture_text and have score_and_capture_sentence call that
@@ -13,6 +19,11 @@ class CaptureHandler(object):
     def __init__(self):
         self.DEBUG = False
         pass
+
+    def score_data(self, text, regexes, pwds=None, preprocess_func=None, capture_convert=None):
+        matches_scores_dict, captures, capture_scores = self.score_and_capture_sentences(text, regexes, pwds=pwds, preprocess_func=preprocess_func, capture_convert=capture_convert)
+
+        return matches_scores_dict, captures, capture_scores
 
     def score_and_capture_sentences(self, text, regexes, pwds=None, preprocess_func=None, capture_convert=None):
         """Given regexes and text, returns the matches, captures
@@ -114,6 +125,10 @@ class RegexHandler(object):
         self.DEBUG = False
         pass
 
+    def score_data(self, text, regexes, pwds=None):
+        matches_score_dict, total_score = self.score_and_match_sentences(text, regexes, pwds=pwds)
+
+        return matches_score_dict, total_score
     #TODO: Maybe create an effect handler
     def _match_secondary(self, secondary_regex, text, primary_regex_matches, pwds=None):
         """Computes matches for the secondary regex

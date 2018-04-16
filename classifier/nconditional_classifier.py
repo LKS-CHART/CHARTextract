@@ -1,6 +1,7 @@
 from .base_classifier import BaseClassifier
-from regex.handlers import CaptureHandler
+from regex.handlers import TextCaptureHandler
 from collections import defaultdict
+import numpy as np
 
 class NConditionalClassifier(BaseClassifier):
     """
@@ -45,12 +46,13 @@ class NConditionalClassifier(BaseClassifier):
                             break
 
                 if classify_func:
-                    classify_func(class_matches, class_captures, class_capture_scores)
+                    pred = classify_func(class_matches, class_captures, class_capture_scores)
                 else:
                     pred = None
 
+                self.dataset[data_set]["matches"].append(class_matches)
+                self.dataset[data_set]["scores"].append(class_capture_scores)
+                preds.append(pred)
 
-
-
-
-
+        preds = np.array(preds)
+        self.dataset[data_set]["preds"] = preds

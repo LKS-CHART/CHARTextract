@@ -92,7 +92,7 @@ class CaptureClassifier(BaseClassifier):
                     matches = {}
                     #Ask handler to get capture_scores, captures, and matches
                     if len(self.regexes[class_name]) > 0:
-                        matches, captures, capture_scores = self.handler.score_and_capture_sentences(datum, self.regexes[class_name],
+                        matches, captures, capture_scores = self.handler.score_data(datum, self.regexes[class_name],
                                                                                                      pwds=pwds, preprocess_func=preprocess_func,
                                                                                                      capture_convert=label_func)
                     #Storing matches in object
