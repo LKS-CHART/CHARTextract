@@ -44,7 +44,7 @@ class CaptureHandler(object):
         """
         sentences = split_string_into_sentences(text)
         matches_scores_dict = {}
-        captures = {}
+        captures_list = []
         capture_scores = defaultdict(int)
 
         #Scoring and capturing each sentence
@@ -55,9 +55,17 @@ class CaptureHandler(object):
 
             if matches:
                 matches_scores_dict[i] = {"matches": matches, "text_score": score}
+
+            #TODO: Decide on whether to do sentence_number -> capture for captures or just append all captures to a list
+            # if captures:
+            #     captures_dict[i] = {"captures": captures}
+
+            captures_list.extend(captures)
+
         if self.DEBUG:
             print(capture_scores)
-        return matches_scores_dict, captures, capture_scores
+
+        return matches_scores_dict, captures_list, capture_scores
 
     def score_and_capture_sentence(self, text, regexes, capture_scores, pwds=None, preprocess_func=None, capture_convert=None):
         """Given regexes and text, returns the matches, captures

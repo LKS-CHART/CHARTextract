@@ -313,6 +313,10 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
 
                 continue
 
+            #blank line check
+            if len(line) == 0:
+                continue
+
             #comment code
             if line[0].startswith("#"):
                 continue
