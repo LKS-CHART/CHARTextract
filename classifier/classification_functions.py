@@ -25,8 +25,16 @@ def sputum_classify(class_matches, class_captures, class_capture_scores, negativ
             matches = sentence_matches["matches"]
             for match in matches:
                 if match["name"] == "reg0-Sputum conversion":
-                    print(match["matches"][0].groups(0)[0])
+                    print("HERE")
                     return match["matches"][0].groups(0)[0]
-                else:
-                    return negative_label
+
+            sentence = None
+            for match in matches:
+                for secondary_match in match["secondary_matches"]:
+                    if secondary_match["effect"] == "r" and secondary_match["pattern"] == ".*":
+                        sentence = secondary_match["matches"][0].group()
+
+            print(sentence)
+
+    return negative_label
 

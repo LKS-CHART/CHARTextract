@@ -32,8 +32,11 @@ class NConditionalClassifier(BaseClassifier):
             self.dataset[data_set]["captures"] = []
             self.dataset[data_set]["scores"] = []
 
-            for datum in data:
-                # class_capture_scores = {class_name: [{} for _ in range(len(datum))] for class_name in self.regexes}
+            for data_index, datum in enumerate(data):
+                print("-"*100)
+                print("Classifying id: ", self.dataset[data_set]["ids"][data_index])
+                print("Label: ", self.dataset[data_set]["labels"][data_index])
+                class_capture_scores = {class_name: [{} for _ in range(len(datum))] for class_name in self.regexes}
                 class_matches = {class_name: [{} for _ in range(len(datum))] for class_name in self.regexes} #Regex -> list of list of matches? - probably want one match in each sublist
                 # class_captures = {class_name: [[] for _ in range(len(datum))] for class_name in self.regexes} #Same as class_matches
                 for i, case in enumerate(datum):
@@ -46,7 +49,7 @@ class NConditionalClassifier(BaseClassifier):
 
                         class_matches[class_name][i] = case_matches
                         # class_captures[class_name][i] = case_captures
-                        # class_capture_scores[class_name][i] = case_capture_scores
+                        class_capture_scores[class_name][i] = 0
 
                         if len(case_matches) == 0:
                             if self.DEBUG:
@@ -62,7 +65,7 @@ class NConditionalClassifier(BaseClassifier):
 
                 self.dataset[data_set]["matches"].append(class_matches)
                 # self.dataset[data_set]["captures"].append(class_captures)
-                # self.dataset[data_set]["scores"].append(class_capture_scores)
+                self.dataset[data_set]["scores"].append(class_capture_scores)
                 preds.append(pred)
 
         if self.DEBUG:
