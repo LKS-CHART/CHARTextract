@@ -129,8 +129,9 @@ class RegexHandler(object):
     """Used for matching and scoring sentences. Can be used by RegexClassifier
     """
 
-    def __init__(self):
+    def __init__(self, return_ignores=False):
         self.DEBUG = False
+        self.return_ignores = return_ignores
         pass
 
     def score_data(self, text, regexes, pwds=None, preprocess_func=None):
@@ -230,10 +231,10 @@ class RegexHandler(object):
             secondary_matches = []
             primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.get_regex(), "secondary_matches": []}
 
+            add_primary_match = True
+
             #If the primary matches
             if len(regex_matches) > 0:
-
-
 
                 #Getting all the secondary regexes grouped by effect
                 ignore_regexes = regex.get_secondary_regexes(type_list=["i", "ib", "ia"])
@@ -259,6 +260,7 @@ class RegexHandler(object):
                     secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.get_regex(), "score": secondary_regex.score, "matches": []}
                     secondary_match = self._match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
 
+
                     #If there was a secondary match
                     if secondary_match:
                         if self.DEBUG:
@@ -272,6 +274,7 @@ class RegexHandler(object):
                         #If ignore, stop eval of remaining secondary regexes
                         if secondary_regex.effect.startswith("i"):
                             score = 0
+                            add_primary_match = self.return_ignores
                             break
 
                         #If replace, replace score and stop eval of remaining secondary regexes
@@ -290,7 +293,9 @@ class RegexHandler(object):
                 primary_match["secondary_matches"] = secondary_matches
 
                 #Add the primary regex to the list of matches for the sentence
-                matches.append(primary_match)
+                if add_primary_match:
+                    matches.append(primary_match)
+
                 if self.DEBUG:
                     print("REGEX_SCORE: ", score)
 
