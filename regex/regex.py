@@ -27,7 +27,7 @@ class Regex(object):
         self._match_func = re.finditer if all_matches else re.search
         self.matches = None
         self._should_compile = regex.find("dict:'") == -1 #Don't compile if it found dict:'
-        # self._should_compile = False
+        self._should_compile = False
         self.flags = combine_flags(flags) if flags else 0
         self.regex = re.compile(regex, self.flags) if self._should_compile else regex
         self._required_pwds = [] if self._should_compile else self._get_required_pwds()
@@ -147,6 +147,8 @@ class Regex(object):
 
         if pwds:
             regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
+        else:
+            regex = self.regex
 
         #Want to keep format for re.iter and re.search the same so that's why I'm returning lists
         if self.all_matches:
@@ -177,6 +179,8 @@ class Regex(object):
 
         if pwds:
             regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
+        else:
+            regex = self.regex
 
         if self.all_matches:
             #Use re.iter if all matches and return a list version
