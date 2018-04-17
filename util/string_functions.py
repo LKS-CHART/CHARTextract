@@ -23,8 +23,10 @@ def split_string_into_sentences(text):
     """
 
     #TODO: Add lookbehind for Mr. Ms. etc..
-    text, num_subs = re.subn(r'\s{2,}', " ", text.replace("\n", " ").split("."))
-    return text
+    text, num_subs = re.subn(r'\s{2,}', " ", text.replace("\n", " "))
+    sentences = text.split(".")
+
+    return sentences
 
 def split_string_into_words(text):
     """Given a string of text, splits it into words
