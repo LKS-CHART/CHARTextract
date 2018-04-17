@@ -14,10 +14,10 @@ def convert_repeated_data_to_sublist(repeated_ids, repeated_data=None, repeated_
     repeated_dict = {}
     repeated_ids_list = []
 
-    if not repeated_data:
+    if repeated_data is None:
         repeated_data = [None]*len(repeated_ids)
 
-    if not repeated_labels:
+    if repeated_labels is None:
         repeated_labels = [None]*len(repeated_ids)
 
     for repeated_id, repeated_label, repeated_datum in zip(repeated_ids, repeated_labels, repeated_data):

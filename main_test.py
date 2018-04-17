@@ -187,8 +187,8 @@ if __name__ == "__main__":
 
         datasets = ["train"]
 
-        # cur_run = file_to_args.keys()
-        cur_run = ["sputum_conversion_2"]
+        cur_run = file_to_args.keys()
+        # cur_run = ["sputum_conversion_2"]
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
         # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
         # cur_run = ["hcw", "smh"]
