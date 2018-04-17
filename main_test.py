@@ -10,6 +10,7 @@ from sklearn.metrics import confusion_matrix
 from stats.basic import plot_confusion_matrix, get_classification_stats, compute_ppv_accuracy_ova
 from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_labels_with_required,replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
+from classifier.classification_functions import sputum_classify
 
 
 def create_regex_based_classifier(rule_path=None, ids_list=None, data_list=None, labels_list=None, training_mode=False, l_id_col=1, l_label_col=None, l_first_row=2, label_file=None, repeat_ids=False, train_percent=0.6, label_func=None):
@@ -55,8 +56,6 @@ def create_regex_based_classifier(rule_path=None, ids_list=None, data_list=None,
 
             if label_func:
                 label_func(labels_list)
-
-        print(labels_list)
 
         #Storing data within classifier and creating validation and training sets
         classifier_runner.classifier.import_data(data=data_list, labels=labels_list, ids=ids_list)
@@ -133,7 +132,8 @@ if __name__ == "__main__":
                         "immigration.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 3, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
                         "sensitivity_full.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"INH resistant": "None"})}},
                         "sensitivity_inh.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 11, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Fully sensitive": "None"})}},
-                        # "sputum_conversion.txt": {"Runner Initialization Params": {"ids_list": ids, "data_list": repeated_data_list, "training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])}},
+                        "sputum_conversion_2": {"Runner Initialization Params": {"ids_list": ids, "data_list": repeated_data_list, "training_mode": True, "l_label_col": 12, "label_file": label_filename, "label_func": functools.partial(replace_filter, lambda label: label[0:4])},
+                                                "Runtime Params": {"classify_func": sputum_classify}},
                         "tb_contact.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 5, "label_file": label_filename}},
                         "tb_old.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 6, "label_file": label_filename}},
                         "diag_ltbi.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 8, "label_file": label_filename, "label_func": functools.partial(replace_label_with_required, {"Active TB": "None"})}},
@@ -185,10 +185,10 @@ if __name__ == "__main__":
                         "extra_pulmonary.txt": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 25, "label_file": label_filename}},
                         "other_tb_risk_factors": {"Runner Initialization Params": {"training_mode": True, "l_label_col": 23, "label_file": label_filename}}}
 
-        datasets = ["valid"]
+        datasets = ["train"]
 
-        cur_run = file_to_args.keys()
-        # cur_run = ["sputum_conversion.txt"]
+        # cur_run = file_to_args.keys()
+        cur_run = ["sputum_conversion_2"]
         # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
         # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
         # cur_run = ["hcw", "smh"]
@@ -212,7 +212,7 @@ if __name__ == "__main__":
                 else:
                     classifier_runner = create_regex_based_classifier(rule_file, **file_to_args[rule]["Runner Initialization Params"])
 
-                if "Runtime Params" in file_to_args:
+                if "Runtime Params" in file_to_args[rule]:
                     classifier_runner.run(datasets=[dataset], **file_to_args[rule]["Runtime Params"])
                 else:
                     classifier_runner.run(datasets=[dataset])
