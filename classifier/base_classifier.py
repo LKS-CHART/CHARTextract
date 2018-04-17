@@ -49,7 +49,7 @@ class BaseClassifier(object):
         self.labels = np.array(labels) if labels else [None]*len(data)
         self.ids = np.array(ids) if ids else [None]*len(data)
 
-    def create_train_and_valid(self, train_percent=.6, random_seed=None):
+    def create_train_and_valid(self, data=None, labels=None, ids=None,train_percent=.6, random_seed=None):
         """Splits data in train and valid
         
         Keyword Arguments:
@@ -60,29 +60,36 @@ class BaseClassifier(object):
             train ids{list} -- List of train ids
             valid ids{list} -- List of valid ids
         """
+        if data is None:
+            data=self.data
+        if labels is None:
+            labels = self.labels
+        if ids is None:
+            ids = self.ids
+
         if random_seed is not None:
             randomizer = np.random.RandomState(random_seed)
         else:
             randomizer = np.random.RandomState()
 
-        x = randomizer.permutation(len(self.data))
+        x = randomizer.permutation(len(data))
         train = np.sort(x[:int(len(x) * train_percent)])
         valid = np.sort(x[int(len(x) * train_percent):])
 
-        self.dataset["train"]["data"] = self.data[train]
-        self.dataset["train"]["labels"] = self.labels[train]
-        self.dataset["train"]["ids"] = self.ids[train]
+        self.dataset["train"]["data"] = data[train]
+        self.dataset["train"]["labels"] = labels[train]
+        self.dataset["train"]["ids"] = ids[train]
 
-        self.dataset["valid"]["data"] = self.data[valid]
-        self.dataset["valid"]["labels"] = self.labels[valid]
-        self.dataset["valid"]["ids"] = self.ids[valid]
+        self.dataset["valid"]["data"] = data[valid]
+        self.dataset["valid"]["labels"] = labels[valid]
+        self.dataset["valid"]["ids"] = ids[valid]
 
         for each in ["train", "valid"]:
             self.dataset[each]["preds"] = [None] * len(self.dataset[each]["data"])
             self.dataset[each]["scores"] = [None] * len(self.dataset[each]["data"])
             self.dataset[each]["matches"] = [None] * len(self.dataset[each]["data"])
 
-        return self.ids[train], self.ids[valid]
+        return ids[train], ids[valid]
 
     def run_classifier(self):
         """Runs the classifier

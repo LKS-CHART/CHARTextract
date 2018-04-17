@@ -18,9 +18,9 @@ def preprocess_data(data):
     #print("HER")
     data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n')
     #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
-    data, num_subs = re.subn(r'\s{3,}', " ", data)
-    data, _ = re.subn(r' M.{1,2}\.', ' ', data, flags=re.IGNORECASE)
-    data, _ = re.subn(r' D.{1,2}\.', ' ', data, flags=re.IGNORECASE)
+    data, _ = re.subn(r'\bM.{1,2}\.', '', data)
+    data, _ = re.subn(r'\bD.{1,2}\.', '', data)
+    #data, num_subs = re.subn(r'\s{3,}', " ", data)
     data = data.replace(' St.', ' St')
     data = data.replace('D.O.B.', 'DOB')
     return data
@@ -216,7 +216,8 @@ def import_pwds(filenames, pwd_names=None):
 
     return pwds
 
-def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
+def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None,
+                  preprocess_func=None, check_col=0):
 
     """Reads data from excel files
     
