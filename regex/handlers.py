@@ -133,8 +133,8 @@ class RegexHandler(object):
         self.DEBUG = False
         pass
 
-    def score_data(self, text, regexes, pwds=None):
-        matches_score_dict, total_score = self.score_and_match_sentences(text, regexes, pwds=pwds)
+    def score_data(self, text, regexes, pwds=None, preprocess_func=None):
+        matches_score_dict, total_score = self.score_and_match_sentences(text, regexes, pwds=pwds, preprocess_func=preprocess_func)
 
         return matches_score_dict, total_score
     #TODO: Maybe create an effect handler
@@ -172,7 +172,7 @@ class RegexHandler(object):
 
         return secondary_matches
 
-    def score_and_match_sentences(self, text, regexes, pwds=None):
+    def score_and_match_sentences(self, text, regexes, pwds=None, preprocess_func=None):
         """Given regexes and text, determines a score for the sentence
         
         Arguments:
@@ -191,7 +191,7 @@ class RegexHandler(object):
         for i, sentence in enumerate(sentences):
             #Mimicing preprocessing from old tool
             sentence = " {} ".format(sentence)
-            matches, score = self.score_and_match_sentence(sentence, regexes, pwds=pwds)
+            matches, score = self.score_and_match_sentence(sentence, regexes, pwds=pwds, preprocess_func=preprocess_func)
 
             #only adding sentences that matched
             if matches:
@@ -203,7 +203,7 @@ class RegexHandler(object):
 
         return matches_score_dict, total_score
 
-    def score_and_match_sentence(self, text, regexes, pwds=None):
+    def score_and_match_sentence(self, text, regexes, pwds=None, preprocess_func=None):
         """Scores the text and returns matches based on the effects of the regexes
         
         Arguments:
@@ -215,6 +215,10 @@ class RegexHandler(object):
             total_score {int} -- Score for the sentence
 
         """
+        #Preprocessing sentence
+        if preprocess_func:
+            text, preprocessed_pwds = preprocess_func(text, pwds)
+
         matches = []
         total_score = 0
         for regex in regexes:
