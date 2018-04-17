@@ -49,6 +49,8 @@ class NConditionalClassifier(BaseClassifier):
                         if len(case_matches) == 0:
                             if self.DEBUG:
                                 print("NConditionalClassifier: {} regex failed to match".format(class_name))
+                                if class_name == "Sputum Date":
+                                    print(case)
                             break
 
                 if classify_func:
@@ -61,7 +63,9 @@ class NConditionalClassifier(BaseClassifier):
                 self.dataset[data_set]["scores"].append(class_capture_scores)
                 preds.append(pred)
 
-        print(self.dataset[data_set]["matches"])
-        print(self.dataset[data_set]["captures"])
+        if self.DEBUG:
+            print(self.dataset[data_set]["matches"])
+            print(self.dataset[data_set]["captures"])
+
         preds = np.array(preds)
         self.dataset[data_set]["preds"] = preds
