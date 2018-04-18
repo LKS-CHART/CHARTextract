@@ -33,7 +33,7 @@ def _generate_match_for_json(match_obj):
                 #Adding the primary matches in the match_obj
                 matches.extend([{"name": regex_obj["name"], "score": regex_obj["score"],
                                                     "pattern": regex_obj["pattern"], "effect": regex_obj["effect"], "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group()} for match in regex_obj["matches"]])
+                                                    "match_end": match.end(), "matched_string": match.group(), "aggregate_score": regex_obj["aggregate_score"]} for match in regex_obj["matches"]])
 
                 #Unrolling the secondary matches and just adding them on
                 for secondary_regex in regex_obj["secondary_matches"]:

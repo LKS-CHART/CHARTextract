@@ -229,7 +229,7 @@ class RegexHandler(object):
             #Creating priority for regex effects. Ignores have highest precedence followed by replaces and lastly adds
             priority_queue = []
             secondary_matches = []
-            primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.get_regex(), "secondary_matches": []}
+            primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.get_regex(), "secondary_matches": [], "aggregate_score": 0}
 
             add_primary_match = True
 
@@ -291,6 +291,7 @@ class RegexHandler(object):
 
                 #Setting primary regex's secondary matches param
                 primary_match["secondary_matches"] = secondary_matches
+                primary_match["aggregate_score"] = score
 
                 #Add the primary regex to the list of matches for the sentence
                 if add_primary_match:
