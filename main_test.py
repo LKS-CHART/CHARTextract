@@ -133,16 +133,18 @@ if __name__ == "__main__":
         data_list, _, ids_list = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=False)
         data_repeated, _, ids_repeated = dataloader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=True)
         _, repeated_data_list, repeated_labels_list = convert_repeated_data_to_sublist(ids_repeated, repeated_data=data_repeated)
+        if not print_none and print_verbose:
+            for data_repeated, id_repeated in zip(data_repeated, ids_repeated):
+                print("=" * 100)
+                print(id_repeated)
+                print(data_repeated)
     else:
+        repeated_data_list = None
         data_list = ["She migrated from Trinidad in 1999", "He immigrated from the US in 1920. He moved to Canada in 1920", "He is Canadian."]
         labels = ["Trinidad", "US", "Canada"]
         ids_list = ["0", "1", "2"]
 
-    if not print_none and print_verbose:
-        for data_repeated, id_repeated in zip(data_repeated, ids_repeated):
-            print("="*100)
-            print(id_repeated)
-            print(data_repeated)
+
 
     #TODO: Update Headers
 
@@ -158,7 +160,7 @@ if __name__ == "__main__":
     file_to_header = {"inh_medication.txt": "INH Medication", "hcw": "Health Care Worker"}
 
     file_to_args = {"smoking_new": {"Runner Initialization Params": {"l_label_col": 7}},
-                    # "country.txt": {"Runner Initialization Params": {"l_label_col": 2}},
+                    "country.txt": {"Runner Initialization Params": {"l_label_col": 2}},
                     "diag_active.txt": {"Runner Initialization Params":
                                             {"l_label_col": 8,
                                              "label_func": functools.partial(replace_label_with_required,
@@ -359,7 +361,7 @@ if __name__ == "__main__":
     datasets = ["train"]
 
     #cur_run = file_to_args.keys()
-    cur_run = ["sputum_conversion_2"]
+    cur_run = ["country.txt"]
     # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno", "BCG"]
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
     # cur_run = ["hcw", "smh"]
@@ -394,7 +396,7 @@ if __name__ == "__main__":
                                 train_percent=.6, random_seed=0)
         else:
             for cur_dataset in datasets:
-                if file_to_args[rule]["use_row_start"]:
+                if "use_row_start" in file_to_args[rule]:
                     cur_params['l_first_row'] = row_start[cur_dataset]
                 cur_params["label_file"] = label_files_dict[cur_dataset]
                 data[cur_dataset], labels[cur_dataset], ids[cur_dataset] = get_labeled_data(**cur_params)
