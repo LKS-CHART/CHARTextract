@@ -343,7 +343,8 @@ if __name__ == "__main__":
                                                                         {"Corticosteroids (prednisone)": "No",
                                                                          "Other": "No", 'None': "No",
                                                                          "Chemotherapy": "No",
-                                                                         "TNF alpha inhibitors": "Yes"})}},
+                                                                         "TNF alpha inhibitors": "Yes"})},
+                                   },
                     "BCG": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 7,
                                                              "label_file": label_filename2}},
                     "smh": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 3,
@@ -351,7 +352,9 @@ if __name__ == "__main__":
                     "afb_positive.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
-                    "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}}}
+                    "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
+                    "tb_duration": {"Runner Initialization Params": {"l_label_col": 40},
+                                    "use_row_start":True}}
 
     datasets = ["train"]
 
@@ -365,7 +368,10 @@ if __name__ == "__main__":
     #TODO: Add functools label_funcs for some of the classifiers
     #TODO: Use country preprocessor from old code
 
-
+    row_start = {"train": 45,
+                 "valid": 53,
+                 "test": 53
+                 }
     # excel_column_headers = ["Ids"]
     for rule in cur_run:
         rulename = rule.split(sep=".txt")[0]
@@ -388,6 +394,8 @@ if __name__ == "__main__":
                                 train_percent=.6, random_seed=0)
         else:
             for cur_dataset in datasets:
+                if file_to_args[rule]["use_row_start"]:
+                    cur_params['l_first_row'] = row_start[cur_dataset]
                 cur_params["label_file"] = label_files_dict[cur_dataset]
                 data[cur_dataset], labels[cur_dataset], ids[cur_dataset] = get_labeled_data(**cur_params)
                 classifier_runner = load_classifer_data(classifier_runner, data[cur_dataset], labels[cur_dataset], ids[cur_dataset], dataset=cur_dataset)
