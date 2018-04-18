@@ -31,17 +31,23 @@ def _generate_match_for_json(match_obj):
             for regex_obj in match_obj[class_name][sentence_id]['matches']:
 
                 #Adding the primary matches in the match_obj
-                matches.extend([{"name": regex_obj["name"], "score": regex_obj["score"],
-                                                    "pattern": regex_obj["pattern"], "effect": regex_obj["effect"], "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group(), "aggregate_score": regex_obj["aggregate_score"]} for match in regex_obj["matches"]])
+                primary = {"name": regex_obj["name"], "score": regex_obj["score"],
+                                                    "pattern": regex_obj["pattern"], "effect": regex_obj["effect"], "aggregate_score": regex_obj["aggregate_score"], "matches": [], "secondary_regexes": []}
+
+                for match in regex_obj["matches"]:
+                    primary["matches"].append({"match_start": match.start(), "match_end": match.end(), "matched_string": match.group()})
 
                 #Unrolling the secondary matches and just adding them on
                 for secondary_regex in regex_obj["secondary_matches"]:
-                    secondary_dict = [{"name": secondary_regex["name"], "score": secondary_regex["score"],
-                                                    "pattern": secondary_regex["pattern"], "effect": secondary_regex["effect"], "match_start": match.start(),
-                                                    "match_end": match.end(), "matched_string": match.group(), "primary_pattern": regex_obj["pattern"]} for match in secondary_regex["matches"]]
-                    matches.extend(secondary_dict)
+                    secondary = {"name": secondary_regex["name"], "score": secondary_regex["score"],
+                                                    "pattern": secondary_regex["pattern"], "effect": secondary_regex["effect"], "matches": []}
 
+                    for secondary_match in secondary_regex["matches"]:
+                        secondary["matches"].append({"match_start": secondary_match.start(), "match_end": secondary_match.end(), "matched_string": secondary_match.group()})
+
+                    primary["secondary_regexes"].append(secondary)
+
+                matches.append(primary)
     return match_dict
 
 def _generate_hsl_colour_dictionary(keys, lightness=85):
