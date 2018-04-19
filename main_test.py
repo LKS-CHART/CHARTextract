@@ -476,4 +476,3 @@ if __name__ == "__main__":
             conf_path = os.path.join("generated_data", rule_name, cur_dataset)
             plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
             # de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
-
