@@ -11,7 +11,7 @@ from stats.basic import plot_confusion_matrix, get_classification_stats, compute
 from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_filter_by_label, replace_labels_with_required,\
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
-from classifier.classification_functions import sputum_classify
+from classifier.classification_functions import sputum_classify, max_classify
 
 
 def create_regex_based_classifier(rule_path=None):
@@ -357,15 +357,23 @@ if __name__ == "__main__":
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
                     "tb_duration": {"Runner Initialization Params": {"l_label_col": 40},
                                     "use_row_start": True},
-                    "skin_test": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 3,
-                                                                   "label_file": label_filename2, "l_first_row": 1}
+                    "skin_test_mm.txt": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 5,
+                                                                          "label_file": label_filename2,
+                                                                          "l_first_row": 1,
+                                                                          },
+                                         "Runtime Params": {"classify_func": max_classify}
+                                         },
+                    "skin_test": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 9,
+                                                                   "label_file": label_filename2, "l_first_row": 1,
+                                                                   },
+                                  "Runtime Params": {"label_func": None, "pwds": pwds}
                                   }
                     }
 
     datasets = ["train", "valid"]
 
     # cur_run = file_to_args.keys()
-    cur_run = ["skin_test"]
+    cur_run = ["skin_test_mm.txt"]
     # cur_run = ["inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
     # cur_run = ["hcw", "smh", "BCG]
