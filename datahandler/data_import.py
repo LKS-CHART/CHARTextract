@@ -26,6 +26,47 @@ def preprocess_data(data):
     return data
 
 
+def get_labeled_data(ids_list, data_list, label_file, l_id_col=1, l_label_col=None, l_first_row=3,
+                     label_func=None):
+    """
+    :param ids_list:
+    :param data_list:
+    :param label_file:
+    :param l_id_col:
+    :param l_label_col:
+    :param l_first_row:
+    :param label_func:
+    :return:
+    """
+
+    new_data_list = []
+    new_labels_list = []
+    new_ids_list = []
+
+    local_data_loader = data_from_csv if label_file.endswith('.csv') else data_from_excel
+    # TODO: accordingly increment/decrement l_id_col, l_label_col, l_first_row, check_col depending on filetype
+    _, temp_labels, temp_ids = local_data_loader([label_file], id_cols=l_id_col, label_cols=l_label_col,
+                                          repeat_ids=False, first_row=l_first_row, check_col=1)
+
+    new_list = []
+    for i, data_id in enumerate(ids_list):
+        if data_id in temp_ids:
+            # temp_ids must be unique
+            new_list.append([temp_labels[temp_ids.index(data_id)], data_list[i], data_id])
+
+    new_list = sorted(new_list, key=lambda j: j[2])
+
+    for each in new_list:
+        new_labels_list.append(each[0])
+        new_data_list.append(each[1])
+        new_ids_list.append(each[2])
+
+    if label_func:
+        label_func(new_labels_list)
+
+    return new_data_list, new_labels_list, new_ids_list
+
+
 def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_process_func):
     """Gets data, label and id from a row
     
