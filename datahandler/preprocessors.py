@@ -2,14 +2,25 @@ def replace_labels_with_required(label_of_interest, negative_label, labels_array
     for i, label_list in enumerate(labels_array):
         labels_array[i] = label_of_interest if label_of_interest in label_list else negative_label
 
+
 def replace_label_with_required(mapping_dict, labels_array):
     for i, label in enumerate(labels_array):
         labels_array[i] = mapping_dict[label] if label in mapping_dict else label
+
 
 def replace_filter(filter_func, labels_array):
     for i, label in enumerate(labels_array):
         labels_array[i] = filter_func(label)
 
+
+def replace_filter_by_label(label_of_interest, negative_label, exact_match=False, labels_array=None):
+    for i, label in enumerate(labels_array):
+        if exact_match:
+            labels_array[i] = label_of_interest if label.find(label_of_interest) >= 0 else negative_label
+        else:
+            labels_array[i] = label_of_interest if label_of_interest == label else negative_label
+
+        
 def convert_repeated_data_to_sublist(repeated_ids, repeated_data=None, repeated_labels=None):
     repeated_dict = {}
     repeated_ids_list = []
