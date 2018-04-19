@@ -202,6 +202,26 @@ if __name__ == "__main__":
                                              "label_func": functools.partial(replace_filter_by_label,
                                                                              *["PZA", "None", False])}
                                             },
+                    "sensitivity_emb.txt": {"Runner Initialization Params":
+                                            {"l_label_col": 11,
+                                             "label_func": functools.partial(replace_filter_by_label,
+                                                                             *["EMB", "None", False])}
+                                            },
+                    "sensitivity_rif.txt": {"Runner Initialization Params":
+                                            {"l_label_col": 11,
+                                             "label_func": functools.partial(replace_filter_by_label,
+                                                                             *["RIF", "None", False])}
+                                            },
+                    "sensitivity_mfx.txt": {"Runner Initialization Params":
+                                            {"l_label_col": 11,
+                                             "label_func": functools.partial(replace_filter_by_label,
+                                                                             *["MFX", "None", False])}
+                                            },
+                    "sensitivity_unknown.txt": {"Runner Initialization Params":
+                                                {"l_label_col": 11,
+                                                 "label_func": functools.partial(replace_filter_by_label,
+                                                                                 *["Unknown", "None", False])}
+                                                },
                     "sputum_conversion_2": {"Runner Initialization Params":
                                             {"ids_list": ids_list, "data_list": repeated_data_list,
                                              "l_label_col": 12,
@@ -336,12 +356,16 @@ if __name__ == "__main__":
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
                     "tb_duration": {"Runner Initialization Params": {"l_label_col": 40},
-                                    "use_row_start": True}}
+                                    "use_row_start": True},
+                    "skin_test": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 3,
+                                                                   "label_file": label_filename2, "l_first_row": 1}
+                                  }
+                    }
 
     datasets = ["train", "valid"]
 
     # cur_run = file_to_args.keys()
-    cur_run = ["sensitivity_full.txt"]
+    cur_run = ["skin_test"]
     # cur_run = ["inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
     # cur_run = ["hcw", "smh", "BCG]
