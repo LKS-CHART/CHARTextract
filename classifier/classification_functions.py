@@ -6,6 +6,22 @@ def max_classify(class_matches, class_captures, class_capture_scores, negative_l
 def min_classify(class_matches, class_captures, class_capture_scores, negative_label="None"):
     return min(class_capture_scores, key=int) if class_capture_scores else negative_label
 
+def max_month(class_matches, class_captures, class_scores, negative_label="None"):
+
+    scored_months = [month for month, score in class_scores.items() if score > 0]
+
+
+    if not scored_months:
+        return negative_label
+
+    else:
+        if "12 months +" in scored_months:
+            return "12 months +"
+
+        if "9 months" in scored_months:
+            return "9 months"
+
+        return "6 months"
 
 # ONLY WORKS IF NOT USING RE.ITER AND 1 CAPTURE
 def sputum_classify(class_matches, class_captures, class_capture_scores, negative_label="None"):

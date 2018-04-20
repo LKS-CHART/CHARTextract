@@ -11,7 +11,7 @@ from stats.basic import plot_confusion_matrix, get_classification_stats, compute
 from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_filter_by_label, replace_labels_with_required,\
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
-from classifier.classification_functions import sputum_classify, max_classify
+from classifier.classification_functions import sputum_classify, max_classify, max_month
 from util.tb_country import preprocess
 
 
@@ -362,7 +362,7 @@ if __name__ == "__main__":
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
                     "tb_duration": {"Runner Initialization Params": {"l_label_col": 40},
-                                    "use_row_start": True},
+                                    "use_row_start": True, "Runtime Params": {"classify_func": max_month}},
                     "skin_test_mm.txt": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 5,
                                                                           "label_file": label_filename2,
                                                                           "l_first_row": 1,
