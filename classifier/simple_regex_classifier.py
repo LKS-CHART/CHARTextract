@@ -113,7 +113,7 @@ class RegexClassifier(BaseClassifier):
                 if not classify_func:
                     classification, score = self.classify(class_scores, class_threshold)
                 else:
-                    classification = classify_func(class_matches, None, class_scores, **kwargs)
+                    classification = classify_func(class_matches, None, class_scores, negative_label=self.negative_label, **kwargs)
 
                 preds.append(classification)
                 if self.DEBUG:

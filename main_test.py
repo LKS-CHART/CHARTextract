@@ -378,7 +378,6 @@ if __name__ == "__main__":
 
     datasets = ["train"]
 
-
     # cur_run = file_to_args.keys()
     # cur_run = ["country.txt"]
     # "ethambutol_medication.txt", "rifabutin_medication.txt", "moxifloxacin_medication.txt",
@@ -394,7 +393,7 @@ if __name__ == "__main__":
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
     row_start = {"train": 29,
-                 "valid": 21,
+                 "valid": 20,
                  "test": 53
                  }
 
