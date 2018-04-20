@@ -20,6 +20,7 @@ def preprocess_data(data):
     #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
     data, _ = re.subn(r'\bM.{1,2}\.', '', data)
     data, _ = re.subn(r'\bD.{1,2}\.', '', data)
+    data, _ = re.subn(r'(\d)?\.(\d) ?cm\b', r'\1\2 mm', data)
     #data, num_subs = re.subn(r'\s{3,}', " ", data)
     data = data.replace(' St.', ' St')
     data = data.replace('D.O.B.', 'DOB')
