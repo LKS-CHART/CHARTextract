@@ -12,6 +12,7 @@ from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_filter_by_label, replace_labels_with_required,\
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from classifier.classification_functions import sputum_classify
+from util.tb_country import preprocess
 
 
 def create_regex_based_classifier(rule_path=None):
@@ -134,7 +135,8 @@ if __name__ == "__main__":
     file_to_header = {"inh_medication.txt": "INH Medication", "hcw": "Health Care Worker"}
 
     file_to_args = {"smoking_new": {"Runner Initialization Params": {"l_label_col": 7}},
-                    # "country.txt": {"Runner Initialization Params": {"l_label_col": 2}},
+                    "country.txt": {"Runner Initialization Params": {"l_label_col": 2}, "Runtime Params":
+                                                                     {"label_func": None, "preprocess_func": preprocess}},
                     "diagnosis": {"Runner Initialization Params": {"l_label_col": 8}},
                     "diag_active.txt": {"Runner Initialization Params":
                                         {"l_label_col": 8,
@@ -331,25 +333,48 @@ if __name__ == "__main__":
                                                              "label_file": label_filename2}},
                     "smh": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 3,
                                                              "label_file": label_filename2, "l_first_row": 1}},
-                    "afb_positive.txt": {"Runner Initialization Params": {"l_label_col": 25}},
+                    "afb_positive.txt": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 35,
+                                         "label_func": functools.partial(replace_filter,
+                                                                         lambda i: "Pulmonary AFB Positive"
+                                                                         if (i.find("Pulmonary") > -1)
+                                                                         or (i.find("pulmonary") > -1) else "None")}},
                     "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
                     "tb_duration": {"Runner Initialization Params": {"l_label_col": 40},
                                     "use_row_start": True}}
 
-    datasets = ["train", "valid"]
+    datasets = ["train"]
+
 
     # cur_run = file_to_args.keys()
-    cur_run = ["sensitivity_full.txt"]
-    # cur_run = ["inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
-    # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt", "immigration.txt"]
-    # cur_run = ["hcw", "smh", "BCG]
+    # cur_run = ["inh_medication.txt", "pyrazinamide_medication.txt", "rifampin_medication.txt",
+    # "ethambutol_medication.txt", "rifabutin_medication.txt", "moxifloxacin_medication.txt",
+    # "rifapentine_medication.txt",
+    # "capreomycin_medication.txt", "amikacin_medication.txt", "pas_medication.txt", "cycloserine_medication.txt",
+    # "ethionamide_medication.txt", "vitamin_b6_medication.txt"]
+    # cur_run = ["inh_medication.txt"]
+    # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
+    # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
+    # cur_run = ["afb_positive.txt"]
+    # cur_run = ["country.txt"]
+    # cur_run = ["inh_medication.txt", "pyrazinamide_medication.txt", "rifampin_medication.txt",
+    # "ethambutol_medication.txt", "rifabutin_medication.txt", "moxifloxacin_medication.txt",
+    # "rifapentine_medication.txt",
+    # "capreomycin_medication.txt", "amikacin_medication.txt", "pas_medication.txt", "cycloserine_medication.txt",
+    # "ethionamide_medication.txt", "vitamin_b6_medication.txt"]
+    # cur_run = ["inh_medication.txt"]
+    # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
+    # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
+    # cur_run = ["afb_positive.txt"]
+    cur_run = ["smoking_new"]
     # cur_run = ["other_tb_risk_factors"]
+
+    cur_run = ["tb_duration"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
-    row_start = {"train": 23,
+    row_start = {"train": 29,
                  "valid": 21,
                  "test": 53
                  }
