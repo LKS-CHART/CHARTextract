@@ -11,7 +11,7 @@ from stats.basic import plot_confusion_matrix, get_classification_stats, compute
 from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_filter_by_label, replace_labels_with_required,\
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
-from classifier.classification_functions import sputum_classify
+from classifier.classification_functions import sputum_classify, max_classify
 from util.tb_country import preprocess
 
 
@@ -380,27 +380,14 @@ if __name__ == "__main__":
 
 
     # cur_run = file_to_args.keys()
-    # cur_run = ["inh_medication.txt", "pyrazinamide_medication.txt", "rifampin_medication.txt",
-    # "ethambutol_medication.txt", "rifabutin_medication.txt", "moxifloxacin_medication.txt",
-    # "rifapentine_medication.txt",
-    # "capreomycin_medication.txt", "amikacin_medication.txt", "pas_medication.txt", "cycloserine_medication.txt",
-    # "ethionamide_medication.txt", "vitamin_b6_medication.txt"]
-    # cur_run = ["inh_medication.txt"]
-    # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
-    # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
-    # cur_run = ["afb_positive.txt"]
     # cur_run = ["country.txt"]
-    # cur_run = ["inh_medication.txt", "pyrazinamide_medication.txt", "rifampin_medication.txt",
     # "ethambutol_medication.txt", "rifabutin_medication.txt", "moxifloxacin_medication.txt",
     # "rifapentine_medication.txt",
     # "capreomycin_medication.txt", "amikacin_medication.txt", "pas_medication.txt", "cycloserine_medication.txt",
     # "ethionamide_medication.txt", "vitamin_b6_medication.txt"]
-    # cur_run = ["inh_medication.txt"]
     # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
-    # cur_run = ["afb_positive.txt"]
-    cur_run = ["smoking_new"]
-    # cur_run = ["other_tb_risk_factors"]
+    # cur_run = ["smoking_new"]
 
     cur_run = ["tb_duration"]
 
