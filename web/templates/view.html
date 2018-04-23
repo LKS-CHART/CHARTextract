@@ -7,10 +7,10 @@
             <input type="text" ng-model="searchMatch" class="form-control" style="border-radius: 15px 15px 15px 15px; width: 90%; margin: 0 auto; float: none;"placeholder="Search">
             <div id="scroll-style" class="col-md-12" style="margin-top: 10px; height: 70px; width: 95%; overflow-y: scroll; overflow-x:hidden">
                 <div ng-repeat="(class, colour) in classes">
-                    <div ng-repeat="sentence_matches in selected.matches[class]">
+                    <div ng-repeat="(sentence_id, sentence_matches) in selected.matches[class]">
                         <!--{{sentence_matches}}-->
-                        <li ng-repeat="sentence_match in sentence_matches | filter: searchMatch" style="list-style: none; color: #455A64">
-                            <a href="index.html#/view#link1">{{sentence_match.matches[0].matched_string}}</a>
+                        <li ng-repeat="sentence_match  in sentence_matches | filter: searchMatch" style="list-style: none">
+                            <a href="index.html#/view#{{sentence_id}}">{{sentence_match.matches[0].matched_string}}</a>
                         </li>
                     </div>
                 </div>
