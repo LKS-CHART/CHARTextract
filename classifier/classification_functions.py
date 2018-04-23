@@ -1,6 +1,9 @@
 def max_classify(class_matches, class_captures, class_capture_scores, negative_label="None"):
-    if 'None' in class_capture_scores:
-        del(class_capture_scores['None'])
+    if negative_label in class_capture_scores:
+        if class_capture_scores[negative_label] == max(class_capture_scores.values()):
+            return negative_label
+        else:
+            del(class_capture_scores[negative_label])
     if None in class_capture_scores:
         del (class_capture_scores[None])
     print(class_capture_scores)
