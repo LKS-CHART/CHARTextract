@@ -1,9 +1,10 @@
-app.controller('ErrorController', function($scope, DataService){
+app.controller('ErrorController', function($scope, $sce, DataService){
 
     var myDataPromise = DataService.getData()
     $scope.selected = null;
     $scope.selected_id = null;
     $scope.overview = true;
+
     myDataPromise.then(function(result) {
         $scope.data = result
         $scope.classes = result.classes
@@ -27,7 +28,12 @@ app.controller('ErrorController', function($scope, DataService){
 
     $scope.setSelected = function(id) {
         $scope.selected = $scope.data.patient_cases[id]
-        $scope.selected_id = id 
+        $scope.selected_id = id
+    }
+
+    $scope.getSelectedData = function() {
+
+        return $sce.trustAsHtml($scope.selected.data)
     }
 
 })
