@@ -18,8 +18,9 @@ class CaptureHandler(object):
     """Used for capturing and scoring sentences. Can be used by CaptureClassifier
     """
 
-    def __init__(self):
+    def __init__(self, return_ignores=False):
         self.DEBUG = False
+        self.return_ignores = return_ignores
         pass
 
     def score_data(self, text, regexes, pwds=None, preprocess_func=None, capture_convert=None):
@@ -129,8 +130,6 @@ class CaptureHandler(object):
             priority_queue = []
             secondary_matches = []
             primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.get_regex(), "secondary_matches": [], "aggregate_score": 0}
-
-
             add_primary_match = True
 
             # If the primary matches

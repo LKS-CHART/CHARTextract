@@ -1,5 +1,6 @@
 import re
 from regex.regex_functions import combine_flags
+import time
 
 class Regex(object):
     """Container class for regexes, scores and matches
@@ -145,6 +146,7 @@ class Regex(object):
             captures {list} -- List of captured strings
         """
 
+        start = time.time()
         if pwds:
             regex = self._add_dict_to_pattern(self.regex, self._required_pwds, pwds)
         else:
@@ -160,6 +162,10 @@ class Regex(object):
             matches = [] if matches is None else [matches]
 
         captures = [capture for match in matches for capture in match.groups()]
+
+        end = time.time() - start
+
+        # print("REGEX TOOK: ", end)
 
         return matches, captures
 
