@@ -2,7 +2,7 @@ from util.string_functions import split_string_into_sentences
 from itertools import product
 from heapq import *
 from collections import defaultdict
-
+from regex.regex_functions import _match_secondary
 
 class TextCaptureHandler(object):
 
@@ -122,25 +122,91 @@ class CaptureHandler(object):
             # If regex returns all the matches want to multiply score by length
             score = regex.score*len(regex_matches)
 
-            # match_obj
-            primary_matches = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "secondary_matches": [], "pattern": regex.get_regex(), "aggregate_score": score}
-
             # Converting the capture using the capture_convert function
             # E.g Canadian -> Canada, Trinidadian -> Trinidad
+
+            # Creating priority for regex effects. Ignores have highest precedence followed by replaces and lastly adds
+            priority_queue = []
+            secondary_matches = []
+            primary_match = {"name": regex.name, "score": regex.score, "effect": regex.effect, "matches": regex_matches, "pattern": regex.get_regex(), "secondary_matches": [], "aggregate_score": 0}
+
+
+            add_primary_match = True
+
+            # If the primary matches
+            if len(regex_matches) > 0:
+
+                # Getting all the secondary regexes grouped by effect
+                ignore_regexes = regex.get_secondary_regexes(type_list=["i", "ib", "ia"])
+                replace_regexes = regex.get_secondary_regexes(type_list=["r", "rb", "ra"])
+                add_regexes = regex.get_secondary_regexes(type_list=["a", "ab", "aa"])
+
+                # Pushing secondary regexes on to priority queue. Priority queue key is determined by order of appearance in secondary_regexes list and also their effect
+                for i, secondary_regex in enumerate(ignore_regexes): heappush(priority_queue, (i, secondary_regex))
+                for i, secondary_regex in enumerate(replace_regexes): heappush(priority_queue, (i+len(ignore_regexes), secondary_regex))
+                for i, secondary_regex in enumerate(add_regexes): heappush(priority_queue, (i+len(ignore_regexes) + len(replace_regexes), secondary_regex))
+                if self.DEBUG:
+                    print("Regex: ", regex.get_regex())
+                    print("TEXT: ", text)
+                    print("Before filter:", regex_matches)
+                    print("IGNORE REGEXES:", ignore_regexes)
+                    print("REPLACE REGEXES:", replace_regexes)
+                    print("ADD REGEXES:", add_regexes)
+                    print("PRIORITY QUEUE:", priority_queue)
+
+                for i in range(len(priority_queue)):
+                    # Pop the secondary regex off the queue and compute the secondary matches
+                    secondary_regex = heappop(priority_queue)[1]
+                    secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.get_regex(), "score": secondary_regex.score, "matches": []}
+                    secondary_match = _match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
+
+
+                    # If there was a secondary match
+                    if secondary_match:
+                        if self.DEBUG:
+                            print("After filter", regex_matches)
+                            print("Secondary Match: ", secondary_match)
+                        # Update secondary_regex_obj matches component
+                        secondary_regex_obj["matches"] = secondary_match
+                        # Add the secondary_regex_obj to the list of secondary_matches for the primary_regex_obj
+                        secondary_matches.append(secondary_regex_obj)
+
+                        # If ignore, stop eval of remaining secondary regexes
+                        if secondary_regex.effect.startswith("i"):
+                            score = 0
+                            add_primary_match = self.return_ignores
+                            break
+
+                        # If replace, replace score and stop eval of remaining secondary regexes
+                        elif secondary_regex.effect.startswith("r"):
+                            score = secondary_regex.score
+
+                        # If add, add to the score
+                        elif secondary_regex.effect.startswith("a"):
+                            score += secondary_regex.score
+
+                    else:
+                        if secondary_regex.effect.startswith("r"):
+                            break
+
+                # Setting primary regex's secondary matches param
+                primary_match["secondary_matches"] = secondary_matches
+                primary_match["aggregate_score"] = score
+
+                # Add the primary regex to the list of matches for the sentence
+                if add_primary_match:
+                    matches.append(primary_match)
+                    captures.extend(regex_captures)
+
+            total_score += score
+
             for capture in regex_captures:
                 if capture_convert:
                     capture = capture_convert(capture)
 
-                capture_scores[capture] += regex.score
-
-            # If matches we want to add the matches to the list of matches
-            # Extending the list of all captured text
-            if len(regex_matches) > 0:
-                matches.append(primary_matches)
-                captures.extend(regex_captures)
-
-            # Adding the computed regex score to the running total for the sentence
-            total_score += score
+                capture_scores[capture] += score
+                if self.DEBUG:
+                    print("REGEX_SCORE: ", score)
 
         return matches, captures, total_score
 
@@ -159,43 +225,6 @@ class RegexHandler(object):
 
         return matches_score_dict, total_score
 
-    # TODO: Maybe create an effect handler
-    def _match_secondary(self, secondary_regex, text, primary_regex_matches, pwds=None):
-        """Computes matches for the secondary regex
-        
-        Arguments:
-            secondary_regex {Regex} -- Secondary Regex object to compute the matches for
-            text {String} -- Text to match
-            primary_regex_matches {list} -- List of MatchObjs for primary regex
-        
-        Returns:
-            secondary_matches {list} -- List of MatchObjs for secondary regex
-        """
-
-        # Getting secondary matches
-        secondary_matches = secondary_regex.determine_matches(text, pwds=pwds)
-        if self.DEBUG:
-            print("SECONDARY_MATCHES IN FUNC:", secondary_matches)
-
-        if secondary_matches:
-            # If regex has a before or after effect e.g rb, ia etc.. do some extra checks based on effect
-            # Otherwise, just return secondary_matches
-            if len(secondary_regex.effect) == 2:
-                effect_modifier = secondary_regex.effect[1]
-                # If secondary match appears before any of the primary matches
-                if effect_modifier == "b" and any(map(lambda tup: tup[0].start() <= tup[1].start(),
-                                                      product(secondary_matches, primary_regex_matches))):
-                    secondary_matches = secondary_matches
-                # If it appears after any of the primary matches
-                elif effect_modifier == "a" and any(map(lambda tup: tup[0].start() >= tup[1].end(),
-                                                        product(secondary_matches, primary_regex_matches))):
-                    secondary_matches = secondary_matches
-
-                # If the above two were not satisfied, the secondary regex failed to satisfy its after effect
-                else:
-                    secondary_matches = []
-
-        return secondary_matches
 
     def score_and_match_sentences(self, text, regexes, pwds=None, preprocess_func=None):
         """Given regexes and text, determines a score for the sentence
@@ -282,7 +311,7 @@ class RegexHandler(object):
                     # Pop the secondary regex off the queue and compute the secondary matches
                     secondary_regex = heappop(priority_queue)[1]
                     secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.get_regex(), "score": secondary_regex.score, "matches": []}
-                    secondary_match = self._match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
+                    secondary_match = _match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
 
 
                     # If there was a secondary match
