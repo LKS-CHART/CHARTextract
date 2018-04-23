@@ -15,8 +15,9 @@ def combine_flags(flag_list):
     #Or operator applied to flag_list
     return functools.reduce(operator.or_, flag_list)
 
+
 # TODO: Maybe create an effect handler
-def _match_secondary(self, secondary_regex, text, primary_regex_matches, pwds=None):
+def match_secondary(secondary_regex, text, primary_regex_matches, pwds=None):
     """Computes matches for the secondary regex
 
     Arguments:
@@ -30,8 +31,6 @@ def _match_secondary(self, secondary_regex, text, primary_regex_matches, pwds=No
 
     # Getting secondary matches
     secondary_matches = secondary_regex.determine_matches(text, pwds=pwds)
-    if self.DEBUG:
-        print("SECONDARY_MATCHES IN FUNC:", secondary_matches)
 
     if secondary_matches:
         # If regex has a before or after effect e.g rb, ia etc.. do some extra checks based on effect

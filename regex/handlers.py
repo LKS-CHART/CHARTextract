@@ -2,7 +2,7 @@ from util.string_functions import split_string_into_sentences
 from itertools import product
 from heapq import *
 from collections import defaultdict
-from regex.regex_functions import _match_secondary
+from regex.regex_functions import match_secondary
 
 class TextCaptureHandler(object):
 
@@ -157,7 +157,7 @@ class CaptureHandler(object):
                     # Pop the secondary regex off the queue and compute the secondary matches
                     secondary_regex = heappop(priority_queue)[1]
                     secondary_regex_obj = {"name": secondary_regex.name, "effect": secondary_regex.effect, "pattern": secondary_regex.get_regex(), "score": secondary_regex.score, "matches": []}
-                    secondary_match = _match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
+                    secondary_match = match_secondary(secondary_regex, text, regex_matches, pwds=pwds)
 
 
                     # If there was a secondary match
