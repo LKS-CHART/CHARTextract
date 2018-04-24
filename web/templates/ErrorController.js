@@ -1,4 +1,4 @@
-app.controller('ErrorController', function($scope, $sce, DataService){
+app.controller('ErrorController', function($scope, $sce, $anchorScroll, $location, DataService){
 
     var myDataPromise = DataService.getData()
     $scope.selected = null;
@@ -22,6 +22,20 @@ app.controller('ErrorController', function($scope, $sce, DataService){
             }
         })
     })
+
+    $scope.gotoAnchor = function(x) {
+
+        var newHash = x;
+
+        if ($location.hash() !== newHash) {
+
+            $location.hash(String(newHash))
+        } else {
+
+            $anchorScroll();
+        }
+
+    }
 
     $scope.getIdInfo = function(id) {
         return $scope.data.patient_cases[id]
@@ -128,3 +142,4 @@ app.controller('ErrorController', function($scope, $sce, DataService){
     }
 
 })
+
