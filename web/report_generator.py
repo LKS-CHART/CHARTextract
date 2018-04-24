@@ -23,7 +23,7 @@ def _generate_match_for_json(match_obj):
         #For each sentence that had a match for that class
         for sentence_id in match_obj[class_name]:
             matches = []
-            match_dict[class_name][sentence_id] = matches
+            match_dict[class_name][sentence_id] = {"matches": matches, "text_score":  match_obj[class_name][sentence_id]["text_score"]}
 
             #TODO: Duplicate values generated if all_matches parameter is used. Fix this?
 

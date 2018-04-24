@@ -9,7 +9,7 @@
                 <div ng-repeat="(class, colour) in classes">
                     <div ng-repeat="(sentence_id, sentence_matches) in selected.matches[class]">
                         <!--{{sentence_matches}}-->
-                        <li ng-repeat="sentence_match  in sentence_matches | filter: searchMatch" style="list-style: none">
+                        <li ng-repeat="sentence_match  in sentence_matches.matches | filter: searchMatch" style="list-style: none">
                             <a href="" ng-click="gotoAnchor(sentence_id); getSentenceMatches(sentence_id)">{{sentence_match.matches[0].matched_string}}</a>
                         </li>
                     </div>
@@ -51,4 +51,5 @@
         </div>
     </div>
 </div>
+>
 {% endraw %}

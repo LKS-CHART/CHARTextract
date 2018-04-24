@@ -64,7 +64,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
             if ($scope.selected.matches[classname].hasOwnProperty(str_id))
             {
-                sentence_matches = $scope.selected.matches[classname][str_id]
+                sentence_matches = $scope.selected.matches[classname][str_id]["matches"]
 
 
                 for (var i = 0; i < sentence_matches.length; i++) {
