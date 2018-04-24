@@ -1,3 +1,17 @@
+app.directive('initBind', function($compile) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attr) {
+            attr.$observe('ngBindHtml', function() {
+                if (attr.ngBindHtml) {
+                    $compile(element[0].children)(scope);
+                }
+            })
+        }
+    }
+
+})
+
 app.controller('ErrorController', function($scope, $sce,DataService){
 
     var myDataPromise = DataService.getData()
@@ -5,6 +19,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.selected_id = null;
     $scope.overview = true;
     $scope.match_selected = false;
+    $scope.marked_data = null;
 
     myDataPromise.then(function(result) {
         $scope.data = result
@@ -41,6 +56,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.getSentenceMatches = function(sentence_id)
     {
 
+        console.log("HEREREASD")
         var all_sentence_matches = []
         var str_id = String(sentence_id)
         for (var classname in $scope.selected.matches) {
@@ -92,6 +108,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
             }
         }
 
+
         return sentence_set
 
     }
@@ -109,7 +126,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
             if (sentences_with_matches.has(i)) {
 
-                var new_sentence = '<mark id="' + i + '">' + sentences[i] + '.</mark>'
+                var new_sentence = '<mark style="cursor: pointer;"ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + sentences[i] + '.</mark>'
                 new_data += new_sentence
             }
             else
