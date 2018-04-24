@@ -20,6 +20,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.overview = true;
     $scope.match_selected = false;
     $scope.marked_data = null;
+    $scope.selected_matches = null;
 
     myDataPromise.then(function(result) {
         $scope.data = result
@@ -53,7 +54,9 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         $scope.selected = $scope.data.patient_cases[id]
         $scope.selected_id = id
         $scope.match_selected = false;
+        $scope.getSelectedMatches();
     }
+
 
     $scope.getSentenceMatches = function(sentence_id)
     {
@@ -71,7 +74,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                 for (var i = 0; i < sentence_matches.length; i++) {
                     var match_obj = sentence_matches[i];
 
-                    matched_string = match_obj["matches"][0]["matched_string"]
+                    var matched_string = match_obj["matches"][0]["matched_string"]
 
                     var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score, "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score, "matched_string": matched_string}
 
@@ -148,10 +151,49 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
     }
 
+    function sortNumber(a,b) {
+        return a-b;
+    }
+
     $scope.getSelectedData = function() {
 
-        marked_data = markData($scope.selected.data, $scope.selected.matches)
+        var marked_data = markData($scope.selected.data, $scope.selected.matches)
         return $sce.trustAsHtml(marked_data)
     }
 
+    $scope.getSelectedMatches = function()
+    {
+        var sentence_ids = getSentencesWithMatches($scope.selected.matches)
+        var sentence_ids_array = Array.from(sentence_ids)
+        sentence_ids_array.sort(sortNumber);
+        var unrolled_primaries = []
+
+        for (var j = 0; j < sentence_ids_array.length; j++)
+        {
+            var str_id= String(sentence_ids_array[j])
+
+            for (var cname in $scope.selected.matches)
+            {
+                if($scope.selected.matches[cname].hasOwnProperty(str_id))
+
+                {
+                    var sentence_matches = $scope.selected.matches[cname][str_id]["matches"]
+
+                    for (var i = 0; i < sentence_matches.length; i++) {
+                        var match_obj = sentence_matches[i];
+
+                        var matched_string = match_obj["matches"][0]["matched_string"]
+
+                        var primary_match = {"sentence_id": str_id, "matched_string": matched_string}
+
+                        unrolled_primaries.push(primary_match)
+
+                    }
+                }
+            }
+
+        }
+
+        $scope.selected_matches = unrolled_primaries
+    }
 })
