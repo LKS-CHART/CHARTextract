@@ -128,4 +128,3 @@ app.controller('ErrorController', function($scope, $sce, DataService){
     }
 
 })
-)
