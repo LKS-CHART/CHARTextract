@@ -42,6 +42,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
         var newHash = String(x);
         document.getElementById(newHash).scrollIntoView(true);
+        $scope.match_selected = true;
     }
 
     $scope.getIdInfo = function(id) {
@@ -64,7 +65,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
             if ($scope.selected.matches[classname].hasOwnProperty(str_id))
             {
-                sentence_matches = $scope.selected.matches[classname][str_id]["matches"]
+                var sentence_matches = $scope.selected.matches[classname][str_id]["matches"]
 
 
                 for (var i = 0; i < sentence_matches.length; i++) {
