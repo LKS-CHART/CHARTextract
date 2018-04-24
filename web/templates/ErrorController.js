@@ -1,4 +1,4 @@
-app.controller('ErrorController', function($scope, $sce, $anchorScroll, $location, DataService){
+app.controller('ErrorController', function($scope, $sce,DataService){
 
     var myDataPromise = DataService.getData()
     $scope.selected = null;
@@ -25,16 +25,8 @@ app.controller('ErrorController', function($scope, $sce, $anchorScroll, $locatio
 
     $scope.gotoAnchor = function(x) {
 
-        var newHash = x;
-
-        if ($location.hash() !== newHash) {
-
-            $location.hash(String(newHash))
-        } else {
-
-            $anchorScroll();
-        }
-
+        var newHash = String(x);
+        document.getElementById(newHash).scrollIntoView(true);
     }
 
     $scope.getIdInfo = function(id) {
@@ -142,4 +134,3 @@ app.controller('ErrorController', function($scope, $sce, $anchorScroll, $locatio
     }
 
 })
-
