@@ -51,12 +51,13 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.setSelected = function(id) {
         $scope.selected = $scope.data.patient_cases[id]
         $scope.selected_id = id
+        $scope.match_selected = false;
     }
 
     $scope.getSentenceMatches = function(sentence_id)
     {
 
-        console.log("HEREREASD")
+        $scope.match_selected = true;
         var all_sentence_matches = []
         var str_id = String(sentence_id)
         for (var classname in $scope.selected.matches) {
@@ -71,7 +72,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
                     matched_string = match_obj["matches"][0]["matched_string"]
 
-                    var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score, "effect": match_obj.pattern, "aggregate_score": match_obj.aggregate_score, "matched_string": matched_string}
+                    var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score, "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score, "matched_string": matched_string}
 
                     all_sentence_matches.push(primary_match)
 
@@ -81,7 +82,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
                         var match_obj2 = secondary_matches[j];
                         var secondary_match = {"name": match_obj2.name, "pattern": match_obj2.pattern, "score": match_obj2.score,
-                        "effect": match_obj2.pattern, "matched_string": match_obj2.matches[0].matched_string}
+                        "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string}
 
                         all_sentence_matches.push(secondary_match)
 
@@ -93,6 +94,8 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
 
         }
+
+        $scope.sentence_matches = all_sentence_matches;
 
     }
 
