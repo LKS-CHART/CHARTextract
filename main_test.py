@@ -395,8 +395,7 @@ if __name__ == "__main__":
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    # cur_run = ["diag_active.txt"]
-    cur_run = ["diag_active_demo.txt"]
+    cur_run = ["immigration.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -460,7 +459,9 @@ if __name__ == "__main__":
                   classifier_runner.classifier.dataset[cur_dataset]["preds"][incorrect_indices])
             print("Incorrect Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"][incorrect_indices])
 
-            if classifier_runner.classifier_type == RegexClassifier:
+            classifier_type = classifier_runner.classifier_type.__name__
+
+            if classifier_type == "RegexClassifier":
                 cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[cur_dataset]["labels"],
                                               classifier_runner.classifier.dataset[cur_dataset]["preds"])
                 ppv_and_accuracy = compute_ppv_accuracy_ova(cnf_matrix, cur_labels_list)
@@ -468,7 +469,7 @@ if __name__ == "__main__":
                     false_positives, false_negatives = get_classification_stats(cnf_matrix, cur_labels_list)
 
             else:
-                cnf_matrix = np.array([])
+                cnf_matrix = None
 
                 classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
 
@@ -481,7 +482,7 @@ if __name__ == "__main__":
                     false_positives, false_negatives = get_classification_stats_capture(
                         classifier_runner.classifier.dataset[cur_dataset]["labels"],
                         classifier_runner.classifier.dataset[cur_dataset]["preds"],
-                        classifier_runner.classifier.negative_label)
+                        classifier_classes, classifier_runner.classifier.negative_label)
 
                 cur_labels_list = classifier_classes
 
@@ -522,8 +523,10 @@ if __name__ == "__main__":
             error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases,
                           "Predicted Negative": predicted_negative_cases, "Negative Cases": negative_cases,
                           "False Positives": false_positives, "False Negatives": false_negatives,
-                          "Confusion Matrix": cnf_matrix.tolist(),
-                          "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": cur_labels_list}
+                          "Confusion Matrix": cnf_matrix.tolist() if cnf_matrix is not None else [],
+                          "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": cur_labels_list,
+                          "Negative Label": classifier_runner.classifier.negative_label,
+                          "Classifier Type": classifier_type}
 
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
@@ -534,7 +537,7 @@ if __name__ == "__main__":
             excel_path = os.path.join("generated_data", rule_name, cur_dataset, rule_name)
             conf_path = os.path.join("generated_data", rule_name, cur_dataset)
 
-            if len(cnf_matrix[0]) > 0:
+            if cnf_matrix is not None:
                 plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
 
             # de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")

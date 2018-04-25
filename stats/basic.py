@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import itertools
 import os
 
+
+#TODO: Fix this hideous mess I made
 def calculate_accuracy(preds, labels):
     """Calculates the accuracy of the classifier given its predictions and labels
     
@@ -51,28 +53,38 @@ def get_classification_stats(cnf, labels):
 
     return predicted_positive, positive_cases, predicted_negative_cases, negative_cases, false_positives, false_negatives
 
-def get_classification_stats_capture(labels, preds, negative_label="None"):
-    predicted_positive = np.count_nonzero(np.not_equal(negative_label, np.array(preds, dtype=object)))
-    positive_cases = np.count_nonzero(np.not_equal(negative_label, np.array(labels, dtype=object)))
+def get_classification_stats_capture(labels, preds, classifier_classes, negative_label="None"):
+    pos_label = list(set(classifier_classes) - set([negative_label]))[0]
 
-    predicted_negative = np.count_nonzero(np.equal(negative_label, np.array(preds, dtype=object)))
-    negative_cases = np.count_nonzero(np.equal(negative_label, np.array(labels, dtype=object)))
+    predicted_positive_num = np.count_nonzero(np.not_equal(negative_label, np.array(preds, dtype=object)))
+    positive_cases_num = np.count_nonzero(np.not_equal(negative_label, np.array(labels, dtype=object)))
+
+    predicted_negative_num = np.count_nonzero(np.equal(negative_label, np.array(preds, dtype=object)))
+    negative_cases_num = np.count_nonzero(np.equal(negative_label, np.array(labels, dtype=object)))
 
     predictions_at_negative_labels = preds[labels == negative_label]
     predictions_at_positive_labels = preds[labels != negative_label]
 
-    false_positives = np.count_nonzero(np.not_equal(negative_label, np.array(predictions_at_negative_labels,
+    false_positives_num = np.count_nonzero(np.not_equal(negative_label, np.array(predictions_at_negative_labels,
                                                                              dtype=object)))
-    false_negatives = np.count_nonzero(np.equal(negative_label, np.array(predictions_at_positive_labels,
+
+    false_negatives_num = np.count_nonzero(np.equal(negative_label, np.array(predictions_at_positive_labels,
                                                                              dtype=object)))
+
+    positive_cases = {pos_label: positive_cases_num, negative_label: negative_cases_num}
+    predicted_positive = {pos_label: predicted_positive_num, negative_label: predicted_negative_num}
+    negative_cases = {pos_label: negative_cases_num, negative_label: positive_cases_num}
+    predicted_negative = {pos_label: predicted_negative_num, negative_label: predicted_positive_num}
+    false_positives = {pos_label: false_positives_num, negative_label: false_negatives_num}
+    false_negatives = {pos_label: false_negatives_num, negative_label: false_positives_num}
 
     return predicted_positive, positive_cases, predicted_negative, negative_cases, false_positives, false_negatives
 
-def compute_ppv_accuracy_capture(labels, preds, classifier_classes, negative_label="None"):
-    ppv_and_accuracy = {}
 
+def compute_ppv_accuracy_capture(labels, preds, classifier_classes, negative_label="None"):
     pos_label = list(set(classifier_classes) - set([negative_label]))[0]
-    ppv_and_accuracy = {pos_label: {"ppv": 0, "npv": 0, "num_correct": 0}}
+    ppv_and_accuracy = {pos_label: {"ppv": 0, "npv": 0, "accuracy": 0, "num_correct": 0},
+                        negative_label: {"ppv": 0, "npv": 0, "accuracy": 0, "num_correct": 0}}
 
     ppv = "nan"
     npv = "nan"
@@ -102,7 +114,13 @@ def compute_ppv_accuracy_capture(labels, preds, classifier_classes, negative_lab
 
     ppv_and_accuracy[pos_label]["ppv"] = ppv
     ppv_and_accuracy[pos_label]["npv"] = npv
+    ppv_and_accuracy[pos_label]["accuracy"] = num_correct/len(labels)
     ppv_and_accuracy[pos_label]["num_correct"] = int(num_correct)
+
+    ppv_and_accuracy[negative_label]["ppv"] = npv
+    ppv_and_accuracy[negative_label]["npv"] = ppv
+    ppv_and_accuracy[negative_label]["accuracy"] = num_correct/len(labels)
+    ppv_and_accuracy[negative_label]["num_correct"] = int(num_correct)
 
     return ppv_and_accuracy
 
