@@ -142,7 +142,7 @@ if __name__ == "__main__":
                     "country.txt": {"Runner Initialization Params": {"l_label_col": 2}, "Runtime Params":
                                                                      {"label_func": None, "preprocess_func": preprocess}},
                     "diagnosis": {"Runner Initialization Params": {"l_label_col": 8}},
-                    "diag_active.txt": {"Runner Initialization Params":
+                    "diag_active_demo.txt": {"Runner Initialization Params":
                                         {"l_label_col": 8,
                                          "label_func": functools.partial(replace_label_with_required,
                                                                          {"LTBI": "None"})}
@@ -396,7 +396,7 @@ if __name__ == "__main__":
     # cur_run = ["smoking_new"]
 
     # cur_run = ["diag_active.txt"]
-    cur_run = ["skin_test_mm.txt"]
+    cur_run = ["diag_active_demo.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -534,7 +534,7 @@ if __name__ == "__main__":
             excel_path = os.path.join("generated_data", rule_name, cur_dataset, rule_name)
             conf_path = os.path.join("generated_data", rule_name, cur_dataset)
 
-            if cnf_matrix:
+            if len(cnf_matrix[0]) > 0:
                 plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
 
             # de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
