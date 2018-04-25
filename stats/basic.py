@@ -51,6 +51,61 @@ def get_classification_stats(cnf, labels):
 
     return predicted_positive, positive_cases, predicted_negative_cases, negative_cases, false_positives, false_negatives
 
+def get_classification_stats_capture(labels, preds, negative_label="None"):
+    predicted_positive = np.count_nonzero(np.not_equal(negative_label, np.array(preds, dtype=object)))
+    positive_cases = np.count_nonzero(np.not_equal(negative_label, np.array(labels, dtype=object)))
+
+    predicted_negative = np.count_nonzero(np.equal(negative_label, np.array(preds, dtype=object)))
+    negative_cases = np.count_nonzero(np.equal(negative_label, np.array(labels, dtype=object)))
+
+    predictions_at_negative_labels = preds[labels == negative_label]
+    predictions_at_positive_labels = preds[labels != negative_label]
+
+    false_positives = np.count_nonzero(np.not_equal(negative_label, np.array(predictions_at_negative_labels,
+                                                                             dtype=object)))
+    false_negatives = np.count_nonzero(np.equal(negative_label, np.array(predictions_at_positive_labels,
+                                                                             dtype=object)))
+
+    return predicted_positive, positive_cases, predicted_negative, negative_cases, false_positives, false_negatives
+
+def compute_ppv_accuracy_capture(labels, preds, classifier_classes, negative_label="None"):
+    ppv_and_accuracy = {}
+
+    pos_label = list(set(classifier_classes) - set([negative_label]))[0]
+    ppv_and_accuracy = {pos_label: {"ppv": 0, "npv": 0, "num_correct": 0}}
+
+    ppv = "nan"
+    npv = "nan"
+
+    num_correct = np.sum(preds == labels)
+
+    negative_cases = labels[labels == negative_label]
+    positive_cases = labels[labels != negative_label]
+
+    predicted_positive = np.count_nonzero(np.not_equal(negative_label, np.array(preds, dtype=object)))
+    predicted_negative = np.count_nonzero(np.equal(negative_label, np.array(preds, dtype=object)))
+
+    predictions_at_negative_labels = preds[labels == negative_label]
+    predictions_at_positive_labels = preds[labels != negative_label]
+
+    true_positives = np.count_nonzero(np.equal(np.array(positive_cases, dtype=object), np.array(
+        predictions_at_positive_labels, dtype=object)))
+
+    true_negatives = np.count_nonzero(np.equal(np.array(negative_cases, dtype=object),
+                                               np.array(predictions_at_negative_labels, dtype=object)))
+
+    if predicted_positive > 0:
+        ppv = true_positives/predicted_positive
+
+    if predicted_negative > 0:
+        npv = true_negatives/predicted_negative
+
+    ppv_and_accuracy[pos_label]["ppv"] = ppv
+    ppv_and_accuracy[pos_label]["npv"] = npv
+    ppv_and_accuracy[pos_label]["num_correct"] = int(num_correct)
+
+    return ppv_and_accuracy
+
 def compute_ppv_accuracy_ova(cnf, labels):
 
     ppv_and_accuracy = {label: {"ppv": 0, "accuracy": 0, "num_correct": 0, "npv": 0} for label in labels}

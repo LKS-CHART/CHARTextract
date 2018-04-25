@@ -7,12 +7,14 @@ import os
 from web.report_generator import generate_error_report
 from stats.basic import calculate_accuracy
 from sklearn.metrics import confusion_matrix
-from stats.basic import plot_confusion_matrix, get_classification_stats, compute_ppv_accuracy_ova
+from stats.basic import plot_confusion_matrix, get_classification_stats, compute_ppv_accuracy_ova, \
+    compute_ppv_accuracy_capture, get_classification_stats_capture
 from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_filter_by_label, replace_labels_with_required,\
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from classifier.classification_functions import sputum_classify, max_classify, max_month
 from util.tb_country import preprocess
+from classifier.simple_regex_classifier import RegexClassifier
 
 
 def create_regex_based_classifier(rule_path=None):
@@ -83,6 +85,8 @@ if __name__ == "__main__":
     filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'CombinedData.csv')
     label_filename2 = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions',
                                    'labelling_decisions_cohort_2-s.xlsx')
+
+    label_filename3 = os.path.join(os.getenv('TB_DATA_FOLDER'), 'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx')
     
     label_files_dict = dict()
     label_files_dict["train"] = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Train_set_labels.xlsx')
@@ -239,9 +243,7 @@ if __name__ == "__main__":
                                       },
                     "inh_medication.txt": {"Runner Initialization Params":
                                            {"l_label_col": [13, 14, 15, 16, 17],
-                                            "label_func": functools.partial(replace_labels_with_required,
-                                                                            *["Isoniazid (INH)", "None"])
-                                            },
+                                            "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
                                            "Runtime Params": {"label_func": None, "pwds": pwds}
                                            },
                     "pyrazinamide_medication.txt": {"Runner Initialization Params":
@@ -353,11 +355,10 @@ if __name__ == "__main__":
                                                              "label_file": label_filename2}},
                     "smh": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 3,
                                                              "label_file": label_filename2, "l_first_row": 1}},
-                    "afb_positive.txt": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 35,
-                                         "label_func": functools.partial(replace_filter,
-                                                                         lambda i: "Pulmonary AFB Positive"
-                                                                         if (i.find("Pulmonary") > -1)
-                                                                         or (i.find("pulmonary") > -1) else "None")}},
+                    "afb_positive.txt": {"Runner Initialization Params": {"l_label_col": 25,
+                                                    "label_file": label_filename3,
+                                                    "label_func": functools.partial(replace_labels_with_required,
+                                                    "Pulmonary AFB Positive", "None")}},
                     "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
@@ -373,22 +374,29 @@ if __name__ == "__main__":
                                                                    "label_file": label_filename2, "l_first_row": 1,
                                                                    },
                                   "Runtime Params": {"label_func": None, "pwds": pwds}
-                                  }
+                                  },
+                    "treatment_interruption.txt": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 42,
+                                                                                    "label_func": functools.partial(
+                                                                                        replace_label_with_required,
+                                                                                        {"1": "Yes",
+                                                                                         "0": "No"}
+                                                                                    )}}
                     }
 
     datasets = ["train"]
 
     # cur_run = file_to_args.keys()
     # cur_run = ["country.txt"]
-    # "ethambutol_medication.txt", "rifabutin_medication.txt", "moxifloxacin_medication.txt",
-    # "rifapentine_medication.txt",
-    # "capreomycin_medication.txt", "amikacin_medication.txt", "pas_medication.txt", "cycloserine_medication.txt",
-    # "ethionamide_medication.txt", "vitamin_b6_medication.txt"]
+    # cur_run = ["inh_medication.txt", "pyrazinamide_medication.txt", "rifampin_medication.txt",
+    # "ethambutol_medication.txt","rifabutin_medication.txt", "moxifloxacin_medication.txt", "rifapentine_medication.txt",
+    #  "capreomycin_medication.txt", "amikacin_medication.txt", "pas_medication.txt", "cycloserine_medication.txt",
+    #  "ethionamide_medication.txt", "vitamin_b6_medication.txt"]
     # cur_run = ["hcw", "smh", "inh_medication.txt", "corticosteroids_immuno", "chemotherapy_immuno", "TNF_immuno"]
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    cur_run = ["tb_duration"]
+    # cur_run = ["diag_active.txt"]
+    cur_run = ["skin_test_mm.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -434,29 +442,50 @@ if __name__ == "__main__":
             else:
                 classifier_runner.run(datasets=[cur_dataset])
 
+            failures_dict = {}
+
+            cur_labels_list = sorted(list(set(classifier_runner.classifier.dataset[cur_dataset]["preds"].tolist()) |
+                                          set(classifier_runner.classifier.dataset[cur_dataset]["labels"].tolist())))
             accuracy, \
                 incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[cur_dataset]["preds"],
                                                        classifier_runner.classifier.dataset[cur_dataset]["labels"])
 
-            cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[cur_dataset]["labels"],
-                                          classifier_runner.classifier.dataset[cur_dataset]["preds"])
-            print(type(classifier_runner.classifier.dataset[cur_dataset]["labels"]))
-            cur_labels_list = sorted(list(set(classifier_runner.classifier.dataset[cur_dataset]["preds"].tolist()) |
-                                          set(classifier_runner.classifier.dataset[cur_dataset]["labels"].tolist())))
-
+            print("\nAccuracy: ", accuracy)
             print("\nIds: ", classifier_runner.classifier.dataset[cur_dataset]["ids"])
             print("Predictions: ", classifier_runner.classifier.dataset[cur_dataset]["preds"])
             print("Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"])
-            failures_dict = {}
 
-            print("\nAccuracy: ", accuracy)
+            print("\nIncorrect Ids: ", classifier_runner.classifier.dataset[cur_dataset]["ids"][incorrect_indices])
+            print("Incorrect Predictions: ",
+                  classifier_runner.classifier.dataset[cur_dataset]["preds"][incorrect_indices])
+            print("Incorrect Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"][incorrect_indices])
+
+            if classifier_runner.classifier_type == RegexClassifier:
+                cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[cur_dataset]["labels"],
+                                              classifier_runner.classifier.dataset[cur_dataset]["preds"])
+                ppv_and_accuracy = compute_ppv_accuracy_ova(cnf_matrix, cur_labels_list)
+                predicted_positive, positive_cases, predicted_negative_cases, negative_cases, \
+                    false_positives, false_negatives = get_classification_stats(cnf_matrix, cur_labels_list)
+
+            else:
+                cnf_matrix = np.array([])
+
+                classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
+
+                ppv_and_accuracy = compute_ppv_accuracy_capture(
+                    classifier_runner.classifier.dataset[cur_dataset]["labels"],
+                    classifier_runner.classifier.dataset[cur_dataset]["preds"],
+                    classifier_classes, classifier_runner.classifier.negative_label)
+
+                predicted_positive, positive_cases, predicted_negative_cases, negative_cases, \
+                    false_positives, false_negatives = get_classification_stats_capture(
+                        classifier_runner.classifier.dataset[cur_dataset]["labels"],
+                        classifier_runner.classifier.dataset[cur_dataset]["preds"],
+                        classifier_runner.classifier.negative_label)
+
+                cur_labels_list = classifier_classes
 
             print("Confusion Matrix: ")
-            print(cnf_matrix)
-
-            ppv_and_accuracy = compute_ppv_accuracy_ova(cnf_matrix, cur_labels_list)
-            predicted_positive, positive_cases, predicted_negative_cases, negative_cases, \
-                false_positives, false_negatives = get_classification_stats(cnf_matrix, cur_labels_list)
 
             print("OVA PPV and Accuracy: ", ppv_and_accuracy)
 
@@ -475,11 +504,6 @@ if __name__ == "__main__":
 
                 failures_dict[cur_patient_id] = {"label": cur_label, "data": cur_text, "pred": cur_pred,
                                                  "matches": cur_match_obj, "score": cur_score}
-
-            print("\nIncorrect Ids: ", classifier_runner.classifier.dataset[cur_dataset]["ids"][incorrect_indices])
-            print("Incorrect Predictions: ",
-                  classifier_runner.classifier.dataset[cur_dataset]["preds"][incorrect_indices])
-            print("Incorrect Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"][incorrect_indices])
 
             if not all_classifications:
                 all_classifications.append(classifier_runner.classifier.dataset[cur_dataset]["ids"].tolist())
@@ -501,21 +525,16 @@ if __name__ == "__main__":
                           "Confusion Matrix": cnf_matrix.tolist(),
                           "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": cur_labels_list}
 
-            print(ppv_and_accuracy)
-
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
                                   classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                   custom_effect_colours=effect_colours, addition_json_params=error_data)
 
-            '''
-            generate_error_report(os.path.join("generated_data", rulename, dataset),
-                                  "{}_error_report.html".format(rulename), template_directory, 'error_report.html',
-                                  "{}".format(rulename), classifier_runner.classifier.regexes.keys(), failures_dict,
-                                  effects, custom_effect_colours=effect_colours)
-            '''
             headers = ["ID", "Prediction", "Actual"]
             excel_path = os.path.join("generated_data", rule_name, cur_dataset, rule_name)
             conf_path = os.path.join("generated_data", rule_name, cur_dataset)
-            plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
+
+            if cnf_matrix:
+                plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
+
             # de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
