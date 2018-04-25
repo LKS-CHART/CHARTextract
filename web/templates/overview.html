@@ -7,10 +7,11 @@
 <p ng-repeat="(class, colour) in data.classes">
     <b>{{class}}:</b> </br>
     {{data["Predicted Positive"][class]}} Predicted Positive Cases of {{data["Positive Cases"][class]}} Positive Cases</br>
-    {{data["Predicted Negative"][class]}} Predicted Negative Cases of {{data["Negative Cases"][class]}} Negative Cases</br></br>
+    {{data["Predicted Negative"][class]}} Predicted Negative Cases of {{data["Negative Cases"][class]}}  Negative Cases</br></br>
     {{data["False Positives"][class]}} False Positives of {{data["Positive Cases"][class]}} Positive Cases</br>
     {{data["False Negatives"][class]}} False Negatives of {{data["Negative Cases"][class]}} Negative Cases</br></br>
     One vs All PPV: {{data["OVA PPV and Accuracy"][class]["ppv"]*100}}% </br>
+    One vs All NPV: {{data["OVA PPV and Accuracy"][class]["npv"]*100}}% </br>
     One vs All Accuracy: {{data["OVA PPV and Accuracy"][class]["accuracy"]*100}}% </br>
     One vs All Accuracy: {{data["OVA PPV and Accuracy"][class]["num_correct"]}} correct out of {{data["Positive Cases"][class] + data["Negative Cases"][class]}} </br>
 </p>

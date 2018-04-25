@@ -21,6 +21,8 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.match_selected = false;
     $scope.marked_data = null;
     $scope.selected_matches = null;
+    $scope.pos_label = null;
+    $scope.neg_label = null;
 
     myDataPromise.then(function(result) {
         $scope.data = result
@@ -28,15 +30,44 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         var errors = $scope.data.patient_cases
         $scope.errors = {};
 
-        angular.forEach(errors, function(error, key) {
-            if (error.pred != error.actual) {
-                if (angular.isUndefined($scope.errors[error.actual]))
+        if ($scope.data["Classifier Type"] === "CaptureClassifier")
+        {
+            var index = $scope.data["Ordered Labels"].indexOf($scope.data["Negative Label"])
+            var classes_copy = $scope.data["Ordered Labels"].slice();
+            if (index !== -1) classes_copy.splice(index, 1)
+            var pos_label = classes_copy[0]
+            var neg_label = $scope.data["Negative Label"]
+
+            $scope.pos_label = pos_label
+            $scope.neg_label = neg_label
+
+            $scope.errors[pos_label] = []
+            $scope.errors[neg_label] = []
+
+            angular.forEach(errors, function(error, key) {
+                if (error.pred !== error.actual && error.actual === neg_label)
                 {
-                    $scope.errors[error.actual] = []
+                    $scope.errors[neg_label].push(key)
                 }
-                $scope.errors[error.actual].push(key)
-            }
-        })
+                else {
+                    $scope.errors[pos_label].push(key)
+                }
+            })
+        }
+
+        else
+
+        {
+            angular.forEach(errors, function(error, key) {
+                if (error.pred != error.actual) {
+                    if (angular.isUndefined($scope.errors[error.actual]))
+                    {
+                        $scope.errors[error.actual] = []
+                    }
+                    $scope.errors[error.actual].push(key)
+                }
+            })
+        }
     })
 
     $scope.gotoAnchor = function(x) {
