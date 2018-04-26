@@ -119,7 +119,7 @@ class Regex(object):
         Returns:
             String -- Stringified version of Regex object
         """
-        return str({"name": self.name, "regex": self.regex.pattern, "score": self.score, "matches": self.matches, "secondary_regexes": self.secondary_regexes})
+        return str({"name": self.name, "regex": self.get_regex(), "score": self.score, "matches": self.matches, "secondary_regexes": self.secondary_regexes})
 
     def __repr__(self):
 
@@ -211,7 +211,7 @@ class Regex(object):
         secondary_regexes = []
 
         for secondary_regex in self.secondary_regexes:
-            if secondary_regex.effect in type_list or not type_list:
+            if not type_list or secondary_regex.effect in type_list:
                 secondary_regexes.append(secondary_regex)
 
         return tuple(secondary_regexes)
