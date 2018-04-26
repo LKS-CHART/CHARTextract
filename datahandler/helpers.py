@@ -16,7 +16,9 @@ def import_regex(regex_file):
     regexes = {}
 
     #TODO: Check if tuple unpacking like this is an issue
-    classifier_type, classifier_args, class_name, regexes[class_name] = di.regexes_from_csv(regex_file, use_custom_score=True)
+    classifier_type, classifier_args, class_name, regexes[class_name] = \
+        di.regexes_from_csv(regex_file, use_custom_score=True) if regex_file.endswith(".txt") else \
+        di.regexes_from_json(regex_file, use_custom_score=True)
 
     classifier_type = "RegexClassifier" if not classifier_type else classifier_type
 
@@ -42,7 +44,9 @@ def import_regexes(regex_directory):
     classifier_args = {}
 
     for file in regex_filenames:
-        _classifier_type, _classifier_args, _class_name, regexes[_class_name] = di.regexes_from_csv(file, use_custom_score=True)
+        _classifier_type, _classifier_args, _class_name, regexes[_class_name] = \
+            di.regexes_from_csv(file, use_custom_score=True) if file.endswith(".txt") else \
+            di.regexes_from_json(file, use_custom_score=True)
         classifier_type = _classifier_type if _classifier_type else classifier_type
         classifier_args = _classifier_args if _classifier_args else classifier_args
 

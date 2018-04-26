@@ -5,6 +5,7 @@ from regex.regex import Regex
 from time import time
 import ast
 import os
+import json
 
 def preprocess_data(data):
     """Preprocesses data
@@ -391,3 +392,52 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
             regexes.append(cur_regex)
 
     return classifier_type, classifier_args, class_name, regexes
+
+def regexes_from_json(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
+    regexes = []
+    classifier_type = None
+    class_name = None
+    classifier_args = {}
+
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        classifier_type = data["Classifier Type"] if "Classifier Type" in data else "RegexClassifier"
+        all_matches = data["All Matches"] if "All Matches" in data else False
+        flags = [re.IGNORECASE] if "Case Sensitive" in data and data["Case Sensitive"] else None
+
+        if "Name" not in data:
+            raise Exception("Rule file requires a label name.")
+        else:
+            class_name = data["Name"]
+
+        classifier_args = data["Classifier Args"] if "Classifier Args" in data else {}
+
+        if "Rules" in data:
+            for rule in data["Rules"]:
+                score = None if not use_custom_score else rule["Primary"]["Score"]
+                primary_pattern = rule["Primary"]["Rule"]
+
+                secondary_regexes = []
+
+                for secondary_rule in rule["Secondary"]:
+                    secondary_score = None if not use_custom_score else secondary_rule["Score"]
+                    secondary_pattern = secondary_rule["Rule"]
+                    effect = secondary_rule["Type"] + secondary_rule["Modifier"] \
+                        if "Modifier" in secondary_rule else ""
+
+                    secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes),
+                                            class_name), regex=secondary_pattern, effect=effect, score=secondary_score,
+                                            all_matches=all_matches, flags=flags, secondary_regexes=[])
+
+                    secondary_regexes.append(secondary_regex)
+
+                primary_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=primary_pattern,
+                                       score=score, effect='p', secondary_regexes=secondary_regexes,
+                                       all_matches=all_matches, flags=flags)
+
+                regexes.append(primary_regex)
+
+    return classifier_type, classifier_args, class_name, regexes
+
+classifier_type, classifier_args, class_name, regexes =\
+    regexes_from_json("test.json", use_custom_score=False, all_matches=False, flags=[re.IGNORECASE])
