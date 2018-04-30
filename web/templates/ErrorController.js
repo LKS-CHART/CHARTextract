@@ -24,8 +24,22 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.pos_label = null;
     $scope.neg_label = null;
 
+    function fix_data(result) {
+
+        for (var id in result.patient_cases)
+        {
+
+            if (result.patient_cases[id].data instanceof Array) {
+                concat_data = result.patient_cases[id].data.join(".\n")
+                result.patient_cases[id].data = concat_data
+            }
+        }
+
+        return result
+    }
+
     myDataPromise.then(function(result) {
-        $scope.data = result
+        $scope.data = fix_data(result)
         $scope.classes = result.classes
         var errors = $scope.data.patient_cases
         $scope.errors = {};
@@ -188,6 +202,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
     $scope.getSelectedData = function() {
 
+        $scope
         var marked_data = markData($scope.selected.data, $scope.selected.matches)
         return $sce.trustAsHtml(marked_data)
     }

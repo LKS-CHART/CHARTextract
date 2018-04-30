@@ -14,8 +14,6 @@ from datahandler.preprocessors import replace_filter_by_label, replace_labels_wi
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from classifier.classification_functions import sputum_classify, max_classify, max_month
 from util.tb_country import preprocess
-from classifier.simple_regex_classifier import RegexClassifier
-
 
 def create_regex_based_classifier(rule_path=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
@@ -101,8 +99,10 @@ if __name__ == "__main__":
         data_loader = di.data_from_csv if filename.endswith('.csv') else di.data_from_excel
         data_list, _, ids_list = data_loader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=False)
         data_repeated, _, ids_repeated = data_loader([filename], data_cols=2, first_row=1, id_cols=0, repeat_ids=True)
+
         _, repeated_data_list, repeated_labels_list = convert_repeated_data_to_sublist(ids_repeated,
                                                                                        repeated_data=data_repeated)
+
         if not print_none and print_verbose:
             for data_repeated, id_repeated in zip(data_repeated, ids_repeated):
                 print("=" * 100)
@@ -362,8 +362,11 @@ if __name__ == "__main__":
                     "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
-                    "tb_duration": {"Runner Initialization Params": {"l_label_col": 40},
-                                    "use_row_start": True, "Runtime Params": {"classify_func": max_month}},
+                    "tb_duration": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 40,
+                                                                    "ids_list": ids_list,
+                                                                     "data_list": repeated_data_list},
+                                    },
+
                     "skin_test_mm.txt": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 5,
                                                                           "label_file": label_filename2,
                                                                           "l_first_row": 1,
@@ -395,7 +398,7 @@ if __name__ == "__main__":
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    cur_run = ["immigration.txt"]
+    cur_run = ["tb_duration"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -436,6 +439,8 @@ if __name__ == "__main__":
             all_classifications = []
             print("\nRunning on rule: {} - {}".format(rule_name, cur_dataset))
 
+            # classifier_runner.classifier.dataset[cur_dataset]["ids"] = [classifier_runner.classifier.dataset[cur_dataset]["ids"][2]]
+            # classifier_runner.classifier.dataset[cur_dataset]["data"] = [classifier_runner.classifier.dataset[cur_dataset]["data"][2]]
             if "Runtime Params" in file_to_args[rule]:
                 classifier_runner.run(datasets=[cur_dataset], **file_to_args[rule]["Runtime Params"])
             else:

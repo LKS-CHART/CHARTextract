@@ -1,6 +1,7 @@
 from classifier.simple_regex_classifier import RegexClassifier
 from classifier.simple_capture_classifier import CaptureClassifier
 from classifier.nconditional_classifier import NConditionalClassifier
+from classifier.simple_regex_classifier_t import TemporalRegexClassifier
 
 class Runner(object):
     """Generic Runner object used to initalize classifier with given args and run them
@@ -19,6 +20,8 @@ class Runner(object):
             self.classifier_type = RegexClassifier
         elif classifier_type == "NConditionalClassifier":
             self.classifier_type = NConditionalClassifier
+        elif classifier_type == "TemporalRegexClassifier":
+            self.classifier_type = TemporalRegexClassifier
         elif classifier_type == "CaptureClassifier":
             self.classifier_type = CaptureClassifier
 
@@ -34,7 +37,8 @@ class Runner(object):
         """Runs the classifier on the given datasets
         
         Keyword Arguments:
-            datasets {function args} -- List of arguments to be passed to the run function of the classifier (default: {None})
+            datasets {list} - List of string corresponding to dataset names. This are datasets that will be run by the classifier (default: None)
+            kwargs {function args} -- List of arguments to be passed to the run function of the classifier (default: {None})
         """
 
         #Parameters that are passed to the classifier at runtime

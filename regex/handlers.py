@@ -219,13 +219,14 @@ class RegexHandler(object):
         self.return_ignores = return_ignores
         pass
 
-    def score_data(self, text, regexes, pwds=None, preprocess_func=None):
-        matches_score_dict, total_score = self.score_and_match_sentences(text, regexes, pwds=pwds, preprocess_func=preprocess_func)
+    def score_data(self, text, regexes, pwds=None, preprocess_func=None, index_start=0):
+        matches_score_dict, total_score = self.score_and_match_sentences(text, regexes, pwds=pwds, preprocess_func=preprocess_func,
+                                                                         index_start=index_start)
 
         return matches_score_dict, total_score
 
 
-    def score_and_match_sentences(self, text, regexes, pwds=None, preprocess_func=None):
+    def score_and_match_sentences(self, text, regexes, pwds=None, preprocess_func=None, index_start=0):
         """Given regexes and text, determines a score for the sentence
         
         Arguments:
@@ -250,7 +251,7 @@ class RegexHandler(object):
             if matches:
                 if self.DEBUG:
                     print("Above results for sentence: ", i)
-                matches_score_dict[i] = {"matches": matches, "text_score": score}
+                matches_score_dict[i+index_start] = {"matches": matches, "text_score": score}
 
             total_score += score
 
@@ -293,10 +294,13 @@ class RegexHandler(object):
                 replace_regexes = regex.get_secondary_regexes(type_list=["r", "rb", "ra"])
                 add_regexes = regex.get_secondary_regexes(type_list=["a", "ab", "aa"])
 
+                # print(regex.get_secondary_regexes())
+
                 # Pushing secondary regexes on to priority queue. Priority queue key is determined by order of appearance in secondary_regexes list and also their effect
                 for i, secondary_regex in enumerate(ignore_regexes): heappush(priority_queue, (i, secondary_regex))
                 for i, secondary_regex in enumerate(replace_regexes): heappush(priority_queue, (i+len(ignore_regexes), secondary_regex))
                 for i, secondary_regex in enumerate(add_regexes): heappush(priority_queue, (i+len(ignore_regexes) + len(replace_regexes), secondary_regex))
+
                 if self.DEBUG:
                     print("Regex: ", regex.get_regex())
                     print("TEXT: ", text)
@@ -351,6 +355,7 @@ class RegexHandler(object):
 
                 if self.DEBUG:
                     print("REGEX_SCORE: ", score)
+
 
             total_score += score
 

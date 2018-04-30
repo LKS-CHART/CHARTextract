@@ -89,8 +89,10 @@ class RegexClassifier(BaseClassifier):
             for id,datum in zip(ids,data):
                 if self.DEBUG:
                     print("Classifying id: ", id)
+
                 class_scores = {}
                 class_matches = {}
+
                 for class_name in self.regexes:
                     matches = []
                     score = 0
@@ -98,7 +100,6 @@ class RegexClassifier(BaseClassifier):
                     #matching sentences and computing scores
                     if len(self.regexes[class_name]) > 0:
                         matches, score = self.handler.score_data(datum, self.regexes[class_name], pwds=pwds)
-                        # print(score)
 
                     #adding biases
                     class_scores[class_name] = self.biases[class_name] + score
@@ -113,7 +114,8 @@ class RegexClassifier(BaseClassifier):
                 if not classify_func:
                     classification, score = self.classify(class_scores, class_threshold)
                 else:
-                    classification = classify_func(class_matches, None, class_scores, negative_label=self.negative_label, **kwargs)
+                    classification = classify_func(class_matches, None, class_scores,
+                                                   negative_label=self.negative_label, **kwargs)
 
                 preds.append(classification)
                 if self.DEBUG:
