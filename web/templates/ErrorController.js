@@ -1,16 +1,3 @@
-app.directive('initBind', function($compile) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attr) {
-            attr.$observe('ngBindHtml', function() {
-                if (attr.ngBindHtml) {
-                    $compile(element[0].children)(scope);
-                }
-            })
-        }
-    }
-
-})
 
 app.controller('ErrorController', function($scope, $sce,DataService){
 
@@ -221,7 +208,6 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
     function markData(data, matches)
     {
-
         var new_data = "";
         var sentences = data.split(".");
         var sentences_with_matches = getSentencesWithMatches(matches)
@@ -253,11 +239,19 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         return a-b;
     }
 
+//    $scope.reload = function() {
+//        var container = document.getElementById("text");
+//        var content = container.innerHTML;
+//        container.innerHTML = content;
+//        console.log("CHANGEd")
+//    }
+
     $scope.getSelectedData = function() {
 
         console.log("HAJSDHAKSJHd")
-        var marked_data = markData($scope.selected.data, $scope.selected.matches)
-        return $sce.trustAsHtml(marked_data)
+        $scope.marked_data = markData($scope.selected.data, $scope.selected.matches)
+
+//        return $sce.trustAsHtml(marked_data)
     }
 
     $scope.getSelectedMatches = function()

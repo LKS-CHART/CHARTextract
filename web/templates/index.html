@@ -57,7 +57,7 @@
                             <li style="display: block; min-height:35px;" ng-repeat="(class, colour) in classes">
                                 <ul class="nav navbar-nav pagination" style="margin: 2px 0px;">
                                     <li style="margin-top: 8px; min-width:100px">{{class}}: </li>
-                                    <li class="page-item" ng-repeat="error in errors[class]" ><a class="page-link" href="#view" ng-click="setSelected(error)" style="background: {{classes[getIdInfo(error).pred]}}">{{error}}</a></li>
+                                    <li class="page-item" ng-repeat="error in errors[class]" ><a class="page-link" ng-href="#view" ng-click="setSelected(error); getSelectedData()" style="background: {{classes[getIdInfo(error).pred]}}">{{error}}</a></li>
                                 </ul>
                             </li>
 

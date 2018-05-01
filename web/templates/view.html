@@ -22,7 +22,7 @@
             <p>was determined to be {{selected.pred}}<b></b>, should be <b>{{selected.actual}}</b></p>
         </div>
         <h3>Letter Text</h3>
-        <p ng-bind-html="getSelectedData()" class="line-break-and-tab" init-bind>
+        <p ng-cloak id="text" ng-html-compile="marked_data" class="line-break-and-tab">
         </p>
     </div>
     <!--<div class="col-md-3" style="background: #f5f5f5; padding: 0px 0px 0px 0px; margin:auto; height: 200px; padding: 0px 0px 0px 0px; border: 1px solid #e9e9e9; margin-top: 40px;">-->
