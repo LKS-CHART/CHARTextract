@@ -359,8 +359,13 @@ if __name__ == "__main__":
                                                     "label_file": label_filename3,
                                                     "label_func": functools.partial(replace_labels_with_required,
                                                     "Pulmonary AFB Positive", "None")}},
-                    "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 25}},
-                    "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25}},
+                    "disseminated.txt": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 35,
+                                                    "label_func": functools.partial(replace_labels_with_required,
+                                                    "Disseminated", "None")}},
+                    "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25,
+                                                    "label_file": label_filename3,
+                                                    "label_func": functools.partial(replace_labels_with_required,
+                                                    "Extra Pulmonary (localized)", "None")}},
                     "other_tb_risk_factors": {"Runner Initialization Params": {"l_label_col": 23}},
                     "tb_duration": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 40,
                                                                     "ids_list": ids_list,
@@ -383,10 +388,15 @@ if __name__ == "__main__":
                                                                                         replace_label_with_required,
                                                                                         {"1": "Yes",
                                                                                          "0": "No"}
-                                                                                    )}}
+                                                                                    )}},
+                    "sputum_conversion.txt": {"Runner Initialization Params": {"ids_list": ids_list,
+                                            "label_file": label_filename3,
+                                             "l_label_col": 12,
+                                             "label_func": functools.partial(replace_filter, lambda label: label[0:4])}
+                                            }
                     }
 
-    datasets = ["valid", "train"]
+    datasets = ["train", "valid"]
 
     # cur_run = file_to_args.keys()
     # cur_run = ["country.txt"]
@@ -398,7 +408,7 @@ if __name__ == "__main__":
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    cur_run = ["tb_duration"]
+    cur_run = ["disseminated.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code

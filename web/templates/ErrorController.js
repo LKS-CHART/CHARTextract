@@ -105,7 +105,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.markMatch = function(id, match) {
         $("mark").unmark();
 
-        var matched_string_r = new RegExp(match.pattern)
+        var matched_string_r = new RegExp(match.pattern,"i")
 
         if (match["effect"].startsWith("r")) {
             $("#" + id).markRegExp(matched_string_r, {
@@ -153,7 +153,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                      "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score,
                       "matched_string": matched_string, "id": str_id}
 
-                    var matched_string_r = new RegExp(match_obj.pattern)
+                    var matched_string_r = new RegExp(match_obj.pattern, "i")
                     $("#" + str_id).markRegExp(matched_string_r, {"className": "highlight",
                     "acrossElements": true,
                     "element": "span"})
@@ -169,7 +169,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                         "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string,
                         "id": str_id}
 
-                        var matched_string_r_2 = new RegExp(match_obj2.pattern)
+                        var matched_string_r_2 = new RegExp(match_obj2.pattern, "i")
 
                         if (secondary_match["effect"].startsWith("r")) {
                             $("#" + str_id).markRegExp(matched_string_r_2, {
