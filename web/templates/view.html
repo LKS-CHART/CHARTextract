@@ -40,7 +40,7 @@
                     <p ng-if="match.hasOwnProperty('aggregate_score')" style="color: #455A64">Aggregate Score: {{match.aggregate_score}}</p>
                     <p style="color: #455A64">Effect: {{match.effect}}</p>
                     <!--<p style="color: #455A64">Id: {{match.id}}</p>-->
-                    <p ng-click="markMatch(match.id, match.matched_string)"
+                    <p ng-click="markMatch(match.id, match)"
                        style="color: #337ab7; cursor: pointer;">Matched String: {{match.matched_string}}</p>
                 </div>
 

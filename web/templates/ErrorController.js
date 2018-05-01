@@ -102,15 +102,35 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         $scope.getSelectedMatches();
     }
 
-    $scope.markMatch = function(id, matched_string) {
-        $("span.highlight").unmark();
-        $("#" + id).mark(matched_string, {"className": "highlight", "separateWordSearch": false, "element": "span"})
+    $scope.markMatch = function(id, match) {
+        $("mark").unmark();
+
+        if (match["effect"].startsWith("r")) {
+            $("#" + id).mark(match.matched_string, {
+            "className": "highlight-effect-replace",
+            "separateWordSearch": false, "element": "span"})
+        }
+        else if (match["effect"].startsWith("i")) {
+            $("#" + id).mark(match.matched_string, {
+            "className": "highlight-effect-ignore",
+            "separateWordSearch": false, "element": "span"})
+        }
+        else if (match["effect"].startsWith("a")) {
+            $("#" + id).mark(match.matched_string, {
+            "className": "highlight-effect-add",
+            "separateWordSearch": false, "element": "span"})
+        }
+        else
+        {
+            $("#" + id).mark(match.matched_string, {"className": "highlight", "separateWordSearch": false, "element": "span"})
+        }
     }
 
 
     $scope.getSentenceMatches = function(sentence_id)
     {
 
+        $("mark").unmark();
         $scope.match_selected = true;
         var all_sentence_matches = []
         var str_id = String(sentence_id)
@@ -130,6 +150,9 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                      "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score,
                       "matched_string": matched_string, "id": str_id}
 
+                    $("#" + str_id).mark(matched_string, {"className": "highlight", "separateWordSearch": false,
+                    "element": "span"})
+
                     all_sentence_matches.push(primary_match)
 
                     var secondary_matches = match_obj.secondary_regexes
@@ -141,6 +164,21 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                         "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string,
                         "id": str_id}
 
+                        if (secondary_match["effect"].startsWith("r")) {
+                            $("#" + str_id).mark(secondary_match.matched_string, {
+                            "className": "highlight-effect-replace",
+                            "separateWordSearch": false, "element": "span"})
+                        }
+                        else if (secondary_match["effect"].startsWith("i")) {
+                            $("#" + str_id).mark(secondary_match.matched_string, {
+                            "className": "highlight-effect-ignore",
+                            "separateWordSearch": false, "element": "span"})
+                        }
+                        else if (secondary_match["effect"].startsWith("a")) {
+                            $("#" + str_id).mark(secondary_match.matched_string, {
+                            "className": "highlight-effect-add",
+                            "separateWordSearch": false, "element": "span"})
+                        }
                         all_sentence_matches.push(secondary_match)
 
                     }
@@ -186,7 +224,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
             if (sentences_with_matches.has(i)) {
 
-                var new_sentence = '<mark style="cursor: pointer; "ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + sentences[i] + '.</mark>'
+                var new_sentence = '<mark class="sMatch" style="cursor: pointer; "ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + sentences[i] + '.</mark>'
                 new_data += new_sentence
             }
             else
