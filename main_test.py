@@ -359,7 +359,7 @@ if __name__ == "__main__":
                                                     "label_file": label_filename3,
                                                     "label_func": functools.partial(replace_labels_with_required,
                                                     "Pulmonary AFB Positive", "None")}},
-                    "disseminated.txt": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 35,
+                    "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 35,
                                                     "label_func": functools.partial(replace_labels_with_required,
                                                     "Disseminated", "None")}},
                     "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25,
@@ -408,7 +408,7 @@ if __name__ == "__main__":
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    cur_run = ["disseminated.txt"]
+    cur_run = ["tb_duration"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
