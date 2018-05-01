@@ -386,7 +386,7 @@ if __name__ == "__main__":
                                                                                     )}}
                     }
 
-    datasets = ["train"]
+    datasets = ["valid", "train"]
 
     # cur_run = file_to_args.keys()
     # cur_run = ["country.txt"]
@@ -466,14 +466,7 @@ if __name__ == "__main__":
 
             classifier_type = classifier_runner.classifier_type.__name__
 
-            if classifier_type == "RegexClassifier":
-                cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[cur_dataset]["labels"],
-                                              classifier_runner.classifier.dataset[cur_dataset]["preds"])
-                ppv_and_accuracy = compute_ppv_accuracy_ova(cnf_matrix, cur_labels_list)
-                predicted_positive, positive_cases, predicted_negative_cases, negative_cases, \
-                    false_positives, false_negatives = get_classification_stats(cnf_matrix, cur_labels_list)
-
-            else:
+            if classifier_type == "CaptureClassifier":
                 cnf_matrix = None
 
                 classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
@@ -484,12 +477,20 @@ if __name__ == "__main__":
                     classifier_classes, classifier_runner.classifier.negative_label)
 
                 predicted_positive, positive_cases, predicted_negative_cases, negative_cases, \
-                    false_positives, false_negatives = get_classification_stats_capture(
-                        classifier_runner.classifier.dataset[cur_dataset]["labels"],
-                        classifier_runner.classifier.dataset[cur_dataset]["preds"],
-                        classifier_classes, classifier_runner.classifier.negative_label)
+                false_positives, false_negatives = get_classification_stats_capture(
+                    classifier_runner.classifier.dataset[cur_dataset]["labels"],
+                    classifier_runner.classifier.dataset[cur_dataset]["preds"],
+                    classifier_classes, classifier_runner.classifier.negative_label)
 
                 cur_labels_list = classifier_classes
+
+            else:
+
+                cnf_matrix = confusion_matrix(classifier_runner.classifier.dataset[cur_dataset]["labels"],
+                                              classifier_runner.classifier.dataset[cur_dataset]["preds"])
+                ppv_and_accuracy = compute_ppv_accuracy_ova(cnf_matrix, cur_labels_list)
+                predicted_positive, positive_cases, predicted_negative_cases, negative_cases, \
+                false_positives, false_negatives = get_classification_stats(cnf_matrix, cur_labels_list)
 
             print("Confusion Matrix: ")
 

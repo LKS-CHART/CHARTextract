@@ -105,24 +105,27 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.markMatch = function(id, match) {
         $("mark").unmark();
 
+        var matched_string_r = new RegExp(match.pattern)
+
         if (match["effect"].startsWith("r")) {
-            $("#" + id).mark(match.matched_string, {
+            $("#" + id).markRegExp(matched_string_r, {
             "className": "highlight-effect-replace",
-            "separateWordSearch": false, "element": "span"})
+            "element": "span", "acrossElements": true})
         }
         else if (match["effect"].startsWith("i")) {
-            $("#" + id).mark(match.matched_string, {
+            $("#" + id).markRegExp(matched_string_r, {
             "className": "highlight-effect-ignore",
-            "separateWordSearch": false, "element": "span"})
+            "element": "span", "acrossElements": true})
         }
         else if (match["effect"].startsWith("a")) {
-            $("#" + id).mark(match.matched_string, {
+            $("#" + id).markRegExp(matched_string_r, {
             "className": "highlight-effect-add",
-            "separateWordSearch": false, "element": "span"})
+            "element": "span", "acrossElements": true})
         }
         else
         {
-            $("#" + id).mark(match.matched_string, {"className": "highlight", "separateWordSearch": false, "element": "span"})
+            $("#" + id).markRegExp(matched_string_r, {"className": "highlight",
+            "element": "span", "acrossElements": true})
         }
     }
 
@@ -150,7 +153,9 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                      "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score,
                       "matched_string": matched_string, "id": str_id}
 
-                    $("#" + str_id).mark(matched_string, {"className": "highlight", "separateWordSearch": false,
+                    var matched_string_r = new RegExp(match_obj.pattern)
+                    $("#" + str_id).markRegExp(matched_string_r, {"className": "highlight",
+                    "acrossElements": true,
                     "element": "span"})
 
                     all_sentence_matches.push(primary_match)
@@ -164,20 +169,22 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                         "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string,
                         "id": str_id}
 
+                        var matched_string_r_2 = new RegExp(match_obj2.pattern)
+
                         if (secondary_match["effect"].startsWith("r")) {
-                            $("#" + str_id).mark(secondary_match.matched_string, {
+                            $("#" + str_id).markRegExp(matched_string_r_2, {
                             "className": "highlight-effect-replace",
-                            "separateWordSearch": false, "element": "span"})
+                            "element": "span", "acrossElements": true})
                         }
                         else if (secondary_match["effect"].startsWith("i")) {
-                            $("#" + str_id).mark(secondary_match.matched_string, {
+                            $("#" + str_id).markRegExp(matched_string_r_2, {
                             "className": "highlight-effect-ignore",
-                            "separateWordSearch": false, "element": "span"})
+                            "element": "span", "acrossElements": true})
                         }
                         else if (secondary_match["effect"].startsWith("a")) {
-                            $("#" + str_id).mark(secondary_match.matched_string, {
+                            $("#" + str_id).markRegExp(matched_string_r_2, {
                             "className": "highlight-effect-add",
-                            "separateWordSearch": false, "element": "span"})
+                            "element": "span", "acrossElements": true})
                         }
                         all_sentence_matches.push(secondary_match)
 
@@ -248,7 +255,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
     $scope.getSelectedData = function() {
 
-        $scope
+        console.log("HAJSDHAKSJHd")
         var marked_data = markData($scope.selected.data, $scope.selected.matches)
         return $sce.trustAsHtml(marked_data)
     }

@@ -42,18 +42,18 @@
 }
 .highlight-effect-ignore {
     //text-decoration: underline;
-    border-bottom: 5px solid red;
+    border-bottom: 1px solid red;
     z-index: 1;
 }
 
 .highlight-effect-replace {
     //text-decoration: underline;
-    border-bottom: 5px solid blue;
+    border-bottom: 1px solid blue;
     z-index: 1;
 }
 
 .highlight-effect-add {
     //text-decoration: underline;
-    border-bottom: 5px solid green;
+    border-bottom: 1px solid green;
     z-index: 1;
 }
