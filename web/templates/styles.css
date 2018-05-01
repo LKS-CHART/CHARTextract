@@ -25,4 +25,15 @@
     border-bottom: 1px solid #c9c9c9;
 
 }
+.line-break-and-tab {
+    white-space: pre-line;
+    word-break: break-all;
+}
 
+.id-active {
+    border: 1px solid #000;
+}
+
+.highlight {
+    background-color: #bf80ff;
+}

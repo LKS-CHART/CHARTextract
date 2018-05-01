@@ -1,4 +1,4 @@
-
+{% raw %}
 <!-- Only works for re.search not iter -->
 <div ng-if="selected">
     <div class="col-md-3" style="height:100%">
@@ -39,10 +39,13 @@
                     <p style="color: #455A64">Score: {{match.score}}</p>
                     <p ng-if="match.hasOwnProperty('aggregate_score')" style="color: #455A64">Aggregate Score: {{match.aggregate_score}}</p>
                     <p style="color: #455A64">Effect: {{match.effect}}</p>
-                    <p style="color: #455A64">Matched String: {{match.matched_string}}</p>
+                    <!--<p style="color: #455A64">Id: {{match.id}}</p>-->
+                    <p ng-click="markMatch(match.id, match.matched_string)"
+                       style="color: #337ab7; cursor: pointer;">Matched String: {{match.matched_string}}</p>
                 </div>
 
             </div>
         </div>
     </div>
 </div>
+{% endraw %}

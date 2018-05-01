@@ -102,6 +102,11 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         $scope.getSelectedMatches();
     }
 
+    $scope.markMatch = function(id, matched_string) {
+        $("span.highlight").unmark();
+        $("#" + id).mark(matched_string, {"className": "highlight", "separateWordSearch": false, "element": "span"})
+    }
+
 
     $scope.getSentenceMatches = function(sentence_id)
     {
@@ -121,7 +126,9 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
                     var matched_string = match_obj["matches"][0]["matched_string"]
 
-                    var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score, "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score, "matched_string": matched_string}
+                    var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score,
+                     "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score,
+                      "matched_string": matched_string, "id": str_id}
 
                     all_sentence_matches.push(primary_match)
 
@@ -131,7 +138,8 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
                         var match_obj2 = secondary_matches[j];
                         var secondary_match = {"name": match_obj2.name, "pattern": match_obj2.pattern, "score": match_obj2.score,
-                        "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string}
+                        "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string,
+                        "id": str_id}
 
                         all_sentence_matches.push(secondary_match)
 
@@ -178,7 +186,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
             if (sentences_with_matches.has(i)) {
 
-                var new_sentence = '<mark style="cursor: pointer;"ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + sentences[i] + '.</mark>'
+                var new_sentence = '<mark style="cursor: pointer; "ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + sentences[i] + '.</mark>'
                 new_data += new_sentence
             }
             else
