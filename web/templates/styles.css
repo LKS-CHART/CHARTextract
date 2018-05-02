@@ -71,5 +71,5 @@
 }
 
 .page-item.not-recurring > a:hover{
-    border: 1px solid green; !important
+    border: 1px solid #cc0000; !important
 }
