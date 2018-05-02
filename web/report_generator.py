@@ -3,6 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 from numpy.random import rand as r
 import json
 import pickle
+import csv
 
 def _generate_match_for_json(match_obj):
     """Generates a simplified match object to be exported as a json
@@ -124,13 +125,41 @@ def generate_json(output_directory, json_filename, variable_name, class_names, p
 
     data["patient_cases"] = {}
 
+    failure_files = list(filter(lambda file: file.startswith("failure_set"), os.listdir(output_directory)))
+
+    latest_file = None
+
+    if failure_files:
+        latest_file = max(failure_files, key=lambda i: int(i.split("_")[2].split(".")[0]))
+
+    recurring = set()
+
+    if latest_file:
+        with open(os.path.join(output_directory, latest_file)) as f:
+            lines = csv.reader(f)
+            recurring = set(list(lines)[0])
+
     #Generating information for each patient
     for patient_id in patients_dict:
         data["patient_cases"][patient_id] = {"data": patients_dict[patient_id]["data"],
                                             "matches": _generate_match_for_json(patients_dict[patient_id]["matches"]),
                                              "pred": patients_dict[patient_id]["pred"],
                                              "actual": patients_dict[patient_id]["label"],
-                                             "score": patients_dict[patient_id]["score"]}
+                                             "score": patients_dict[patient_id]["score"], "recurring": False}
+
+        if str(patient_id) in recurring:
+            data["patient_cases"][patient_id]["recurring"] = True
+
+
+
+    errors_write_name = "failure_set_0.txt" if not latest_file else "failure_set_" \
+                                                                    + str(int(latest_file.split("_")[2].split(".")[0])
+                                                                    + 1)\
+                                                                    + ".txt"
+
+    with open(os.path.join(output_directory, errors_write_name), "w") as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        writer.writerow(list(patients_dict))
 
     #Creating the json
     with open(json_fname, 'w') as outfile:

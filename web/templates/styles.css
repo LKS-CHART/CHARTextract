@@ -57,3 +57,19 @@
     border-bottom: 1px solid green;
     z-index: 1;
 }
+
+.page-item.recurring > a{
+    border: 1px solid green; !important
+}
+
+.page-item.recurring > a:hover{
+    border: 1px solid green; !important
+}
+
+.page-item.not-recurring > a{
+    border: 1px solid #cc0000; !important
+}
+
+.page-item.not-recurring > a:hover{
+    border: 1px solid green; !important
+}

@@ -74,9 +74,10 @@ class TemporalRegexClassifier(BaseClassifier):
             self.dataset[data_set]["scores"] = []
 
             for data_index, datum in enumerate(data):
-                print("-"*100)
-                print("Classifying id: ", self.dataset[data_set]["ids"][data_index])
-                print("Label: ", self.dataset[data_set]["labels"][data_index])
+                if self.DEBUG:
+                    print("-"*100)
+                    print("Classifying id: ", self.dataset[data_set]["ids"][data_index])
+                    print("Label: ", self.dataset[data_set]["labels"][data_index])
                 #Regex -> list of list of matches? - probably want one match in each sublist
 
                 class_matches = [{class_name: {} for class_name in self.regexes} for _ in range(len(datum))]
@@ -87,7 +88,8 @@ class TemporalRegexClassifier(BaseClassifier):
                 latest_index_w_matches = 0
 
                 case_lengths = self._get_case_lengths(datum)
-                print(case_lengths)
+                if self.DEBUG:
+                    print(case_lengths)
 
                 for i, case in enumerate(datum):
                     index_start = case_lengths[i]

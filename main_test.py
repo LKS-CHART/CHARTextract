@@ -14,6 +14,7 @@ from datahandler.preprocessors import replace_filter_by_label, replace_labels_wi
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from classifier.classification_functions import sputum_classify, max_classify, max_month
 from util.tb_country import preprocess
+import glob
 
 def create_regex_based_classifier(rule_path=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
@@ -532,8 +533,11 @@ if __name__ == "__main__":
 
             # excel_column_headers.append(file_to_header[rule])
             # excel_column_headers.append("Label")
-            if not os.path.exists(os.path.join("generated_data", rule_name, cur_dataset)):
-                os.makedirs(os.path.join("generated_data", rule_name, cur_dataset))
+
+            gen_path = os.path.join("generated_data", rule_name, cur_dataset)
+
+            if not os.path.exists(gen_path):
+                os.makedirs(gen_path)
 
             # TODO: FIX STAT CREATION FOR CAPTURE CLASSIFIERS
             error_data = {"Predicted Positive": predicted_positive, "Positive Cases": positive_cases,
