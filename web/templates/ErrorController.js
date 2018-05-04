@@ -92,7 +92,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     $scope.markMatch = function(id, match) {
         $("mark").unmark();
 
-        var matched_string_r = new RegExp(match.pattern,"i")
+        var matched_string_r = new RegExp(match.pattern,"im")
 
         if (match["effect"].startsWith("r")) {
             $("#" + id).markRegExp(matched_string_r, {
@@ -156,7 +156,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
                         "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string,
                         "id": str_id}
 
-                        var matched_string_r_2 = new RegExp(match_obj2.pattern, "i")
+                        var matched_string_r_2 = new RegExp(match_obj2.pattern, "im")
 
                         if (secondary_match["effect"].startsWith("r")) {
                             $("#" + str_id).markRegExp(matched_string_r_2, {
@@ -217,7 +217,12 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
             if (sentences_with_matches.has(i)) {
 
-                var new_sentence = '<mark class="sMatch" style="cursor: pointer; "ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + sentences[i] + '.</mark>'
+                  var cleansed_sentence = sentences[i]
+//                var cleansed_sentence = sentences[i].replace(new RegExp("\n+", "i"), " ");
+//                console.log(sentences[i])
+//                console.log(cleansed_sentence)
+//                console.log("CLEANY CLEANY")
+                var new_sentence = '<mark class="sMatch" style="cursor: pointer; "ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + cleansed_sentence + '.</mark>'
                 new_data += new_sentence
             }
             else
