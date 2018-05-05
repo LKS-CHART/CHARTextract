@@ -79,6 +79,25 @@ def load_rules(rule_folder, tree, runner_list):
 
     runner_list = runner_copy.copy()
 
+def edit_tree(item):
+    print("EDITING TREE")
+
+    selected_row = rules_view_tree.focus()
+
+    rvt_item = partial(rules_view_tree.item, selected_row)
+
+    values = rvt_item()
+    selected_row_rule.set("Editing Label Column for " + values["text"])
+
+    # rvt_item(values=('test'))
+
+    selected_row_label_col.set(rvt_item(option="values"))
+
+def edit_label_col(*args):
+    print(args)
+    print(rules_view_tree.focus())
+    rules_view_tree.item(rules_view_tree.focus(), values=selected_label_col_text.get())
+
 def run_rules():
     pass
 
@@ -94,11 +113,17 @@ if __name__ == "__main__":
     data_file = StringVar()
     data_cols = StringVar()
     label_file = StringVar()
+    data_id_col = IntVar()
+    label_id_col = IntVar()
+    selected_row_label_col = StringVar()
+    selected_row_rule = StringVar()
+
+    selected_row_rule.set("Editing Label Column for")
 
     runners_list = []
 
-    rule_folder.set(os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules', 'tb_rules'))
-    data_file.set(os.path.join(os.getenv('TB_DATA_FOLDER'), 'CombinedData.csv'))
+    # rule_folder.set(os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules', 'tb_rules'))
+    # data_file.set(os.path.join(os.getenv('TB_DATA_FOLDER'), 'CombinedData.csv'))
 
     rules_view_tree = ttk.Treeview(content)
     rules_view_tree['columns'] = ('labelcols')
@@ -106,7 +131,9 @@ if __name__ == "__main__":
     rules_view_tree.column("#0", anchor=W)
     rules_view_tree.heading('labelcols', text="Label Column Numbers")
     rules_view_tree.column('labelcols', anchor='center', width=200)
-    rules_view_tree.grid(row=7, columnspan=5, sticky=(N, S, E, W))
+    rules_view_tree.grid(row=8, columnspan=5, sticky=(N, S, E, W))
+    rules_view_tree.bind('<<TreeviewSelect>>', edit_tree)
+
     rule_folder_label = ttk.Label(content, text="Rule Folder: ").grid(column=0, row=0, sticky=W)
     rule_folder_text = ttk.Entry(content, textvariable=rule_folder, width=30).grid(column=1, row=0, columnspan=3,
                                                                                    sticky=(E, W))
@@ -116,7 +143,7 @@ if __name__ == "__main__":
                                                                                    runners_list])).grid(column=4, row=0,
                                                                                                         sticky=W)
 
-    load_rules(rule_folder, rules_view_tree, runners_list)
+    # load_rules(rule_folder, rules_view_tree, runners_list)
 
     data_file_label = ttk.Label(content, text="Data File: ").grid(column=0, row=1, sticky=W)
     data_file_text = ttk.Entry(content, textvariable=data_file).grid(column=1, row=1, columnspan=3, sticky=(E, W))
@@ -127,84 +154,29 @@ if __name__ == "__main__":
     data_columns_label = ttk.Label(content, text="Data Columns: ").grid(column=0, row=2, sticky=W)
     data_columns_text = ttk.Entry(content, textvariable=data_cols).grid(column=1, row=2, columnspan=3, sticky=(E, W))
 
-    label_file_label = ttk.Label(content, text="Label File: ").grid(column=0, row=3, sticky=W)
-    label_file_text = ttk.Entry(content, textvariable=label_file).grid(column=1, row=3, columnspan=3, sticky=(E, W))
+    data_id_label = ttk.Label(content, text="Data ID Column: ").grid(column=0, row=3, sticky=W)
+    data_id_text = ttk.Entry(content, textvariable=data_id_col).grid(column=1, row=3, columnspan=3, sticky=(E, W))
+
+    label_file_label = ttk.Label(content, text="Label File: ").grid(column=0, row=4, sticky=W)
+    label_file_text = ttk.Entry(content, textvariable=label_file).grid(column=1, row=4, columnspan=3, sticky=(E, W))
     label_file_button = ttk.Button(content, text="Open File", command=partial(load_file, label_file)).grid(column=4,
-                                                                                                           row=3,
+                                                                                                           row=4,
                                                                                                            sticky=W)
 
-    content.grid_rowconfigure(4, minsize=20)
+    content.grid_rowconfigure(5, minsize=20)
 
-    run_button = ttk.Button(content, text="Run").grid(column=0, row=5, sticky=W)
+    run_button = ttk.Button(content, text="Run").grid(column=0, row=6, sticky=W)
 
-    content.grid_rowconfigure(6, minsize=10)
+    content.grid_rowconfigure(7, minsize=10)
+
+    selected_label_col_label = ttk.Label(content, textvariable=selected_row_rule).grid(column=0, columnspan=2, row=9,
+                                                                                       sticky=W)
+    selected_label_col_text = ttk.Entry(content, textvariable=selected_row_label_col)
+    selected_label_col_text.bind("<Return>", edit_label_col)
+
+    selected_label_col_text.grid(column=3, row=9, sticky=(E, W))
 
 
-    # def rule_btn_clicked():
-    #     rule_text.delete(0,'end')
-    #     rule_folder = filedialog.askdirectory()
-    #     rule_text.insert(END,rule_folder)
-    #     print(rule_folder)
-    #
-    # #RULE UPLOAD
-    #
-    # rule_label = Label(root, text="Rules Folder")
-    # rule_label.grid(column=0, row=0)
-    #
-    # rule_text = Entry(root, width=40, textvariable=rules)
-    # rule_text.grid(column=1, row=0)
-    # rule_text.insert(END,'Z:/LKS-CHART/Projects/NLP POC/Study data/TB/dev/rules')
-    #
-    # rule_upload = Button(root, text="Load", command=rule_btn_clicked)
-    # rule_upload.grid(column=2, row=0)
-    #
-    # #DATA UPLOAD
-    #
-    # data_label = Label(root, text="Data File")
-    #
-    # data_label.grid(column=0, row=1, sticky=W)
-    #
-    # data_text = Entry(root, width=40, textvariable=filename)
-    # data_text.grid(column=1, row=1)
-    # data_text.insert(END, 'Z:/LKS-CHART/Projects/NLP POC/Study data/TB/dev/NLP Study (TB Clinic) Cohort 2 (really cleansed).csv')
-    #
-    # def file_btn_clicked():
-    #     data_text.delete(0,'end')
-    #     data_file = filedialog.askopenfile(title="Select file", filetype=[("CSV or Excel Files", ("*.csv", "*.xlsx"))])
-    #     data_text.insert(END,data_file.name)
-    #
-    # data_upload = Button(root, text="Load", command=file_btn_clicked)
-    # data_upload.grid(column=2, row=1)
-    #
-    # data_checkvar = IntVar()
-    # data_checkbox = Checkbutton(text="Repeat Ids", variable=repeat_ids, onvalue=1, offvalue=0)
-    # data_checkbox.grid(column=3, row=1)
-    #
-    # #DATA PARAMETERS
-    #
-    # data_col_label = Label(root, text="Data col")
-    # data_col_label.grid(column=0, row=2, sticky=W)
-    #
-    # data_col_text = Entry(root, width=10, textvariable=data_col)
-    # data_col_text.insert(END,'2')
-    # data_col_text.grid(column=1, row=2, sticky=W)
-    #
-    # id_col_label = Label(root, text="ID col", anchor="w")
-    # id_col_label.grid(column=0, row=3, sticky=W)
-    #
-    # id_col_text = Entry(root, width=10, textvariable=id_col)
-    # id_col_text.insert(END,'0')
-    # id_col_text.grid(column=1, row=3, sticky=W)
-    #
-    # line_label = Label(root, text="Line start", anchor="w")
-    # line_label.grid(column=0, row=4, sticky=W)
-    #
-    # line_col_text = Entry(root, width=10, textvariable=line_start)
-    # line_col_text.insert(END,'1')
-    # line_col_text.grid(column=1, row=4, sticky=W)
-    #
-    # #RUN SCRIPT
-    #
     # def run_script():
     #     str_filename = filename.get()
     #     str_rules = rules.get()
@@ -217,25 +189,6 @@ if __name__ == "__main__":
     #     data, _, ids = di.data_from_csv([str_filename], data_cols=int_data_col, first_row=int_line_start, id_cols=int_id_col, repeat_ids=bool_repeat_ids) if str_filename.endswith('.csv') \
     #         else di.data_from_excel([str_filename], data_cols=int_data_col, id_cols=int_id_col, repeat_ids=bool_repeat_ids, first_row=int_line_start)
     #
-    #     classifiers = []
-    #     classifiers_args = []
-    #
-    #     rule_tups = [(fname, os.path.normpath(os.path.join(str_rules, fname))) for fname in os.listdir(str_rules)]
-    #
-    #     for rule_name, rule in rule_tups:
-    #         classifier_type, classifier_args, regexes_dict = import_regexes(rule) if os.path.isdir(rule) else import_regex(rule)
-    #         classifier_args.update({"regexes": regexes_dict})
-    #         classifiers_args.append(classifier_args)
-    #         classifiers.append(classifier_type)
-    #
-    #     for classifier_args, classifier in zip(classifiers_args, classifiers):
-    #         rule_classifier = Runner(classifier, **classifier_args)
-    #         rule_classifier.run(ids=ids, data=data)
-    #         print(rule_classifier.classifier.dataset["test"]["preds"])
-    #
-    # run = Button(root, text="RUN", command=run_script)
-    # run.grid(column=0, row=5, sticky=W)
-
     #SCALING STUFF: LOOK AT LATER
 
     # root.columnconfigure(0, weight=1)
