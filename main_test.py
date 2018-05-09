@@ -14,7 +14,7 @@ from datahandler.preprocessors import replace_filter_by_label, replace_labels_wi
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from classifier.classification_functions import sputum_classify, max_classify, max_month
 from util.tb_country import preprocess
-import glob
+from util.pwd_preprocessors import PwdPreprocessor
 
 def create_regex_based_classifier(rule_path=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
@@ -81,6 +81,9 @@ if __name__ == "__main__":
 
     # Setup code
     pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
+    immuno_preprocessor = PwdPreprocessor(pwds, ["immuno"])
+
+
     filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'CombinedData.csv')
     label_filename2 = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions',
                                    'labelling_decisions_cohort_2-s.xlsx')
@@ -192,7 +195,8 @@ if __name__ == "__main__":
                                         },
                     "immigration.txt": {"Runner Initialization Params":
                                         {"l_label_col": 3,
-                                         "label_func":  functools.partial(replace_filter, lambda label: label[0:4])}
+                                         "label_func":  functools.partial(replace_filter, lambda label: label[0:4]),
+                                         "label_file": label_filename3}
                                         },
                     "sensitivity_full.txt": {"Runner Initialization Params":
                                              {"l_label_col": 11,
@@ -242,7 +246,7 @@ if __name__ == "__main__":
                                        "label_func": functools.partial(replace_label_with_required,
                                                                        {"Active TB": "None"})}
                                       },
-                    "inh_medication.txt": {"Runner Initialization Params":
+                    "inh_medication_2.txt": {"Runner Initialization Params":
                                            {"l_label_col": [13, 14, 15, 16, 17],
                                             "label_func": functools.partial(replace_labels_with_required, *["Isoniazid (INH)", "None"])},
                                            "Runtime Params": {"label_func": None, "pwds": pwds}
@@ -328,14 +332,9 @@ if __name__ == "__main__":
                     "hcw": {"Runner Initialization Params":
                             {"l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
                             "Runtime Params": {"label_func": None, "pwds": pwds}},
-                    "corticosteroids_immuno": {"Runner Initialization Params":
-                                               {"l_label_col": 21,
-                                                "label_func": functools.partial(
-                                                    replace_label_with_required,
-                                                    {"Corticosteroids (prednisone)": "Yes", "Other": "No",
-                                                     'None': "No", "Chemotherapy": "No",
-                                                     "TNF alpha inhibitors": "No"})}
-                                               },
+                    "corticosteroids_immuno.txt": {"Runner Initialization Params":
+                                               {"l_label_col": 26},
+                                                   "Runtime Params": {"preprocess_func": immuno_preprocessor.preprocess}},
                     "chemotherapy_immuno": {"Runner Initialization Params":
                                             {"l_label_col": 21,
                                              "label_func": functools.partial(replace_label_with_required,
@@ -397,7 +396,7 @@ if __name__ == "__main__":
                                             }
                     }
 
-    datasets = ["train", "valid"]
+    datasets = ["train"]
 
     # cur_run = file_to_args.keys()
     # cur_run = ["country.txt"]
@@ -409,7 +408,8 @@ if __name__ == "__main__":
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    cur_run = ["tb_duration"]
+    cur_run = ["corticosteroids_immuno.txt"]
+
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -548,10 +548,17 @@ if __name__ == "__main__":
                           "Negative Label": classifier_runner.classifier.negative_label,
                           "Classifier Type": classifier_type}
 
+
+            custom_class_colours = None
+
+            if rule == "diag_active_demo.txt":
+                custom_class_colours={"None": "hsl({},{}%,{}%)".format(15,71.4,89),
+                                      "Active TB": "hsl({},{}%,{}%)".format(97,81,91.8)}
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
                                   classifier_runner.classifier.regexes.keys(), failures_dict, effects,
-                                  custom_effect_colours=effect_colours, addition_json_params=error_data)
+                                  custom_effect_colours=effect_colours, addition_json_params=error_data,
+                                  custom_class_colours=custom_class_colours)
 
             headers = ["ID", "Prediction", "Actual"]
             excel_path = os.path.join("generated_data", rule_name, cur_dataset, rule_name)
