@@ -14,7 +14,7 @@ from datahandler.preprocessors import replace_filter_by_label, replace_labels_wi
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from classifier.classification_functions import sputum_classify, max_classify, max_month
 from util.tb_country import preprocess
-from util.pwd_preprocessors import PwdPreprocessor
+from util.pwd_preprocessors import PwdPreprocessor2
 
 def create_regex_based_classifier(rule_path=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     # Setup code
     pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
-    immuno_preprocessor = PwdPreprocessor(pwds, ["immuno"])
+    immuno_preprocessor = PwdPreprocessor2(pwds, ["corticosteroids"], to_lower=True)
 
 
     filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'CombinedData.csv')
@@ -333,7 +333,13 @@ if __name__ == "__main__":
                             {"l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
                             "Runtime Params": {"label_func": None, "pwds": pwds}},
                     "corticosteroids_immuno.txt": {"Runner Initialization Params":
-                                               {"l_label_col": 26},
+                                               {"l_label_col": 26,
+                                                "label_func": functools.partial(replace_label_with_required,
+                                                                                {"Corticosteroids (prednisone)": "Yes",
+                                                                                 "Other": "No", 'None': "No",
+                                                                                 "Chemotherapy": "No",
+                                                                                 "TNF alpha inhibitors": "No"})},
+
                                                    "Runtime Params": {"preprocess_func": immuno_preprocessor.preprocess}},
                     "chemotherapy_immuno": {"Runner Initialization Params":
                                             {"l_label_col": 21,
@@ -396,7 +402,7 @@ if __name__ == "__main__":
                                             }
                     }
 
-    datasets = ["train"]
+    datasets = ["train", "valid"]
 
     # cur_run = file_to_args.keys()
     # cur_run = ["country.txt"]
@@ -409,7 +415,7 @@ if __name__ == "__main__":
     # cur_run = ["smoking_new"]
 
     cur_run = ["corticosteroids_immuno.txt"]
-
+    # cur_run = ["inh_medication_2.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code

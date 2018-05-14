@@ -244,8 +244,25 @@ class RegexHandler(object):
 
         for i, sentence in enumerate(sentences):
             # Mimicing preprocessing from old tool
+
+            if sentence == '':
+                continue
+
             sentence = " {} ".format(sentence)
-            matches, score = self.score_and_match_sentence(sentence, regexes, pwds=pwds, preprocess_func=preprocess_func)
+
+            preprocessed_data = {}
+
+            if preprocess_func:
+                preprocessed_data = preprocess_func(sentence)
+            else:
+                preprocessed_data["sentence"] = sentence
+                preprocessed_data["dictionaries"] = pwds
+
+            if preprocessed_data["sentence"] is None:
+                continue
+
+            matches, score = self.score_and_match_sentence(preprocessed_data["sentence"], regexes,
+                                                           pwds=preprocessed_data["dictionaries"])
 
             # only adding sentences that matched
             if matches:
@@ -257,7 +274,7 @@ class RegexHandler(object):
 
         return matches_score_dict, total_score
 
-    def score_and_match_sentence(self, text, regexes, pwds=None, preprocess_func=None):
+    def score_and_match_sentence(self, text, regexes, pwds=None):
         """Scores the text and returns matches based on the effects of the regexes
         
         Arguments:
@@ -270,8 +287,6 @@ class RegexHandler(object):
 
         """
         # Preprocessing sentence
-        if preprocess_func:
-            text, preprocessed_pwds = preprocess_func(text, pwds)
 
         matches = []
         total_score = 0

@@ -39,4 +39,4 @@ def split_string_into_words(text):
     """
 
     #TODO: Look at ways to make this better
-    return re.split(r"[?!\.\s/)(:#]+", text)
+    return re.split(r"[?!\.\s/)(:#,]+", text)
