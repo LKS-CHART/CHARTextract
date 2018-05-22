@@ -72,33 +72,35 @@ if __name__ == "__main__":
     effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
     effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
 
-    filename = os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.v3.100.xlsx')
-    label_filename = os.path.join(os.getenv('DATA_FOLDER'), 'smh.ctpa.v3.100.xlsx')
+    filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all.xlsx')
+    # filename = os.path.join(os.getenv('DATA_FOLDER'), 'all.xlsx')
+    #filenames = [os.path.join(os.getenv('DATA_FOLDER'), 'du', file) for file in os.listdir(os.path.join(os.getenv('DATA_FOLDER'))) if ('.du' in file and '~' not in file and file.endswith('.xlsx'))]
 
+    label_filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all.xlsx')
+    label_filename = filename
     label_files_dict = dict()
     label_files_dict["train"] = label_filename
+    label_files_dict["valid"] = label_filename
 
     rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
 
     # loading data
     if not debug:
         data_loader = di.data_from_csv if filename.endswith('.csv') else di.data_from_excel
-        data_list, _, ids_list = data_loader([filename], data_cols=5, first_row=1, id_cols=0, repeat_ids=False)
+        data_list, _, ids_list = data_loader([filename], data_cols=2, first_row=1, id_cols=1, repeat_ids=False)
 
     else:
         pass
 
-    ctpa_rules = os.path.join(rules_path, "ctpa")
+    ctpa_rules = os.path.join(rules_path, "du")
 
-    file_to_args = {"acute.txt": {"Runner Initialization Params": {"l_label_col": 13, "l_id_col": 0, "l_first_row": 1,
-                                                                   "label_func": functools.partial(replace_label_with_required,
-                                                                                                   {"y": "Acute PE",
-                                                                                                    "n": "Not Acute PE"
-                                                                                                   })}}}
+    file_to_args = {"dvt-iterative.txt": {"Runner Initialization Params": {"l_label_col": 3, "l_id_col": 1, "l_first_row": 1,
+                                                                  "label_func": functools.partial(replace_label_with_required, {"None": "n"}),
+                                                                           "label_file": label_filename}}}
 
-    datasets = ["train"]
+    datasets = ["train", "valid"]
 
-    cur_run = ["acute.txt"]
+    cur_run = ["dvt-iterative.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -253,7 +255,7 @@ if __name__ == "__main__":
             excel_path = os.path.join("generated_data", rule_name, cur_dataset, rule_name)
             conf_path = os.path.join("generated_data", rule_name, cur_dataset)
 
-            if cnf_matrix is not None:
-                plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
+            # if cnf_matrix is not None:
+            #     plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
 
             # de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
