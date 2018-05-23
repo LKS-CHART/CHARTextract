@@ -414,7 +414,7 @@ if __name__ == "__main__":
     # cur_run = ["afb_positive.txt", "disseminated.txt", "extra_pulmonary.txt"]
     # cur_run = ["smoking_new"]
 
-    cur_run = ["corticosteroids_immuno.txt"]
+    cur_run = ["diagnosis"]
     # cur_run = ["inh_medication_2.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers

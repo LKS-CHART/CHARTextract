@@ -1,11 +1,13 @@
 {% raw %}
 <div>
-    <h1 align="center">Study: {{data.var_name}}</h1>
+    <h1 align="center">RegexNLP</h1>
 </div>
 <h3>Settings</h3>
 
 <p>
-    <b>{{class}}:</b> </br>
+    <b>{{class}}</b><br/>
+    <b>Data:</b><br/>
+
     {{data["Predicted Positive"][class]}} Predicted Positive Cases of {{data["Positive Cases"][class]}} Positive Cases</br>
     {{data["Predicted Negative"][class]}} Predicted Negative Cases of {{data["Negative Cases"][class]}}  Negative Cases</br></br>
     {{data["False Positives"][class]}} False Positives of {{data["Positive Cases"][class]}} Positive Cases</br>
