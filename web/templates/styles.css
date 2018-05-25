@@ -58,18 +58,23 @@
     z-index: 1;
 }
 
+.page-item {
+    margin-top: 1px;
+    margin-left: -1px;
+}
+
 .page-item.recurring > a{
-    border: 1px solid green; !important
+    border: 2px solid green; !important
 }
 
 .page-item.recurring > a:hover{
-    border: 1px solid green; !important
+    border: 2px solid green; !important
 }
 
 .page-item.not-recurring > a{
-    border: 1px solid #cc0000; !important
+    border: 2px solid #cc0000; !important
 }
 
 .page-item.not-recurring > a:hover{
-    border: 1px solid #cc0000; !important
+    border: 2px solid #cc0000; !important
 }
