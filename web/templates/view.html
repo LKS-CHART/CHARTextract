@@ -1,51 +1,51 @@
 {% raw %}
 <!-- Only works for re.search not iter -->
-<div ng-if="selected">
-    <div class="col-md-3" style="height:100%">
-        <div class="col-md-12" style="background: #f5f5f5; padding: 0px 0px 0px 0px; height: 400px; width: 250px; border: 1px solid #e9e9e9; position:fixed; margin-top: 5%; ">
-            <h2 style="text-align: center; color: #455A64">Matches</h2>
-            <input type="text" ng-model="searchMatch" class="form-control" style="border-radius: 15px 15px 15px 15px; width: 90%; margin: 0 auto; float: none;"placeholder="Search">
-            <div class="col-md-12 scroll-style" style="margin-top: 10px; height: 280px; width: 95%; overflow-y: scroll; overflow-x:hidden">
-                <li ng-repeat="match in selected_matches | filter: searchMatch" style="list-style: none">
-                    <a href="" ng-click="gotoAnchor(match.sentence_id); getSentenceMatches(match.sentence_id)">{{match.matched_string}}</a>
-                </li>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div>
-            <h1 align="center">{{selected_id}}</h1>
-        </div>
-        <div>
-            <h3>Final Score</h3>
-            <p>Score: {{selected.score[selected.pred]}}</p>
-            <p>was determined to be {{selected.pred}}<b></b>, should be <b>{{selected.actual}}</b></p>
-        </div>
-        <h3>Letter Text</h3>
-        <p ng-cloak id="text" ng-html-compile="marked_data" class="line-break-and-tab">
-        </p>
-    </div>
-    <!--<div class="col-md-3" style="background: #f5f5f5; padding: 0px 0px 0px 0px; margin:auto; height: 200px; padding: 0px 0px 0px 0px; border: 1px solid #e9e9e9; margin-top: 40px;">-->
-    <!--</div>-->
-    <div class="col-md-3" style="">
-        <div ng-if="match_selected"class="col-md-12" style="background: #f5f5f5; padding: 10px 10px 10px 10px; width: 300px; border: 1px solid #e9e9e9; position:fixed; margin-top: 5%; margin-right: 50px;">
-            <h4 style="text-align: center; color: #455A64">Sentence Matches</h4>
-            <p style="color: #455A64">Sentence Score: </p>
-            <div class="scroll-style" style="height: 200px; overflow: scroll;">
-                <!--var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score, "effect": match_obj.pattern, "aggregate_score": match_obj.aggregate_score, "matched_string": matched_string}-->
-                <div class="separated" ng-repeat="match in sentence_matches">
-                    <p style="color: #455A64">Name: {{match.name}}</p>
-                    <p style="color: #455A64">Pattern: {{match.pattern}}</p>
-                    <p style="color: #455A64">Score: {{match.score}}</p>
-                    <p ng-if="match.hasOwnProperty('aggregate_score')" style="color: #455A64">Aggregate Score: {{match.aggregate_score}}</p>
-                    <p style="color: #455A64">Effect: {{match.effect}}</p>
-                    <!--<p style="color: #455A64">Id: {{match.id}}</p>-->
-                    <p ng-click="markMatch(match.id, match)"
-                       style="color: #337ab7; cursor: pointer;">Matched String: {{match.matched_string}}</p>
+    <div id="fffffff"ng-if="selected" style="position:relative">
+        <div class="col-md-3" style="">
+            <div id=""class="col-md-12" style="background: #f5f5f5; padding: 0px 0px 0px 0px; max-height: 400px; max-width: 250px; border: 1px solid #e9e9e9;  position:fixed; margin-top: 5%">
+                <h2 style="text-align: center; color: #455A64">Matches</h2>
+                <input type="text" ng-model="searchMatch" class="form-control" style="border-radius: 15px 15px 15px 15px; width: 90%; margin: 0 auto; float: none;"placeholder="Search">
+                <div class="col-md-12 scroll-style" style="margin-top: 10px; height: 280px; width: 95%; overflow-y: scroll; overflow-x:hidden">
+                    <li ng-repeat="match in selected_matches | filter: searchMatch" style="list-style: none">
+                        <a href="" ng-click="gotoAnchor(match.sentence_id); getSentenceMatches(match.sentence_id)">{{match.matched_string}}</a>
+                    </li>
                 </div>
+            </div>
+        </div>
+        <div class="col-md-6" style="">
+            <div>
+                <h1 align="center">{{selected_id}}</h1>
+            </div>
+            <div>
+                <h3>Final Score</h3>
+                <p>Score: {{selected.score[selected.pred]}}</p>
+                <p>was determined to be {{selected.pred}}<b></b>, should be <b>{{selected.actual}}</b></p>
+            </div>
+            <h3>Letter Text</h3>
+            <p ng-cloak id="text" ng-html-compile="marked_data" class="line-break-and-tab">
+            </p>
+        </div>
+        <!--<div class="col-md-3" style="background: #f5f5f5; padding: 0px 0px 0px 0px; margin:auto; height: 200px; padding: 0px 0px 0px 0px; border: 1px solid #e9e9e9; margin-top: 40px;">-->
+        <!--</div>-->
+        <div class="col-md-3">
+            <div ng-if="match_selected"class="col-md-12" style="background: #f5f5f5; padding: 10px 10px 10px 10px; width: 300px; border: 1px solid #e9e9e9; position:fixed; margin-top: 5%; margin-right: 50px;">
+                <h4 style="text-align: center; color: #455A64">Sentence Matches</h4>
+                <p style="color: #455A64">Sentence Score: </p>
+                <div class="scroll-style" style="height: 200px; overflow: scroll;">
+                    <!--var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score, "effect": match_obj.pattern, "aggregate_score": match_obj.aggregate_score, "matched_string": matched_string}-->
+                    <div class="separated" ng-repeat="match in sentence_matches">
+                        <p style="color: #455A64">Name: {{match.name}}</p>
+                        <p style="color: #455A64">Pattern: {{match.pattern}}</p>
+                        <p style="color: #455A64">Score: {{match.score}}</p>
+                        <p ng-if="match.hasOwnProperty('aggregate_score')" style="color: #455A64">Aggregate Score: {{match.aggregate_score}}</p>
+                        <p style="color: #455A64">Effect: {{match.effect}}</p>
+                        <!--<p style="color: #455A64">Id: {{match.id}}</p>-->
+                        <p ng-click="markMatch(match.id, match)"
+                           style="color: #337ab7; cursor: pointer;">Matched String: {{match.matched_string}}</p>
+                    </div>
 
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endraw %}
