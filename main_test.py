@@ -153,11 +153,10 @@ if __name__ == "__main__":
             print("Incorrect Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"][incorrect_indices])
 
             classifier_type = classifier_runner.classifier_type.__name__
+            classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
 
             if classifier_type == "CaptureClassifier":
                 cnf_matrix = None
-
-                classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
 
                 ppv_and_accuracy = compute_ppv_accuracy_capture(
                     classifier_runner.classifier.dataset[cur_dataset]["labels"],
