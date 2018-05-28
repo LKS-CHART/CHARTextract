@@ -1,0 +1,13 @@
+!Country,CaptureClassifier
+" is from (?:the )?dict:'\(country\)' ",3
+" immigrated[^\.\n\r]*from (?:the )?dict:'\(country\)' ",2
+" born in (?:the )?dict:'\(country\)' ",5
+" (?:the )?dict:'\(country\)-born",100
+" came[^\.\n\r]*from (?:the )?dict:'\(country\)' ",10
+" originally from (?:the )?dict:'\(country\)' ",5
+"[^t] born in (?:the )?dict:'\(country\)' ",100
+"[^t] (?:the )?dict:'\(country\)' born",100
+" visited (?:the )?dict:'\(country\)' ",-1
+" lived in (?:the )?dict:'\(country\)' ",-1
+" spent time in (?:the )?dict:'\(country\)' ",-1
+" immigrated to (?:the )?dict:'\(country\)' ",-10

@@ -636,7 +636,7 @@ def run(**kwargs):
 def save(**kwargs):
     respond({'function': 'save', 'params': kwargs})
 
-respond({'status': 'Ready'})
+# respond({'status': 'Ready'})
 for line in sys.stdin:
     x = json.loads(line)
     if x['function'] in available_funcs:
