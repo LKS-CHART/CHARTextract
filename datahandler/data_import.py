@@ -393,6 +393,64 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
 
     return classifier_type, classifier_args, class_name, regexes
 
+#New json format
+def regexes_from_json2(filename, use_custom_score=False):
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        classifier_type = data["Classifier Type"] if "Classifier Type" in data else "RegexClassifier"
+        all_matches = data["All Matches"] if "All Matches" in data else False
+
+        classifier_args = data["Classifier Args"] if "Classifier Args" in data else {}
+
+        if "Rules" in data:
+            for name in data["Rules"]:
+                class_name = name
+                regexes = []
+                for rule in data["Rules"][name]:
+                    score = None if not use_custom_score else rule["Primary"]["Score"]
+                    primary_pattern = rule["Primary"]["Rule"]
+
+                    secondary_regexes = []
+
+                    if "Case Sensitive" in rule:
+                        flags = [re.IGNORECASE] if not rule["Case Sensitive"] else None
+                    else:
+                        flags = None
+
+                    for secondary_rule in rule["Secondary"]:
+                        secondary_score = None if not use_custom_score else secondary_rule["Score"]
+                        secondary_pattern = secondary_rule["Rule"]
+
+                        effect = secondary_rule["Type"]
+
+                        if "Modifier" in secondary_rule:
+                            effect += secondary_rule["Modifier"]
+
+                        if "Case Sensitive" in secondary_rule:
+                            flags_secondary = [re.IGNORECASE] if not secondary_rule["Case Sensitive"] else None
+                        else:
+                            flags_secondary = None
+
+                        #Remember to never do what is under this line ever again
+                        # effect = secondary_rule["Type"] + secondary_rule["Modifier"] \
+                        #     if "Modifier" in secondary_rule else ""
+
+                        secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes),
+                                                                              class_name), regex=secondary_pattern, effect=effect, score=secondary_score,
+                                                all_matches=all_matches, flags=flags_secondary, secondary_regexes=[])
+
+                        secondary_regexes.append(secondary_regex)
+
+                    primary_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=primary_pattern,
+                                          score=score, effect='p', secondary_regexes=secondary_regexes,
+                                          all_matches=all_matches, flags=flags)
+
+                    regexes.append(primary_regex)
+
+                yield classifier_type, classifier_args, class_name, regexes
+
+
+#Old json format
 def regexes_from_json(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
     regexes = []
     class_name = None

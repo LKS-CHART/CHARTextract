@@ -36,7 +36,7 @@ label_files_dict["valid"] = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Valid_set
 rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
 dummy_rules_path = os.path.join(*["examples", "regexes", "tb_regexes"])
 
-tb_rules = os.path.join(rules_path, "tb_rules")
+tb_rules = os.path.join(rules_path, "tb_rules_json2")
 
 
 file_to_args = {"smoking_new": {"Runner Initialization Params": {"l_label_col": 7}},
