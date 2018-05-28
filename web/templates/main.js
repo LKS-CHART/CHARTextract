@@ -2,18 +2,12 @@ app = angular.module('app', ['ngRoute']).config(['$routeProvider', function($rou
     $routeProvider.
     when('/view', {
         templateUrl: 'view.html',
-        controller: 'ErrorController',
-        controllerAs: 'errorCtrl',
     }).
     when('/overview', {
         templateUrl: 'overview.html',
-        controller: 'ErrorController',
-        controllerAs: 'errorCtrl',
     }).
     when('/settings', {
         templateUrl: 'settings.html',
-        controller: 'ErrorController',
-        controllerAs: 'errorCtrl',
     })
 }])
 
