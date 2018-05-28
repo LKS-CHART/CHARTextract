@@ -228,9 +228,12 @@ if __name__ == "__main__":
 
             custom_class_colours = None
 
-            if rule == "diag_active_2.txt":
-                custom_class_colours={"None": "hsl({},{}%,{}%)".format(15,71.4,89),
-                                      "Active TB": "hsl({},{}%,{}%)".format(97,81,91.8)}
+            if len(classifier_classes) == 2:
+                negative_label = classifier_runner.classifier.negative_label
+                positive_label = next(filter(lambda i: i != negative_label, classifier_classes))
+                custom_class_colours = {negative_label: "hsl({},{}%,{}%)".format(15,71.4,89),
+                                        positive_label: "hsl({},{}%,{}%)".format(97,81,91.8)}
+
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
                                   classifier_runner.classifier.regexes.keys(), failures_dict, effects,

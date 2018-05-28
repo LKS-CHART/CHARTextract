@@ -1,15 +1,16 @@
+app.controller('ErrorController', ["$sce", "DataService", function($sce,DataService) {
 
-app.controller('ErrorController', function($scope, $sce,DataService){
+    var errorController = this
 
     var myDataPromise = DataService.getData()
-    $scope.selected = null;
-    $scope.selected_id = null;
-    $scope.overview = true;
-    $scope.match_selected = false;
-    $scope.marked_data = null;
-    $scope.selected_matches = null;
-    $scope.pos_label = null;
-    $scope.neg_label = null;
+    errorController.selected = null;
+    errorController.selected_id = null;
+    errorController.overview = true;
+    errorController.match_selected = false;
+    errorController.marked_data = null;
+    errorController.selected_matches = null;
+    errorController.pos_label = null;
+    errorController.neg_label = null;
 
     function fix_data(result) {
 
@@ -26,32 +27,32 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     }
 
     myDataPromise.then(function(result) {
-        $scope.data = fix_data(result)
-        $scope.classes = result.classes
-        var errors = $scope.data.patient_cases
-        $scope.errors = {};
+        errorController.data = fix_data(result)
+        errorController.classes = result.classes
+        var errors = errorController.data.patient_cases
+        errorController.errors = {};
 
-        if ($scope.data["Classifier Type"] === "CaptureClassifier")
+        if (errorController.data["Classifier Type"] === "CaptureClassifier")
         {
-            var index = $scope.data["Ordered Labels"].indexOf($scope.data["Negative Label"])
-            var classes_copy = $scope.data["Ordered Labels"].slice();
+            var index = errorController.data["Ordered Labels"].indexOf(errorController.data["Negative Label"])
+            var classes_copy = errorController.data["Ordered Labels"].slice();
             if (index !== -1) classes_copy.splice(index, 1)
             var pos_label = classes_copy[0]
-            var neg_label = $scope.data["Negative Label"]
+            var neg_label = errorController.data["Negative Label"]
 
-            $scope.pos_label = pos_label
-            $scope.neg_label = neg_label
+            errorController.pos_label = pos_label
+            errorController.neg_label = neg_label
 
-            $scope.errors[pos_label] = []
-            $scope.errors[neg_label] = []
+            errorController.errors[pos_label] = []
+            errorController.errors[neg_label] = []
 
             angular.forEach(errors, function(error, key) {
                 if (error.pred !== error.actual && error.actual === neg_label)
                 {
-                    $scope.errors[neg_label].push(key)
+                    errorController.errors[neg_label].push(key)
                 }
                 else {
-                    $scope.errors[pos_label].push(key)
+                    errorController.errors[pos_label].push(key)
                 }
             })
         }
@@ -61,35 +62,35 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         {
             angular.forEach(errors, function(error, key) {
                 if (error.pred != error.actual) {
-                    if (angular.isUndefined($scope.errors[error.actual]))
+                    if (angular.isUndefined(errorController.errors[error.actual]))
                     {
-                        $scope.errors[error.actual] = []
+                        errorController.errors[error.actual] = []
                     }
-                    $scope.errors[error.actual].push(key)
+                    errorController.errors[error.actual].push(key)
                 }
             })
         }
     })
 
-    $scope.gotoAnchor = function(x) {
+    errorController.gotoAnchor = function(x) {
 
         var newHash = String(x);
         document.getElementById(newHash).scrollIntoView(true);
-        $scope.match_selected = true;
+        errorController.match_selected = true;
     }
 
-    $scope.getIdInfo = function(id) {
-        return $scope.data.patient_cases[id]
+    errorController.getIdInfo = function(id) {
+        return errorController.data.patient_cases[id]
     }
 
-    $scope.setSelected = function(id) {
-        $scope.selected = $scope.data.patient_cases[id]
-        $scope.selected_id = id
-        $scope.match_selected = false;
-        $scope.getSelectedMatches();
+    errorController.setSelected = function(id) {
+        errorController.selected = errorController.data.patient_cases[id]
+        errorController.selected_id = id
+        errorController.match_selected = false;
+        errorController.getSelectedMatches();
     }
 
-    $scope.markMatch = function(id, match) {
+    errorController.markMatch = function(id, match) {
         $("mark").unmark();
 
         var matched_string_r = new RegExp(match.matched_string,"im")
@@ -117,18 +118,18 @@ app.controller('ErrorController', function($scope, $sce,DataService){
     }
 
 
-    $scope.getSentenceMatches = function(sentence_id)
+    errorController.getSentenceMatches = function(sentence_id)
     {
 
         $("mark").unmark();
-        $scope.match_selected = true;
+        errorController.match_selected = true;
         var all_sentence_matches = []
         var str_id = String(sentence_id)
-        for (var classname in $scope.selected.matches) {
+        for (var classname in errorController.selected.matches) {
 
-            if ($scope.selected.matches[classname].hasOwnProperty(str_id))
+            if (errorController.selected.matches[classname].hasOwnProperty(str_id))
             {
-                var sentence_matches = $scope.selected.matches[classname][str_id]["matches"]
+                var sentence_matches = errorController.selected.matches[classname][str_id]["matches"]
 
 
                 for (var i = 0; i < sentence_matches.length; i++) {
@@ -185,7 +186,7 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
         }
 
-        $scope.sentence_matches = all_sentence_matches;
+        errorController.sentence_matches = all_sentence_matches;
 
     }
 
@@ -245,24 +246,17 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         return a-b;
     }
 
-//    $scope.reload = function() {
-//        var container = document.getElementById("text");
-//        var content = container.innerHTML;
-//        container.innerHTML = content;
-//        console.log("CHANGEd")
-//    }
-
-    $scope.getSelectedData = function() {
+    errorController.getSelectedData = function() {
 
         console.log("HAJSDHAKSJHd")
-        $scope.marked_data = markData($scope.selected.data, $scope.selected.matches)
+        errorController.marked_data = markData(errorController.selected.data, errorController.selected.matches)
+        console.log(errorController.marked_data)
 
-//        return $sce.trustAsHtml(marked_data)
     }
 
-    $scope.getSelectedMatches = function()
+    errorController.getSelectedMatches = function()
     {
-        var sentence_ids = getSentencesWithMatches($scope.selected.matches)
+        var sentence_ids = getSentencesWithMatches(errorController.selected.matches)
         var sentence_ids_array = Array.from(sentence_ids)
         sentence_ids_array.sort(sortNumber);
         var unrolled_primaries = []
@@ -271,12 +265,12 @@ app.controller('ErrorController', function($scope, $sce,DataService){
         {
             var str_id= String(sentence_ids_array[j])
 
-            for (var cname in $scope.selected.matches)
+            for (var cname in errorController.selected.matches)
             {
-                if($scope.selected.matches[cname].hasOwnProperty(str_id))
+                if(errorController.selected.matches[cname].hasOwnProperty(str_id))
 
                 {
-                    var sentence_matches = $scope.selected.matches[cname][str_id]["matches"]
+                    var sentence_matches = errorController.selected.matches[cname][str_id]["matches"]
 
                     for (var i = 0; i < sentence_matches.length; i++) {
                         var match_obj = sentence_matches[i];
@@ -293,6 +287,6 @@ app.controller('ErrorController', function($scope, $sce,DataService){
 
         }
 
-        $scope.selected_matches = unrolled_primaries
+        errorController.selected_matches = unrolled_primaries
     }
-})
+}])

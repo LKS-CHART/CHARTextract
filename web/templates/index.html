@@ -24,7 +24,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
-    <body ng-app="app" ng-controller="ErrorController">
+    <body ng-app="app" ng-controller="ErrorController as errorCtrl">
         <div class="container-fluid">
             <nav class="navbar navbar-default navbar-static-top">
                 <div class="container-fluid">
@@ -65,10 +65,12 @@
                     </div>
                     <div class="nav navbar-nav" style="padding-left:20px; max-width:80%">
                         <ul class="list-unstyled">
-                            <li style="display: block; min-height:35px;" ng-repeat="(class, colour) in classes">
+                            <li style="display: block; min-height:35px;" ng-repeat="(class, colour) in errorCtrl.classes">
                                 <ul class="nav navbar-nav pagination" style="margin: 2px 0px;">
                                     <li style="margin-top: 8px; min-width:100px">{{class}}: </li>
-                                    <li class="page-item {{getIdInfo(error).recurring ? 'recurring' : 'not-recurring'}}" ng-repeat="error in errors[class]" ><a ng-href="#view" ng-click="setSelected(error); getSelectedData()" style="background: {{classes[getIdInfo(error).pred]}}">{{error}}</a></li>
+                                    <li class="page-item {{errorCtrl.getIdInfo(error).recurring ? 'recurring' : 'not-recurring'}}" ng-repeat="error in errorCtrl.errors[class]" >
+                                        <a ng-href="#view" ng-click="errorCtrl.setSelected(error); errorCtrl.getSelectedData()" style="background: {{errorCtrl.classes[errorCtrl.getIdInfo(error).pred]}}">{{error}}</a>
+                                    </li>
                                 </ul>
                             </li>
 
@@ -77,10 +79,10 @@
                     <!-- Show legend -->
                     <div class="nav navbar-nav navbar-right" style="padding-top:5px;">
                         <div class="nav navbar-nav">
-                        <p ng-repeat="(class, colour) in classes"align="right" style="padding: 1px 1px">{{class}}: </p>
+                        <p ng-repeat="(class, colour) in errorCtrl.classes"align="right" style="padding: 1px 1px">{{class}}: </p>
                         </div>
                         <div class="nav navbar-nav navbar-right" style="padding-right: 20px">
-                        <p ng-repeat="(class, colour) in classes" class="rounded" style="border: 1px solid #000; border-radius: 5px; padding: 10px 10px; background-color:{{colour}}; max-height: 10px; min-width: 10px; max-width: 10px"></p>
+                        <p ng-repeat="(class, colour) in errorCtrl.classes" class="rounded" style="border: 1px solid #000; border-radius: 5px; padding: 10px 10px; background-color:{{colour}}; max-height: 10px; min-width: 10px; max-width: 10px"></p>
                         </div>
                     </div>
                 </div>

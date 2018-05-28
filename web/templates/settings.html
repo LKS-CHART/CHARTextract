@@ -5,16 +5,16 @@
 <h3>Settings</h3>
 
 <p>
-    <b>{{class}}</b><br/>
+    <b>{{errorCtrl.class}}</b><br/>
     <b>Data:</b><br/>
 
-    {{data["Predicted Positive"][class]}} Predicted Positive Cases of {{data["Positive Cases"][class]}} Positive Cases</br>
-    {{data["Predicted Negative"][class]}} Predicted Negative Cases of {{data["Negative Cases"][class]}}  Negative Cases</br></br>
-    {{data["False Positives"][class]}} False Positives of {{data["Positive Cases"][class]}} Positive Cases</br>
-    {{data["False Negatives"][class]}} False Negatives of {{data["Negative Cases"][class]}} Negative Cases</br></br>
-    One vs All PPV: {{data["OVA PPV and Accuracy"][class]["ppv"]*100}}% </br>
-    One vs All NPV: {{data["OVA PPV and Accuracy"][class]["npv"]*100}}% </br>
-    One vs All Accuracy: {{data["OVA PPV and Accuracy"][class]["accuracy"]*100}}% </br>
-    One vs All Accuracy: {{data["OVA PPV and Accuracy"][class]["num_correct"]}} correct out of {{data["Positive Cases"][class] + data["Negative Cases"][class]}} </br>
+    {{errorCtrl.data["Predicted Positive"][class]}} Predicted Positive Cases of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br>
+    {{errorCtrl.data["Predicted Negative"][class]}} Predicted Negative Cases of {{errorCtrl.data["Negative Cases"][class]}}  Negative Cases</br></br>
+    {{errorCtrl.data["False Positives"][class]}} False Positives of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br>
+    {{errorCtrl.data["False Negatives"][class]}} False Negatives of {{errorCtrl.data["Negative Cases"][class]}} Negative Cases</br></br>
+    One vs All PPV: {{errorCtrl.data["OVA PPV and Accuracy"][class]["ppv"]*100}}% </br>
+    One vs All NPV: {{errorCtrl.data["OVA PPV and Accuracy"][class]["npv"]*100}}% </br>
+    One vs All Accuracy: {{errorCtrl.data["OVA PPV and Accuracy"][class]["accuracy"]*100}}% </br>
+    One vs All Accuracy: {{errorCtrl.data["OVA PPV and Accuracy"][class]["num_correct"]}} correct out of {{errorCtrl.data["Positive Cases"][class] + data["Negative Cases"][class]}} </br>
 </p>
 {% endraw %}
