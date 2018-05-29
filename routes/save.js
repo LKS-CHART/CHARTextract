@@ -7,7 +7,7 @@ router.post('/:variable/:class', function(req, res, next) {
     console.log("Received save");
     console.log(req.params);
     console.log(req.body);
-    res.send(req.params);
+    res.sendStatus(200);
 });
 
 module.exports = router;
