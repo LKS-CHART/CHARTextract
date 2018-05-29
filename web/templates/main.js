@@ -1,13 +1,13 @@
 app = angular.module('app', ['ngRoute']).config(['$routeProvider', function($routeProvider) {
     $routeProvider.
     when('/view', {
-        templateUrl: 'view.html',
+        templateUrl: 'views/view.html',
     }).
     when('/overview', {
-        templateUrl: 'overview.html',
+        templateUrl: 'views/overview.html',
     }).
     when('/settings', {
-        templateUrl: 'settings.html',
+        templateUrl: 'views/settings.html',
     })
 }])
 

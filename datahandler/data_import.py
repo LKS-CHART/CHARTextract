@@ -403,6 +403,8 @@ def regexes_from_json2(filename, use_custom_score=False):
         classifier_args = data["Classifier Args"] if "Classifier Args" in data else {}
 
         if "Rules" in data:
+            if not data["Rules"]:
+                raise Exception("No classes found in file. Rule file requires a label name e.g Yes")
             for name in data["Rules"]:
                 class_name = name
                 regexes = []
