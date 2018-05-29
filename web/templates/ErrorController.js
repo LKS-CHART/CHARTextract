@@ -28,6 +28,7 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
 
     myDataPromise.then(function(result) {
         errorController.data = fix_data(result)
+        console.log(errorController.data)
         errorController.classes = result.classes
         var errors = errorController.data.patient_cases
         errorController.errors = {};
@@ -224,7 +225,7 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
 //                console.log(sentences[i])
 //                console.log(cleansed_sentence)
 //                console.log("CLEANY CLEANY")
-                var new_sentence = '<mark class="sMatch" style="cursor: pointer; "ng-click="getSentenceMatches('+ i + ')" id="' + i + '">' + cleansed_sentence + '.</mark>'
+                var new_sentence = '<mark class="sMatch" style="cursor: pointer; "ng-click="errorCtrl.getSentenceMatches('+ i + ')" id="' + i + '">' + cleansed_sentence + '.</mark>'
                 new_data += new_sentence
             }
             else
