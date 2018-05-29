@@ -14,7 +14,7 @@ router.get('/:variable', function(req, res, next) {
     console.log(req.params);
 
     pyshell.send({'function': 'run_variable', 'params': req.params});
-    var curPromise = new Promise(function (resolve, reject) {
+    let curPromise = new Promise(function (resolve, reject) {
         pyshell.on('message', function(message) {resolve(message)});
     });
     Promise.all([curPromise]).then(function (result) {
