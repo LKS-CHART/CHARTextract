@@ -8,6 +8,11 @@ app = angular.module('app', ['ngRoute']).config(['$routeProvider', function($rou
     }).
     when('/settings', {
         templateUrl: 'views/settings.html',
+    }).
+    when('/regexes', {
+        templateUrl: 'views/regexes.html',
+        controller: "RuleController",
+        controllerAs: "ruleCtrl"
     })
 }])
 

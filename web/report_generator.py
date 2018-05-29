@@ -94,7 +94,7 @@ def generate_error_report(output_directory, template_directory, variable_name, c
     json_filename = 'error_report.json'
     generate_generic_report(output_directory, template_directory, ['index.html', 'javascripts/main.js', 'javascripts/DataService.js',
                                                                    'javascripts/ErrorController.js', 'views/view.html', 'views/overview.html',
-                                                                   'stylesheets/styles.css', 'views/settings.html', 'settings.json'])
+                                                                   'stylesheets/styles.css', 'views/settings.html', 'settings.json', 'views/regexes.html', 'javascripts/text-editor.js', 'javascripts/RuleController.js'])
     generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours, addition_json_params=addition_json_params)
 
 def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):
@@ -207,13 +207,9 @@ def generate_generic_report(output_directory, template_folder, templates, templa
 
         #Getting the template we want to use
 
-
         if len(file_path_tokens) > 1:
-            parent_folder = file_path_tokens[0]
-            if os.path.exists(parent_folder):
-                shutil.rmtree(os.path.join(output_directory, parent_folder))
-
-            pathlib.Path(os.path.join(output_directory, *file_path_tokens[0:-1])).mkdir(parents=True, exist_ok=True)
+            if not os.path.exists(os.path.join(*file_path_tokens[0:-1])):
+                pathlib.Path(os.path.join(output_directory, *file_path_tokens[0:-1])).mkdir(parents=True, exist_ok=True)
 
         fname = os.path.join(output_directory, *file_path_tokens)
 
