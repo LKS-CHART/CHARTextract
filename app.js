@@ -8,8 +8,10 @@ let saveRouter = require('./routes/save');
 let runRouter = require('./routes/run');
 let loadRouter = require('./routes/load');
 let app = express();
+var cors = require('cors');
 
 // view engine setup
+app.use(cors())
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -38,5 +40,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;
