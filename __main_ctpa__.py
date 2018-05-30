@@ -122,31 +122,27 @@ def run_variable(variable):
     # Setup code
     pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
 
-    filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all0.xlsx')
+    # filename = os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', 'all0.xlsx')
     # filename = os.path.join(os.getenv('DATA_FOLDER'), 'all.xlsx')
-    #filenames = [os.path.join(os.getenv('DATA_FOLDER'), 'du', file) for file in os.listdir(os.path.join(os.getenv('DATA_FOLDER'))) if ('.du' in file and '~' not in file and file.endswith('.xlsx'))]
+    filenames = [os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', file) for file in os.listdir(os.path.join(os.getenv('DATA_FOLDER'), "ctpa")) if ('~' not in file and file.endswith('.xlsx'))]
 
-    label_filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all0.xlsx')
-    label_filename = filename
     label_files_dict = dict()
-    label_files_dict["train"] = label_filename
-    label_files_dict["valid"] = label_filename
+    label_files_dict["train"] = os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', 'train.csv')
+    label_files_dict["valid"] = os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', 'valid.csv')
 
     rules_path = os.path.join(os.getenv('DATA_FOLDER'), 'Regexes')
 
     # loading data
     if not debug:
-        data_loader = di.data_from_csv if filename.endswith('.csv') else di.data_from_excel
-        data_list, _, ids_list = data_loader([filename], data_cols=2, first_row=1, id_cols=1, repeat_ids=False)
+        data_loader = di.data_from_csv if filenames[0].endswith('.csv') else di.data_from_excel
+        data_list, _, ids_list = data_loader(filenames, data_cols=2, first_row=1, id_cols=0, repeat_ids=False)
 
     else:
         pass
     # TODO: Update Headers
     ctpa_rules = rules_path
 
-    file_to_args = {"dvt_iterative": {"Runner Initialization Params": {"l_label_col": 3, "l_id_col": 1, "l_first_row": 1,
-                                                                           "label_func": functools.partial(replace_label_with_required, {"None": "n"}),
-                                                                           "label_file": label_filename}}}
+    file_to_args = {"dvt_iterative": {"Runner Initialization Params": {"l_label_col": 1, "l_id_col": 0, "l_first_row": 0}}}
     datasets = ["train", "valid"]
 
     for each in file_to_args:
@@ -182,7 +178,7 @@ def run_variable(variable):
         if "label_file" in cur_params:
             ids["all"], data["all"], labels["all"] = di.get_labeled_data(**cur_params)
             classifier_runner = load_classifier_data(classifier_runner, data["all"], labels['all'], ids["all"],
-                                                     create_train_valid=True, train_percent=.6, random_seed=0)
+                                                     create_train_valid=False, train_percent=.6, random_seed=0)
         else:
             for cur_dataset in datasets:
                 if "use_row_start" in file_to_args[rule]:
