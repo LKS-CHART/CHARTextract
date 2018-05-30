@@ -13,10 +13,11 @@ def n_cross_validation_samples(ids, data, labels, n, train_percent=.6, train_num
     else:
         randomizer = np.random.RandomState()
 
-    x = randomizer.permutation(len(data))
+
     n_sample_data = []
     for i in range(n):
         cur_data = {"train": {"ids": [], "data": [], "labels": []}, "valid": {"ids": [], "data": [], "labels": []}}
+        x = randomizer.permutation(len(data))
         train = np.sort(x[:int(len(x) * train_percent)])
         valid = np.sort(x[int(len(x) * train_percent):])
         cur_data["train"]["data"] = data[train]
