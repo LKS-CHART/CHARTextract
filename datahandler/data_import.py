@@ -66,7 +66,7 @@ def get_labeled_data(ids_list, data_list, label_file, l_id_col=1, l_label_col=No
     if label_func:
         label_func(new_labels_list)
 
-    return new_data_list, new_labels_list, new_ids_list
+    return new_ids_list, new_data_list, new_labels_list
 
 
 def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_process_func):

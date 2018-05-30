@@ -54,7 +54,6 @@ def respond(message):
 
 
 # MAIN RUNNING CODE
-
 def create_regex_based_classifier(rule_path=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
 
@@ -100,7 +99,7 @@ def load_classifier_data(runner, classifier_data_list, labels_list, classifier_i
     if not create_train_valid:
         runner.classifier.load_dataset(dataset, data=classifier_data_list, labels=labels_list, ids=classifier_ids_list)
     else:
-        runner.classifier.create_train_and_valid(data=classifier_data_list, labels=labels_list, ids=classifier_ids_list,
+        runner.classifier.create_train_and_valid(ids=classifier_ids_list, data=classifier_data_list, labels=labels_list,
                                                  train_percent=train_percent, random_seed=random_seed)
     return runner
 
@@ -496,7 +495,7 @@ def run_variable(variable):
         labels = {}
         ids = {}
         if "label_file" in cur_params:
-            data["all"], labels["all"], ids["all"] = di.get_labeled_data(**cur_params)
+            ids["all"], data["all"], labels["all"] = di.get_labeled_data(**cur_params)
             classifier_runner = load_classifier_data(classifier_runner, data["all"], labels['all'], ids["all"],
                                                      create_train_valid=True, train_percent=.6, random_seed=0)
         else:
@@ -504,7 +503,7 @@ def run_variable(variable):
                 if "use_row_start" in file_to_args[rule]:
                     cur_params['l_first_row'] = row_start[cur_dataset]
                 cur_params["label_file"] = label_files_dict[cur_dataset]
-                data[cur_dataset], labels[cur_dataset], ids[cur_dataset] = di.get_labeled_data(**cur_params)
+                ids[cur_dataset], data[cur_dataset], labels[cur_dataset]  = di.get_labeled_data(**cur_params)
                 classifier_runner = load_classifier_data(classifier_runner, data[cur_dataset], labels[cur_dataset],
                                                          ids[cur_dataset], dataset=cur_dataset)
         for cur_dataset in datasets:

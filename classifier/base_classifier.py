@@ -1,4 +1,5 @@
 import numpy as np
+from datahandler.data_sampling import create_train_and_valid
 
 class BaseClassifier(object):
     """
@@ -49,7 +50,7 @@ class BaseClassifier(object):
         self.labels = np.array(labels) if labels else [None]*len(data)
         self.ids = np.array(ids) if ids else [None]*len(data)
 
-    def create_train_and_valid(self, data=None, labels=None, ids=None,train_percent=.6, random_seed=None):
+    def create_train_and_valid(self, ids=None, data=None, labels=None, train_percent=.6, random_seed=None):
         """Splits data in train and valid
         
         Keyword Arguments:
@@ -67,29 +68,15 @@ class BaseClassifier(object):
         if ids is None:
             ids = self.ids
 
-        if random_seed is not None:
-            randomizer = np.random.RandomState(random_seed)
-        else:
-            randomizer = np.random.RandomState()
-
-        x = randomizer.permutation(len(data))
-        train = np.sort(x[:int(len(x) * train_percent)])
-        valid = np.sort(x[int(len(x) * train_percent):])
-
-        self.dataset["train"]["data"] = data[train]
-        self.dataset["train"]["labels"] = labels[train]
-        self.dataset["train"]["ids"] = ids[train]
-
-        self.dataset["valid"]["data"] = data[valid]
-        self.dataset["valid"]["labels"] = labels[valid]
-        self.dataset["valid"]["ids"] = ids[valid]
+        self.dataset["train"], self.dataset["valid"] = \
+            create_train_and_valid(ids, data, labels, train_percent, random_seed)
 
         for each in ["train", "valid"]:
             self.dataset[each]["preds"] = [None] * len(self.dataset[each]["data"])
             self.dataset[each]["scores"] = [None] * len(self.dataset[each]["data"])
             self.dataset[each]["matches"] = [None] * len(self.dataset[each]["data"])
 
-        return ids[train], ids[valid]
+        return ids["train"], ids["valid"]
 
     def run_classifier(self):
         """Runs the classifier
