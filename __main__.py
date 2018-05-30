@@ -23,7 +23,7 @@ import sys
 orig_stdout = sys.stdout
 f = open(os.devnull, 'w')
 sys.stdout = f
-os.environ['TB_DATA_FOLDER'] = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev"
+os.environ['DATA_FOLDER'] = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev"
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
@@ -122,19 +122,19 @@ def run_variable(variable):
     pwds = di.import_pwds([os.path.join("dictionaries", dict_name) for dict_name in os.listdir("dictionaries")])
     immuno_preprocessor = PwdPreprocessor2(pwds, ["corticosteroids"], to_lower=True)
 
-    filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'CombinedData.csv')
-    label_filename2 = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Dev Labelling Decisions',
+    filename = os.path.join(os.getenv('DATA_FOLDER'), 'CombinedData.csv')
+    label_filename2 = os.path.join(os.getenv('DATA_FOLDER'), 'Dev Labelling Decisions',
                                    'labelling_decisions_cohort_2-s.xlsx')
 
-    label_filename3 = os.path.join(os.getenv('TB_DATA_FOLDER'),
+    label_filename3 = os.path.join(os.getenv('DATA_FOLDER'),
                                    'NLP Study (TB Clinic) Manual Chart Extraction - Cohort 2.xlsx')
 
     label_files_dict = dict()
-    label_files_dict["train"] = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Train_set_labels.xlsx')
-    label_files_dict["valid"] = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Valid_set_labels.xlsx')
-    # test_label_filename = os.path.join(os.getenv('TB_DATA_FOLDER'), 'Test_set_labels.xlsx')
+    label_files_dict["train"] = os.path.join(os.getenv('DATA_FOLDER'), 'Train_set_labels.xlsx')
+    label_files_dict["valid"] = os.path.join(os.getenv('DATA_FOLDER'), 'Valid_set_labels.xlsx')
+    # test_label_filename = os.path.join(os.getenv('DATA_FOLDER'), 'Test_set_labels.xlsx')
 
-    rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
+    rules_path = os.path.join(os.getenv('DATA_FOLDER'), 'rules')
     dummy_rules_path = os.path.join(*["examples", "regexes", "tb_regexes"])
 
     # loading data
@@ -182,44 +182,44 @@ def run_variable(variable):
     file_to_header = {"inh_medication.txt": "INH Medication", "hcw": "Health Care Worker"}
 
     file_to_args = {"smoking_new": {"Runner Initialization Params": {"l_label_col": 7}},
-                    "country.txt": {"Runner Initialization Params": {"l_label_col": 2}, "Runtime Params":
+                    "country": {"Runner Initialization Params": {"l_label_col": 2}, "Runtime Params":
                         {"label_func": None, "preprocess_func": preprocess}},
                     "diagnosis": {"Runner Initialization Params": {"l_label_col": 8}},
-                    "diag_active_demo.txt": {"Runner Initialization Params":
+                    "diag_active": {"Runner Initialization Params":
                                                  {"l_label_col": 8,
                                                   "label_func": functools.partial(replace_label_with_required,
                                                                                   {"LTBI": "None"})}
                                              },
-                    "diag_method_clinical.txt": {"Runner Initialization Params":
+                    "diag_method_clinical": {"Runner Initialization Params":
                                                      {"l_label_col": 10,
                                                       "label_func": functools.partial(replace_label_with_required,
                                                                                       {"PCR positive": "None",
                                                                                        "Culture positive": "None"})}
                                                  },
-                    "diag_method_culture.txt": {"Runner Initialization Params":
+                    "diag_method_culture": {"Runner Initialization Params":
                                                     {"l_label_col": 10,
                                                      "label_func": functools.partial(replace_label_with_required,
                                                                                      {"PCR positive": "None",
                                                                                       "Clinical diagnosis": "None"})}
                                                 },
-                    "diag_method_pcr.txt": {"Runner Initialization Params":
+                    "diag_method_pcr": {"Runner Initialization Params":
                                                 {"l_label_col": 10,
                                                  "label_func": functools.partial(replace_label_with_required,
                                                                                  {"Clinical diagnosis": "None",
                                                                                   "Culture positive": "None"})}
                                             },
-                    "diag_ntm.txt": {"Runner Initialization Params": {"l_label_col": 9}},
-                    "hiv_negative.txt": {"Runner Initialization Params":
+                    "diag_ntm": {"Runner Initialization Params": {"l_label_col": 9}},
+                    "hiv_negative": {"Runner Initialization Params":
                                              {"l_label_col": 4,
                                               "label_func": functools.partial(replace_label_with_required,
                                                                               {"Positive": "None", "Unknown": "None"})}
                                          },
-                    "hiv_positive.txt": {"Runner Initialization Params":
+                    "hiv_positive": {"Runner Initialization Params":
                                              {"l_label_col": 4,
                                               "label_func": functools.partial(replace_label_with_required,
                                                                               {"Negative": "None", "Unknown": "None"})}
                                          },
-                    "hiv_not_dictated.txt": {"Runner Initialization Params":
+                    "hiv_not_dictated": {"Runner Initialization Params":
                                                  {"l_label_col": 4,
                                                   "label_func": functools.partial(replace_label_with_required,
                                                                                   {"Positive": "None",
@@ -227,47 +227,47 @@ def run_variable(variable):
                                                                                    "Negative": "None",
                                                                                    "None": "Not dictated"})}
                                              },
-                    "hiv_unknown.txt": {"Runner Initialization Params":
+                    "hiv_unknown": {"Runner Initialization Params":
                                             {"l_label_col": 4,
                                              "label_func": functools.partial(replace_label_with_required,
                                                                              {"Positive": "None", "Negative": "None"})}
                                         },
-                    "immigration.txt": {"Runner Initialization Params":
+                    "immigration": {"Runner Initialization Params":
                                             {"l_label_col": 3,
                                              "label_func": functools.partial(replace_filter, lambda label: label[0:4]),
                                              "label_file": label_filename3}
                                         },
-                    "sensitivity_full.txt": {"Runner Initialization Params":
+                    "sensitivity_full": {"Runner Initialization Params":
                                                  {"l_label_col": 11,
                                                   "label_func": functools.partial(replace_labels_with_required,
                                                                                   *["Fully Sensitive", "None"])},
                                              },
-                    "sensitivity_inh.txt": {"Runner Initialization Params":
+                    "sensitivity_inh": {"Runner Initialization Params":
                                                 {"l_label_col": 11,
                                                  "label_func": functools.partial(replace_filter_by_label,
                                                                                  *["INH", "None", False])}
                                             },
-                    "sensitivity_pza.txt": {"Runner Initialization Params":
+                    "sensitivity_pza": {"Runner Initialization Params":
                                                 {"l_label_col": 11,
                                                  "label_func": functools.partial(replace_filter_by_label,
                                                                                  *["PZA", "None", False])}
                                             },
-                    "sensitivity_emb.txt": {"Runner Initialization Params":
+                    "sensitivity_emb": {"Runner Initialization Params":
                                                 {"l_label_col": 11,
                                                  "label_func": functools.partial(replace_filter_by_label,
                                                                                  *["EMB", "None", False])}
                                             },
-                    "sensitivity_rif.txt": {"Runner Initialization Params":
+                    "sensitivity_rif": {"Runner Initialization Params":
                                                 {"l_label_col": 11,
                                                  "label_func": functools.partial(replace_filter_by_label,
                                                                                  *["RIF", "None", False])}
                                             },
-                    "sensitivity_mfx.txt": {"Runner Initialization Params":
+                    "sensitivity_mfx": {"Runner Initialization Params":
                                                 {"l_label_col": 11,
                                                  "label_func": functools.partial(replace_filter_by_label,
                                                                                  *["MFX", "None", False])}
                                             },
-                    "sensitivity_unknown.txt": {"Runner Initialization Params":
+                    "sensitivity_unknown": {"Runner Initialization Params":
                                                     {"l_label_col": 11,
                                                      "label_func": functools.partial(replace_filter_by_label,
                                                                                      *["Unknown", "None", False])}
@@ -279,93 +279,93 @@ def run_variable(variable):
                                                                                  lambda label: label[0:4])},
                                             "Runtime Params": {"classify_func": sputum_classify}
                                             },
-                    "tb_contact.txt": {"Runner Initialization Params": {"l_label_col": 5}},
-                    "tb_old.txt": {"Runner Initialization Params": {"l_label_col": 6}},
-                    "diag_ltbi.txt": {"Runner Initialization Params":
+                    "tb_contact": {"Runner Initialization Params": {"l_label_col": 5}},
+                    "tb_old": {"Runner Initialization Params": {"l_label_col": 6}},
+                    "diag_ltbi": {"Runner Initialization Params":
                                           {"l_label_col": 8,
                                            "label_func": functools.partial(replace_label_with_required,
                                                                            {"Active TB": "None"})}
                                       },
-                    "inh_medication_2.txt": {"Runner Initialization Params":
+                    "inh_medication_2": {"Runner Initialization Params":
                                                  {"l_label_col": [13, 14, 15, 16, 17],
                                                   "label_func": functools.partial(replace_labels_with_required,
                                                                                   *["Isoniazid (INH)", "None"])},
                                              "Runtime Params": {"label_func": None, "pwds": pwds}
                                              },
-                    "pyrazinamide_medication.txt": {"Runner Initialization Params":
+                    "pyrazinamide_medication": {"Runner Initialization Params":
                                                         {"l_label_col": [13, 14, 15, 16, 17],
                                                          "label_func": functools.partial(replace_labels_with_required,
                                                                                          *["Pyrazinamide (Z/Pza)",
                                                                                            "None"])},
                                                     "Runtime Params": {"label_func": None, "pwds": pwds}
                                                     },
-                    "rifampin_medication.txt": {"Runner Initialization Params":
+                    "rifampin_medication": {"Runner Initialization Params":
                                                     {"l_label_col": [13, 14, 15, 16, 17],
                                                      "label_func": functools.partial(replace_labels_with_required,
                                                                                      *["Rifampin (RIF)", "None"])},
                                                 "Runtime Params": {"label_func": None, "pwds": pwds}
                                                 },
-                    "ethambutol_medication.txt": {"Runner Initialization Params":
+                    "ethambutol_medication": {"Runner Initialization Params":
                                                       {"l_label_col": [13, 14, 15, 16, 17],
                                                        "label_func": functools.partial(replace_labels_with_required,
                                                                                        *["Ethambutol (E/Emb)", "None"])
                                                        },
                                                   "Runtime Params": {"label_func": None, "pwds": pwds}
                                                   },
-                    "rifabutin_medication.txt": {"Runner Initialization Params":
+                    "rifabutin_medication": {"Runner Initialization Params":
                                                      {"l_label_col": [13, 14, 15, 16, 17],
                                                       "label_func": functools.partial(replace_labels_with_required,
                                                                                       *["Rifabutin (Rfb)", "None"])},
                                                  "Runtime Params": {"label_func": None, "pwds": pwds}
                                                  },
-                    "moxifloxacin_medication.txt": {"Runner Initialization Params":
+                    "moxifloxacin_medication": {"Runner Initialization Params":
                                                         {"l_label_col": [13, 14, 15, 16, 17],
                                                          "label_func": functools.partial(replace_labels_with_required,
                                                                                          *["Moxifloxacin (Mfx)",
                                                                                            "None"])},
                                                     "Runtime Params": {"label_func": None, "pwds": pwds}
                                                     },
-                    "rifapentine_medication.txt": {"Runner Initialization Params":
+                    "rifapentine_medication": {"Runner Initialization Params":
                                                        {"l_label_col": [13, 14, 15, 16, 17],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Rifapentine (RPT)",
                                                                                           "None"])},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
-                    "capreomycin_medication.txt": {"Runner Initialization Params":
+                    "capreomycin_medication": {"Runner Initialization Params":
                                                        {"l_label_col": [13, 14, 15, 16, 17],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Capreomycin (Cm)", "None"])},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
-                    "amikacin_medication.txt": {"Runner Initialization Params":
+                    "amikacin_medication": {"Runner Initialization Params":
                                                     {"l_label_col": [13, 14, 15, 16, 17],
                                                      "label_func": functools.partial(replace_labels_with_required,
                                                                                      *["Amikacin (Amk)", "None"])},
                                                 "Runtime Params": {"label_func": None, "pwds": pwds}
                                                 },
-                    "pas_medication.txt": {"Runner Initialization Params":
+                    "pas_medication": {"Runner Initialization Params":
                                                {"l_label_col": [13, 14, 15, 16, 17],
                                                 "label_func": functools.partial(replace_labels_with_required,
                                                                                 *["Para-aminosalicylic acid (Pas)",
                                                                                   "None"])},
                                            "Runtime Params": {"label_func": None, "pwds": pwds}
                                            },
-                    "cycloserine_medication.txt": {"Runner Initialization Params":
+                    "cycloserine_medication": {"Runner Initialization Params":
                                                        {"l_label_col": [13, 14, 15, 16, 17],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Cycloserine (Dcs)", "None"])
                                                         },
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
-                    "ethionamide_medication.txt": {"Runner Initialization Params":
+                    "ethionamide_medication": {"Runner Initialization Params":
                                                        {"l_label_col": [13, 14, 15, 16, 17],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Ethionamide (Eto)", "None"])
                                                         },
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
-                    "vitamin_b6_medication.txt": {"Runner Initialization Params":
+                    "vitamin_b6_medication": {"Runner Initialization Params":
                                                       {"l_label_col": [13, 14, 15, 16, 17],
                                                        "label_func": functools.partial(replace_labels_with_required,
                                                                                        *["Vitamin B6", "None"])},
@@ -374,7 +374,7 @@ def run_variable(variable):
                     "hcw": {"Runner Initialization Params":
                                 {"l_id_col": 0, "l_label_col": 1, "label_file": label_filename2},
                             "Runtime Params": {"label_func": None, "pwds": pwds}},
-                    "corticosteroids_immuno.txt": {"Runner Initialization Params":
+                    "corticosteroids_immuno": {"Runner Initialization Params":
                                                        {"l_label_col": 26,
                                                         "label_func": functools.partial(replace_label_with_required,
                                                                                         {
@@ -405,16 +405,16 @@ def run_variable(variable):
                                                              "label_file": label_filename2}},
                     "smh": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 3,
                                                              "label_file": label_filename2, "l_first_row": 1}},
-                    "afb_positive.txt": {"Runner Initialization Params": {"l_label_col": 25,
+                    "afb_positive": {"Runner Initialization Params": {"l_label_col": 25,
                                                                           "label_file": label_filename3,
                                                                           "label_func": functools.partial(
                                                                               replace_labels_with_required,
                                                                               "Pulmonary AFB Positive", "None")}},
-                    "disseminated.txt": {"Runner Initialization Params": {"l_label_col": 35,
+                    "disseminated": {"Runner Initialization Params": {"l_label_col": 35,
                                                                           "label_func": functools.partial(
                                                                               replace_labels_with_required,
                                                                               "Disseminated", "None")}},
-                    "extra_pulmonary.txt": {"Runner Initialization Params": {"l_label_col": 25,
+                    "extra_pulmonary": {"Runner Initialization Params": {"l_label_col": 25,
                                                                              "label_file": label_filename3,
                                                                              "label_func": functools.partial(
                                                                                  replace_labels_with_required,
@@ -426,7 +426,7 @@ def run_variable(variable):
                                                                                             "data_list": repeated_data_list},
                                     },
 
-                    "skin_test_mm.txt": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 5,
+                    "skin_test_mm": {"Runner Initialization Params": {"l_id_col": 0, "l_label_col": 5,
                                                                           "label_file": label_filename2,
                                                                           "l_first_row": 1,
                                                                           },
@@ -437,14 +437,14 @@ def run_variable(variable):
                                                                    },
                                   "Runtime Params": {"label_func": None, "pwds": pwds}
                                   },
-                    "treatment_interruption.txt": {"use_row_start": True,
+                    "treatment_interruption": {"use_row_start": True,
                                                    "Runner Initialization Params": {"l_label_col": 42,
                                                                                     "label_func": functools.partial(
                                                                                         replace_label_with_required,
                                                                                         {"1": "Yes",
                                                                                          "0": "No"}
                                                                                     )}},
-                    "sputum_conversion.txt": {"Runner Initialization Params": {"ids_list": ids_list,
+                    "sputum_conversion": {"Runner Initialization Params": {"ids_list": ids_list,
                                                                                "label_file": label_filename3,
                                                                                "l_label_col": 12,
                                                                                "label_func": functools.partial(
