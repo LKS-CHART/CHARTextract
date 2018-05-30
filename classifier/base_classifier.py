@@ -68,15 +68,20 @@ class BaseClassifier(object):
         if ids is None:
             ids = self.ids
 
+        if random_seed is None:
+            randomizer = np.random.RandomState()
+        else:
+            randomizer = np.random.RandomState(random_seed)
+
         self.dataset["train"], self.dataset["valid"] = \
-            create_train_and_valid(ids, data, labels, train_percent, random_seed)
+            create_train_and_valid(ids, data, labels, train_percent, randomizer)
 
         for each in ["train", "valid"]:
             self.dataset[each]["preds"] = [None] * len(self.dataset[each]["data"])
             self.dataset[each]["scores"] = [None] * len(self.dataset[each]["data"])
             self.dataset[each]["matches"] = [None] * len(self.dataset[each]["data"])
 
-        return ids["train"], ids["valid"]
+        return self.dataset["train"]["ids"], self.dataset["valid"]["ids"]
 
     def run_classifier(self):
         """Runs the classifier
