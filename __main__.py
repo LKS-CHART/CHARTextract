@@ -183,7 +183,7 @@ def run_variable(variable):
 
     file_to_args = {"smoking_new": {"Runner Initialization Params": {"l_label_col": 7}},
                     "country": {"Runner Initialization Params": {"l_label_col": 2}, "Runtime Params":
-                        {"label_func": None, "preprocess_func": preprocess}},
+                        {"label_func": None, "preprocess_func": preprocess, "pwds": pwds}},
                     "diagnosis": {"Runner Initialization Params": {"l_label_col": 8}},
                     "diag_active": {"Runner Initialization Params":
                                                  {"l_label_col": 8,
@@ -286,87 +286,87 @@ def run_variable(variable):
                                            "label_func": functools.partial(replace_label_with_required,
                                                                            {"Active TB": "None"})}
                                       },
-                    "inh_medication_2": {"Runner Initialization Params":
-                                                 {"l_label_col": [13, 14, 15, 16, 17],
+                    "inh_medication": {"Runner Initialization Params":
+                                                 {"l_label_col": [13,14,15,16,17,18],
                                                   "label_func": functools.partial(replace_labels_with_required,
                                                                                   *["Isoniazid (INH)", "None"])},
                                              "Runtime Params": {"label_func": None, "pwds": pwds}
                                              },
                     "pyrazinamide_medication": {"Runner Initialization Params":
-                                                        {"l_label_col": [13, 14, 15, 16, 17],
+                                                        {"l_label_col": [13,14,15,16,17,18],
                                                          "label_func": functools.partial(replace_labels_with_required,
                                                                                          *["Pyrazinamide (Z/Pza)",
                                                                                            "None"])},
                                                     "Runtime Params": {"label_func": None, "pwds": pwds}
                                                     },
                     "rifampin_medication": {"Runner Initialization Params":
-                                                    {"l_label_col": [13, 14, 15, 16, 17],
+                                                    {"l_label_col": [13,14,15,16,17,18],
                                                      "label_func": functools.partial(replace_labels_with_required,
                                                                                      *["Rifampin (RIF)", "None"])},
                                                 "Runtime Params": {"label_func": None, "pwds": pwds}
                                                 },
                     "ethambutol_medication": {"Runner Initialization Params":
-                                                      {"l_label_col": [13, 14, 15, 16, 17],
+                                                      {"l_label_col": [13,14,15,16,17,18],
                                                        "label_func": functools.partial(replace_labels_with_required,
                                                                                        *["Ethambutol (E/Emb)", "None"])
                                                        },
                                                   "Runtime Params": {"label_func": None, "pwds": pwds}
                                                   },
                     "rifabutin_medication": {"Runner Initialization Params":
-                                                     {"l_label_col": [13, 14, 15, 16, 17],
+                                                     {"l_label_col": [13,14,15,16,17,18],
                                                       "label_func": functools.partial(replace_labels_with_required,
                                                                                       *["Rifabutin (Rfb)", "None"])},
                                                  "Runtime Params": {"label_func": None, "pwds": pwds}
                                                  },
                     "moxifloxacin_medication": {"Runner Initialization Params":
-                                                        {"l_label_col": [13, 14, 15, 16, 17],
+                                                        {"l_label_col": [13,14,15,16,17,18],
                                                          "label_func": functools.partial(replace_labels_with_required,
-                                                                                         *["Moxifloxacin (Mfx)",
+                                                                                         *["Moxifloxacin (MFX)",
                                                                                            "None"])},
                                                     "Runtime Params": {"label_func": None, "pwds": pwds}
                                                     },
                     "rifapentine_medication": {"Runner Initialization Params":
-                                                       {"l_label_col": [13, 14, 15, 16, 17],
+                                                       {"l_label_col": [13,14,15,16,17,18],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Rifapentine (RPT)",
                                                                                           "None"])},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
                     "capreomycin_medication": {"Runner Initialization Params":
-                                                       {"l_label_col": [13, 14, 15, 16, 17],
+                                                       {"l_label_col": [13,14,15,16,17,18],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Capreomycin (Cm)", "None"])},
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
                     "amikacin_medication": {"Runner Initialization Params":
-                                                    {"l_label_col": [13, 14, 15, 16, 17],
+                                                    {"l_label_col": [13,14,15,16,17,18],
                                                      "label_func": functools.partial(replace_labels_with_required,
                                                                                      *["Amikacin (Amk)", "None"])},
                                                 "Runtime Params": {"label_func": None, "pwds": pwds}
                                                 },
                     "pas_medication": {"Runner Initialization Params":
-                                               {"l_label_col": [13, 14, 15, 16, 17],
+                                               {"l_label_col": [13,14,15,16,17,18],
                                                 "label_func": functools.partial(replace_labels_with_required,
                                                                                 *["Para-aminosalicylic acid (Pas)",
                                                                                   "None"])},
                                            "Runtime Params": {"label_func": None, "pwds": pwds}
                                            },
                     "cycloserine_medication": {"Runner Initialization Params":
-                                                       {"l_label_col": [13, 14, 15, 16, 17],
+                                                       {"l_label_col": [13,14,15,16,17,18],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Cycloserine (Dcs)", "None"])
                                                         },
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
                     "ethionamide_medication": {"Runner Initialization Params":
-                                                       {"l_label_col": [13, 14, 15, 16, 17],
+                                                       {"l_label_col": [13,14,15,16,17,18],
                                                         "label_func": functools.partial(replace_labels_with_required,
                                                                                         *["Ethionamide (Eto)", "None"])
                                                         },
                                                    "Runtime Params": {"label_func": None, "pwds": pwds}
                                                    },
                     "vitamin_b6_medication": {"Runner Initialization Params":
-                                                      {"l_label_col": [13, 14, 15, 16, 17],
+                                                      {"l_label_col": [13,14,15,16,17,18],
                                                        "label_func": functools.partial(replace_labels_with_required,
                                                                                        *["Vitamin B6", "None"])},
                                                   "Runtime Params": {"label_func": None, "pwds": pwds}

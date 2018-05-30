@@ -76,8 +76,12 @@ if __name__ == "__main__":
 
     # cur_run = ["corticosteroids_immuno.txt"]
     # cur_run = ["inh_medication_2.txt"]
+
     if not debug:
-        cur_run = ["diag_active"]
+        cur_run = ["inh_medication", "pyrazinamide_medication", "rifampin_medication",
+        "ethambutol_medication","rifabutin_medication", "moxifloxacin_medication", "rifapentine_medication",
+         "capreomycin_medication", "amikacin_medication", "pas_medication", "cycloserine_medication",
+         "ethionamide_medication", "vitamin_b6_medication"]
     else:
         file_to_args["debug"] = {}
         cur_run = ["debug"]
@@ -97,7 +101,6 @@ if __name__ == "__main__":
         if debug:
             rule_file = os.path.join("examples\\regexes\\debug")
         classifier_runner = create_regex_based_classifier(rule_file)
-        print(classifier_runner.classifier.regexes)
         if not debug:
             data = {}
             labels = {}
@@ -199,7 +202,6 @@ if __name__ == "__main__":
                 cur_pred = classifier_runner.classifier.dataset[cur_dataset]["preds"][index]
                 cur_label = classifier_runner.classifier.dataset[cur_dataset]["labels"][index]
                 cur_match_obj = classifier_runner.classifier.dataset[cur_dataset]["matches"][index]
-                print(cur_match_obj)
                 cur_score = classifier_runner.classifier.dataset[cur_dataset]["scores"][index]
                 cur_text = classifier_runner.classifier.dataset[cur_dataset]["data"][index]
 

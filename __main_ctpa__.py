@@ -178,7 +178,7 @@ def run_variable(variable):
         if "label_file" in cur_params:
             ids["all"], data["all"], labels["all"] = di.get_labeled_data(**cur_params)
             classifier_runner = load_classifier_data(classifier_runner, data["all"], labels['all'], ids["all"],
-                                                     create_train_valid=False, train_percent=.6, random_seed=0)
+                                                     create_train_valid=True, train_percent=.6, random_seed=0)
         else:
             for cur_dataset in datasets:
                 if "use_row_start" in file_to_args[rule]:
