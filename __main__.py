@@ -537,11 +537,11 @@ def run_variable(variable):
             print("Incorrect Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"][incorrect_indices])
 
             classifier_type = classifier_runner.classifier_type.__name__
+            classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
 
             if classifier_type == "CaptureClassifier":
                 cnf_matrix = None
 
-                classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
 
                 ppv_and_accuracy = compute_ppv_accuracy_capture(
                     classifier_runner.classifier.dataset[cur_dataset]["labels"],
@@ -611,9 +611,12 @@ def run_variable(variable):
 
             custom_class_colours = None
 
-            if rule == "diag_active_demo.txt":
-                custom_class_colours = {"None": "hsl({},{}%,{}%)".format(15, 71.4, 89),
-                                        "Active TB": "hsl({},{}%,{}%)".format(97, 81, 91.8)}
+            if len(classifier_classes) == 2:
+                negative_label = classifier_runner.classifier.negative_label
+                positive_label = next(filter(lambda i: i != negative_label, classifier_classes))
+                custom_class_colours = {negative_label: "hsl({},{}%,{}%)".format(15,71.4,89),
+                                        positive_label: "hsl({},{}%,{}%)".format(97,81,91.8)}
+
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
                                   classifier_runner.classifier.regexes.keys(), failures_dict, effects,

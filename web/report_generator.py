@@ -7,6 +7,26 @@ import csv
 import shutil
 import pathlib
 
+class CyclicIterator:
+    def __init__(self, iterable):
+        self.i = 0
+        self.max_len = len(iterable)
+        self.iterable = iterable
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.max_len == 0:
+            raise StopIteration
+
+        if self.i >= self.max_len:
+            self.i = 0
+
+        i = self.i
+        self.i += 1
+        return self.iterable[i]
+
 def _generate_match_for_json(match_obj):
     """Generates a simplified match object to be exported as a json
     
@@ -65,10 +85,18 @@ def _generate_hsl_colour_dictionary(keys, lightness=85):
     Returns:
         colour_dict{dict} -- Dictionary which maps the class name to a colour
     """
+
+    colours = ["#c4e5ff", "#c0ffbc", "#ffe8b2", "#ffb8b5", "#f9f9b1", "#e8bcff"]
     colour_dict = {}
-    for key in keys:
-        colour_dict[key] = "hsl({hue},{saturation}%,{lightness}%)".format(hue=360*r(), saturation=25 + 70*r(),
-                                                                          lightness=lightness + 10*r())
+
+    if len(keys) > len(colours):
+        for key in keys:
+            colour_dict[key] = "hsl({hue},{saturation}%,{lightness}%)".format(hue=360*r(), saturation=25 + 70*r(),
+                                                                              lightness=lightness + 10*r())
+    else:
+        iterator = CyclicIterator(colours)
+
+        colour_dict = {key: iterator.next() for key in keys}
 
     return colour_dict
 
