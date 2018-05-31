@@ -78,3 +78,30 @@
 .page-item.not-recurring > a:hover{
     border: 2px solid #cc0000
 }
+
+.treeNode {
+
+  height: 40px;
+  list-style: none;
+  vertical-align: middle;
+  padding: 10px 0px 0px 10px;
+  cursor: pointer;
+
+}
+
+.treeNode > .item {
+  margin-right: 10px;
+  color: #aaa;
+
+}
+
+
+.treeNode:hover {
+  background-color: #eee;
+
+}
+
+.treeNode:hover > .item
+{
+    color: #484848;
+}

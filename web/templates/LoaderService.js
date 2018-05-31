@@ -4,8 +4,6 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
     var url = "http://localhost:3000/path/"
     var cur_path_obj = null;
 
-    console.log("JERHASKJDHASKJDhAKJhdkas")
-
     $http.get(url).then(function (response) {
         cur_path_obj = response.data
         deferred.resolve(response.data)

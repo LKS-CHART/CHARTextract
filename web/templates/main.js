@@ -30,6 +30,14 @@ app.directive('ngHtmlCompile', function($compile) {
 	}
 })
 
+app.directive('tree', function() {
+
+})
+
+app.directive('treeNode', function() {
+
+})
+
 app.controller('PollingCtrl', function($scope, $http, $timeout) {
 
   var loadTime = 10000, //Load the data every second
