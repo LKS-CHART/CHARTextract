@@ -8,6 +8,8 @@ app = angular.module('app', ['ngRoute']).config(['$routeProvider', function($rou
     }).
     when('/settings', {
         templateUrl: 'views/settings.html',
+        controller: "LoaderController",
+        controllerAs: "loaderCtrl"
     }).
     when('/regexes', {
         templateUrl: 'views/regexes.html',
