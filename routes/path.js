@@ -12,11 +12,30 @@ router.post('/', function(req, res, next) {
                 "Children": [
                     {
                         "filename": "Child of Current Folder",
-                        "Root": "Full Path to Child of Current Folder",
+                        "Root": "Full\\Path\\to\\Folder\\Child of Current Folder",
                         "Type": "File",
                         "Children": []
                     }
 
                 ]};
-    res.render('index', { title: 'Express' });
+     res.send(JSON.stringify(res_json));
 });
+
+router.get('/', function(req, res, next) {
+    res_json = { "filename": "Current Folder",
+                "Root": "Full\\Path\\to\\Folder",
+                "Type": "Folder",
+                "Children": [
+                    {
+                        "filename": "Child of Current Folder",
+                        "Root": "Full\\Path\\to\\Folder\\Child of Current Folder",
+                        "Type": "File",
+                        "Children": []
+                    }
+
+                ]};
+     res.send(JSON.stringify(res_json));
+
+});
+
+module.exports = router;
