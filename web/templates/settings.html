@@ -2,12 +2,8 @@
 <div>
     <h1 align="center">RegexNLP</h1>
 </div>
-<h3>Settings</h3>
-<p>
-    <button ng-click="loaderCtrl.requestChildren(loaderCtrl.cur_path_obj)"class="btn btn-default">Request Path</button>
-</p>
 <h3>Project Settings</h3>
-    <b>Variable:</b> {{errorCtrl.data["var_name"]}}<br/>
+    <b>Variable:</b> {{errorCtrl.data["var_name"]}}<br/><br/>
     <div class="row vertical-align-flex">
         <div class="col-xs-1">
             <span>Data:</span>
@@ -15,23 +11,23 @@
         <div class="col-xs-4">
             <div class="input-group">
                 <input type="text" class="form-control input-sm" placeholder="Text input">
-                <span id="open-data-folder" class="input-group-addon">
-                    <button type="button" class="btn btn-xs btn-primary"> <span class="glyphicon glyphicon-folder-open"></span></button>
+                <span ng-click="" id="open-data-folder" class="btn input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
             </div>
         </div>
     </div><br/>
     <div class="row vertical-align-flex">
         <div class="col-xs-1">
-            <span >Labels:</span>
+            <span>Labels:</span>
         </div>
         <div class="col-xs-4">
             <div class="input-group">
                 <input type="text" class="form-control input-sm" placeholder="Text input">
-                <span id="open-label-folder" class="input-group-addon">
-                    <button type="button" class="btn btn-xs btn-primary"> <span class="glyphicon glyphicon-folder-open"></span></button>
+                <span ng-click="" id="open-labels-folder" class="btn input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
             </div>
         </div>
-    </div>
+    </div><br/>
 {% endraw %}
