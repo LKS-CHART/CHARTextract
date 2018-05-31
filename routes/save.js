@@ -16,7 +16,7 @@ router.post('/:variable/:class', function(req, res, next) {
         }
 
         console.log("Saved")
-    })
+    });
     console.log("Received save");
     console.log(req.params);
     console.log(req.body);
