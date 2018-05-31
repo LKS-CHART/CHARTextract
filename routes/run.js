@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-var pyshell_connector = require("..\\python_connector\\connector");
+let express = require('express');
+let router = express.Router();
+let pyshell_connector = require("..\\python_connector\\connector");
 /* Save resource as json */
 
 pyshell = new pyshell_connector('__main__.py', {
@@ -18,7 +18,8 @@ router.get('/:variable', function(req, res, next) {
         pyshell.on('message', function(message) {resolve(message)});
     });
     Promise.all([curPromise]).then(function (result) {
-        res.redirect("http://localhost:8080/NgramRegexNLP/generated_data/diagnosis/train/index.html");
+        var redirect_url = "http://localhost:8080/NgramRegexNLP/generated_data/" + req.params.variable +  "/train/index.html";
+        res.redirect(redirect_url);
     });
 });
 

@@ -1,0 +1,3 @@
+Windows Requirements
+Minimum supported client edition: Windows Vista
+Minimum supported server edition: Windows Server 2008
