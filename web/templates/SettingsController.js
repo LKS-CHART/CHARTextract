@@ -4,6 +4,7 @@ app.controller("SettingsController", ["$uibModal", function($uibModal, $uibModal
     settingsController.open = function() {
 
         $uibModal.open({
+            size: "lg",
             backdrop: true,
             windowClass: 'modal',
             controller: 'LoaderController as loaderCtrl',
