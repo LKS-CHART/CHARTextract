@@ -30,7 +30,7 @@ app.directive('ngHtmlCompile', function($compile) {
 	}
 })
 
-app.directive("tree", function(RecursionHelper) {
+app.directive("tree", function(RecursionHelper, LoaderService, $http) {
     return {
         restrict: "E",
         scope: {
@@ -38,7 +38,19 @@ app.directive("tree", function(RecursionHelper) {
         },
         templateUrl: "views/fileView.html",
         compile: function(element) {
-            return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {})
+            return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {
+                scope.navigateToItem = function(node) {
+                    var url = "http://localhost:3000/path/"
+                    var params = {"path": node.filepath}
+
+                    $http.post(url, params).then(function(data) {
+                        console.log("SENT PATH REQUEST");
+                            LoaderService.setCurPath(data.data);
+                        console.log(LoaderService.getCurPath())
+                    })
+                }
+
+            })
         }
 
     }

@@ -1,4 +1,4 @@
-app.controller("SettingsController", ["$uibModal", function($uibModal) {
+app.controller("SettingsController", ["$uibModal", function($uibModal, $uibModalInstance) {
     var settingsController = this;
 
     settingsController.open = function() {
@@ -11,6 +11,7 @@ app.controller("SettingsController", ["$uibModal", function($uibModal) {
         })
 
     }
+
 
 
 }])

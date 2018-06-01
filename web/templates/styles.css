@@ -89,9 +89,15 @@
 
 }
 
-.treeNode > .item {
+.treeNode > .item1 {
   margin-right: 10px;
   color: #aaa;
+
+}
+
+.treeNode > .item2 {
+  margin-right: 10px;
+  color: #484848;
 
 }
 
@@ -101,7 +107,11 @@
 
 }
 
-.treeNode:hover > .item
+.treeNode:hover > .item1
 {
     color: #484848;
+}
+
+.modal-body ul {
+    padding-left: 33px;
 }
