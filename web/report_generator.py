@@ -129,7 +129,7 @@ def generate_error_report(output_directory, template_directory, variable_name, c
                                                                    "javascripts/LoaderService.js",
                                                                    "javascripts/LoaderController.js",
                                                                    "javascripts/angular-recursion.js",
-                                                                   "templates/fileView.html",
+                                                                   "views/fileView.html",
                                                                    "javascripts/SettingsController.js",
                                                                    "views/openFolder.html"])
     generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours, addition_json_params=addition_json_params)

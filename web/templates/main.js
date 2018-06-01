@@ -36,7 +36,7 @@ app.directive("tree", function(RecursionHelper) {
         scope: {
             node: "=node",
         },
-        templateUrl: "fileView.html",
+        templateUrl: "views/fileView.html",
         compile: function(element) {
             return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {})
         }

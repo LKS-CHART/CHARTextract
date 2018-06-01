@@ -6,6 +6,7 @@ app.controller("LoaderController", ["LoaderService", "$http", function(LoaderSer
 
     loader_data.then(function(result) {
         loaderController.cur_path_obj = result
+
     })
 
     loaderController.requestChildren = function(path_obj) {

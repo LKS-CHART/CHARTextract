@@ -7,7 +7,7 @@ app.controller("SettingsController", ["$uibModal", function($uibModal) {
             backdrop: true,
             windowClass: 'modal',
             controller: 'LoaderController as loaderCtrl',
-            templateUrl: 'openFolder.html'
+            templateUrl: 'views/openFolder.html'
         })
 
     }
