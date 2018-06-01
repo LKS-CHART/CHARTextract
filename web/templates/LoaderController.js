@@ -1,4 +1,4 @@
-app.controller("LoaderController", ["LoaderService", "$http", function(LoaderService, $http) {
+app.controller("LoaderController", ["LoaderService", "$http", "$uibModalInstance" , function(LoaderService, $http, $uibModalInstance) {
     var loaderController = this;
     var loader_data = LoaderService.getInitialPath();
 
@@ -22,6 +22,9 @@ app.controller("LoaderController", ["LoaderService", "$http", function(LoaderSer
 
     }
 
+    loaderController.cancel = function() {
+        $uibModalInstance.dismiss();
+    }
 
 
 

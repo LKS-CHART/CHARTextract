@@ -1,6 +1,7 @@
 {% raw %}
 <li class="treeNode">
-  <span class="item glyphicon glyphicon-folder-open"></span>
+  <span ng-if="node.Type === 'Folder'" span class="item glyphicon glyphicon-folder-open"></span>
+  <span ng-if="node.Type === 'File'" span class="item glyphicon glyphicon-file"></span>
   {{node.filename}}
 </li>
 <ul>
