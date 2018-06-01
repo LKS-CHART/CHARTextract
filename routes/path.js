@@ -48,7 +48,7 @@ function get_directory(tokenized_path){
                 arr.push({
                     "filename": file_name,
                     "Root": tokenized_path,
-                    "filepath": ["Computer", file_name],
+                    "filepath": tokenized_path.concat([file_name]),
                     "Type": fs.statSync(path.join(cur_path, file_name)).isDirectory() ? "Folder" : "File",
                     "Children": []
                 });} catch(err) {
@@ -87,8 +87,8 @@ router.post('/', function(req, res, next) {
         console.log(cur_path);
         let res_json = {
             "filename": req.body["path"][req.body["path"].length - 1],
-            "Root": req.body["path"],
-            "filepath": ["Computer"],
+            "Root": req.body["path"].slice(req.body["path"].length - 1),
+            "filepath": req.body["path"],
             "Type": fs.statSync(path.join(cur_path)).isDirectory() ? "Folder" : "File",
         };
         let cur_promise = new Promise(function (resolve, reject) {
