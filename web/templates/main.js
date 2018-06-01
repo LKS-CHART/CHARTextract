@@ -1,4 +1,4 @@
-app = angular.module('app', ['ngRoute']).config(['$routeProvider', function($routeProvider) {
+app = angular.module('app', ['ngRoute', 'RecursionHelper']).config(['$routeProvider', function($routeProvider) {
     $routeProvider.
     when('/view', {
         templateUrl: 'views/view.html',
@@ -30,11 +30,19 @@ app.directive('ngHtmlCompile', function($compile) {
 	}
 })
 
-app.directive('tree', function() {
+app.directive("tree", function(RecursionHelper) {
+    return {
+        restrict: "E",
+        scope: {
+            node: "=node",
+        },
+        templateUrl: "fileView.html",
+        compile: function(element) {
+            return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {
 
-})
+        }
 
-app.directive('treeNode', function() {
+    }
 
 })
 

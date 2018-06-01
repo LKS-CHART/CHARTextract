@@ -1,40 +1,7 @@
+<li class="treeNode">
+  <span class="item glyphicon glyphicon-folder-open"></span>
+  {{node.filename}}
+</li>
 <ul>
-  <li  class="treeNode">
-    <span class="item glyphicon glyphicon-folder-open">
-    </span>
-    C:
-
-  </li>
-  <ul>
-    <li class="treeNode">
-      <span class="item glyphicon glyphicon-folder-open">
-      </span>
-    My Documents
-    </li>
-    <ul>
-      <li class="treeNode">
-        <span class="item glyphicon glyphicon-file">
-        </span>
-        A.txt
-      </li>
-      <li class="treeNode">
-       <span class="item glyphicon glyphicon-file">
-        </span>
-        B.txt
-      </li>
-    </ul>
-    <li class="treeNode">
-        <span class="item glyphicon glyphicon-folder-open">
-        </span>
-      My Videos
-    </li>
-    <ul>
-      <li class="treeNode">
-        <span class="item glyphicon glyphicon-file">
-        </span>
-        My Favourite Video.mpeg
-
-      </li>
-    </ul>
-  </ul>
+  <tree ng-repeat="child in node.children" node="child"></tree>
 </ul>
