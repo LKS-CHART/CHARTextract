@@ -17,7 +17,8 @@ function promisify(fn) {
 
 /* GET home page. */
 function get_directory(tokenized_path){
-    cur_path = path.resolve(path.join(...tokenized_path.slice(1)));
+    cur_path = path.normalize(path.join(...tokenized_path.slice(1)));
+    console.log(tokenized_path.slice(1));
     if (tokenized_path.length === 1){
         let childDirs = winDrives.usedLetters();
         return childDirs.then(function (result){
@@ -26,7 +27,7 @@ function get_directory(tokenized_path){
                  arr.push({
                      "filename": file_name,
                      "Root": ["Computer"],
-                     "filepath": ["Computer", file_name],
+                     "filepath": ["Computer", file_name + "\\"],
                      "Type": "Folder",
                      "Children": []
                  });
@@ -63,10 +64,11 @@ function get_directory(tokenized_path){
     }
 }
 
-let arr = [];
-x = get_directory(["Computer"]);
-x.then(function (result){ console.log(result)});
-get_directory(["Computer","Z:","GEMINI-SYNCOPE"]);
+// let arr = [];
+// console.log(path.normalize(path.join("C:")));
+// x = get_directory(["Computer", "C:\\"]);
+// x.then(function (result){ console.log(result)});
+//get_directory(["Computer","Z:","GEMINI-SYNCOPE"]);
 router.post('/', function(req, res, next) {
     console.log(req.body["path"]);
     if (req.body["path"].length === 1){
