@@ -5,7 +5,6 @@ let path = require('path');
 const os = require('os');
 let winDrives = require('../path_helper/win-drives');
 
-
 function promisify(fn) {
     /**
      * @param {...Any} params The params to pass into *fn*
@@ -27,6 +26,7 @@ function get_directory(tokenized_path){
                  arr.push({
                      "filename": file_name,
                      "Root": ["Computer"],
+                     "filepath": ["Computer", file_name],
                      "Type": "Folder",
                      "Children": []
                  });
@@ -48,6 +48,7 @@ function get_directory(tokenized_path){
                 arr.push({
                     "filename": file_name,
                     "Root": tokenized_path,
+                    "filepath": ["Computer", file_name],
                     "Type": fs.statSync(path.join(cur_path, file_name)).isDirectory() ? "Folder" : "File",
                     "Children": []
                 });} catch(err) {
@@ -63,7 +64,8 @@ function get_directory(tokenized_path){
 }
 
 let arr = [];
-get_directory(["Computer"]);
+x = get_directory(["Computer"]);
+x.then(function (result){ console.log(result)});
 get_directory(["Computer","Z:","GEMINI-SYNCOPE"]);
 router.post('/', function(req, res, next) {
     console.log(req.body["path"]);
@@ -71,6 +73,7 @@ router.post('/', function(req, res, next) {
         let res_json = {
             "filename": req.body["path"][req.body["path"].length - 1],
             "Root": [],
+            "filepath": ["Computer"],
             "Type": "Folder"
         };
         let cur_promise = new Promise(function (resolve, reject) {
@@ -85,6 +88,7 @@ router.post('/', function(req, res, next) {
         let res_json = {
             "filename": req.body["path"][req.body["path"].length - 1],
             "Root": req.body["path"],
+            "filepath": ["Computer"],
             "Type": fs.statSync(path.join(cur_path)).isDirectory() ? "Folder" : "File",
         };
         let cur_promise = new Promise(function (resolve, reject) {
@@ -102,6 +106,7 @@ router.get('/', function(req, res, next) {
     let res_json = {
         "filename": "Computer",
         "Root": [],
+        "filepath": ["Computer"],
         "Type": "Folder"
     };
     let cur_promise = new Promise(function (resolve, reject) {
