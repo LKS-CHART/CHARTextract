@@ -1,3 +1,4 @@
+{% raw %}
 <li class="treeNode">
   <span class="item glyphicon glyphicon-folder-open"></span>
   {{node.filename}}
@@ -5,3 +6,4 @@
 <ul>
   <tree ng-repeat="child in node.children" node="child"></tree>
 </ul>
+{% endraw %}

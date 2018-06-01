@@ -1,4 +1,4 @@
-app = angular.module('app', ['ngRoute', 'RecursionHelper']).config(['$routeProvider', function($routeProvider) {
+app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).config(['$routeProvider', function($routeProvider) {
     $routeProvider.
     when('/view', {
         templateUrl: 'views/view.html',
@@ -8,8 +8,8 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper']).config(['$routeProvi
     }).
     when('/settings', {
         templateUrl: 'views/settings.html',
-        controller: "LoaderController",
-        controllerAs: "loaderCtrl"
+        controller: "SettingsController",
+        controllerAs: "settingsCtrl"
     }).
     when('/regexes', {
         templateUrl: 'views/regexes.html',
@@ -38,12 +38,10 @@ app.directive("tree", function(RecursionHelper) {
         },
         templateUrl: "fileView.html",
         compile: function(element) {
-            return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {
-
+            return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {})
         }
 
     }
-
 })
 
 app.controller('PollingCtrl', function($scope, $http, $timeout) {
