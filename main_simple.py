@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     for rule in cur_run:
         rule_file = os.path.join(rules_folder, rule)
-        rule_name = rule_file
+        rule_name = rule
 
         print("="*100)
         classifier_runner = create_regex_based_classifier(rule_file)
