@@ -82,7 +82,8 @@ def import_regexes2(regexes_directory):
         classifier_args = {}
         classifier_type = "RegexClassifier"
     else:
-        classifier_type, classifier_args = di.read_classifier_settings("rule_settings.json")
+        classifier_type, classifier_args = di.read_classifier_settings(os.path.join(regexes_directory,
+                                                                                    "rule_settings.json"))
 
     return classifier_type, classifier_args, regexes
 
@@ -94,14 +95,16 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
         label_func = None
         classifier_runtime_args = {}
     else:
-        data = json.load(file_name)
+        with open(file_name) as j:
+            data = json.load(j)
+
         label_col = data["Label Col"] if "Label Col" in data else 1
 
         cur_pwds = data["Pwds"] if "Pwds" in data else None
         use_preprocessor = False if ("Use Preprocessor" not in data or not data["Use Preprocessor"]) else True
         preprocessor = PwdPreprocessor2(pwds, cur_pwds, to_lower=True) if use_preprocessor else None
 
-        classifier_runtime_args = {"pwds": cur_pwds, "preprocess_func": preprocessor.preprocess}
+        classifier_runtime_args = {"pwds": cur_pwds, "preprocess_func": preprocessor.preprocess if preprocessor else None}
 
         use_python = False if ("Specify Function with Python" not in data or not data["Specify Function with Python"])\
             else True

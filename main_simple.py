@@ -128,7 +128,7 @@ if __name__ == "__main__":
             label_file = label_id_col = label_first_row = None
 
         data_loader = di.data_from_csv if data_file.endswith('.csv') else di.data_from_excel
-        data, _, ids = data_loader([data_file], data_cols=data_file, first_row=data_first_row,
+        data, _, ids = data_loader([data_file], data_cols=data_cols, first_row=data_first_row,
                                    id_cols=data_id_cols, repeat_ids=repeat_ids)
 
     for rule in cur_run:
@@ -146,8 +146,13 @@ if __name__ == "__main__":
             labels = None
 
             if not DEBUG_MODE:
-                ids, data, labels = di.get_data(ids, data, label_file, label_id_col, label_col, label_first_row,
-                                                label_func)
+                ids, data, labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
+                                                        label_func)
+                print(label_id_col)
+                print(label_col)
+                print(label_first_row)
+                print(ids)
+                print(labels)
 
             if create_train_and_valid:
                 classifier_runner = load_classifier_data(classifier_runner, data, labels, ids,
@@ -155,8 +160,6 @@ if __name__ == "__main__":
                 available_datasets = ["train", "valid"]
 
             else:
-                ids, data, labels  = di.get_labeled_data(ids, data, label_file, label_id_col, label_col,
-                                                         label_first_row, label_func)
                 classifier_runner = load_classifier_data(classifier_runner, data, labels,
                                                          ids, dataset=available_datasets)
 
