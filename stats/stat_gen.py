@@ -10,6 +10,7 @@ def get_failures(classifier_runner, cur_dataset, conf_path, print_output=True):
 
     cur_labels_list = sorted(list(set(classifier_runner.classifier.dataset[cur_dataset]["preds"].tolist()) |
                                   set(classifier_runner.classifier.dataset[cur_dataset]["labels"].tolist())))
+
     accuracy, \
         incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[cur_dataset]["preds"],
                                                classifier_runner.classifier.dataset[cur_dataset]["labels"])

@@ -148,11 +148,6 @@ if __name__ == "__main__":
             if not DEBUG_MODE:
                 ids, data, labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
                                                         label_func)
-                print(label_id_col)
-                print(label_col)
-                print(label_first_row)
-                print(ids)
-                print(labels)
 
             if create_train_and_valid:
                 classifier_runner = load_classifier_data(classifier_runner, data, labels, ids,
