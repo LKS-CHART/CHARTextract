@@ -1,6 +1,8 @@
 import os
 from datahandler import data_import as di
 import json
+from util.pwd_preprocessors import PwdPreprocessor2
+from properties2 import *
 
 def import_regex(regex_file):
     """Import a single regex rule file
@@ -84,7 +86,7 @@ def import_regexes2(regexes_directory):
 
     return classifier_type, classifier_args, regexes
 
-def get_rule_properties(rule_path, pwds=None):
+def get_rule_properties(rule_path, rule_name, pwds=None):
     file_name = os.path.join(rule_path, "rule_properties.json")
 
     if "rule_properties.json" not in os.listdir(rule_path):
@@ -95,8 +97,26 @@ def get_rule_properties(rule_path, pwds=None):
         data = json.load(file_name)
         label_col = data["Label Col"] if "Label Col" in data else 1
 
-        #TODO: Figure out label func and classifier_runtime_args
+        cur_pwds = data["Pwds"] if "Pwds" in data else None
+        use_preprocessor = False if ("Use Preprocessor" not in data or not data["Use Preprocessor"]) else True
+        preprocessor = PwdPreprocessor2(pwds, cur_pwds, to_lower=True) if use_preprocessor else None
+
+        classifier_runtime_args = {"pwds": cur_pwds, "preprocess_func": preprocessor.preprocess}
+
+        use_python = False if ("Specify Function with Python" not in data or not data["Specify Function with Python"])\
+            else True
+
         label_func = None
-        classifier_runtime_args = None
+
+        if use_python:
+            if rule_name not in file_to_args:
+                print("Rule not found in custom python function")
+            else:
+                if "Runtime Params" in file_to_args[rule_name]:
+                    classifier_runtime_args.update(file_to_args[rule_name]["Runtime Params"])
+
+                if "Runner Initialization Params" in file_to_args[rule_name]:
+                    label_func = file_to_args[rule_name]["Runner Initialization Params"]["label_func"] \
+                        if "label_func" in file_to_args[rule_name]["Runner Initialization Params"] else None
 
     return label_col, label_func, classifier_runtime_args

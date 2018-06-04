@@ -138,7 +138,7 @@ if __name__ == "__main__":
         print("="*100)
         classifier_runner = create_regex_based_classifier(rule_file)
 
-        label_col, label_func, classifier_runtime_args = get_rule_properties(rule_file)
+        label_col, label_func, classifier_runtime_args = get_rule_properties(rule_file, rule_name, pwds)
         available_datasets = ["train"]
 
         if not prediction_mode:
