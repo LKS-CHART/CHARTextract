@@ -100,9 +100,11 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
 
         label_col = data["Label Col"] if "Label Col" in data else 1
 
-        cur_pwds = data["Pwds"] if "Pwds" in data else None
+        required_pwds = data["Pwds"] if "Pwds" in data else None
+        cur_pwds = {pwd_name: pwds[pwd_name] for pwd_name in data["Pwds"]} if "Pwds" in data else None
+
         use_preprocessor = False if ("Use Preprocessor" not in data or not data["Use Preprocessor"]) else True
-        preprocessor = PwdPreprocessor2(pwds, cur_pwds, to_lower=True) if use_preprocessor else None
+        preprocessor = PwdPreprocessor2(pwds, required_pwds, to_lower=True) if use_preprocessor else None
 
         classifier_runtime_args = {"pwds": cur_pwds, "preprocess_func": preprocessor.preprocess if preprocessor else None}
 

@@ -88,8 +88,8 @@ if __name__ == "__main__":
 
     project_settings = get_project_settings(args.settings)
     rules_folder = project_settings["Rules Folder"]
-    pwds_folder = project_settings["Dictionaries Folder"]
-    pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)])
+    pwds_folder = project_settings["Dictionaries Folder"] if "Dictionaries Folder" in project_settings else None
+    pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)]) if pwds_folder else None
 
     create_train_and_valid = False if ("Create Train and Valid" not in project_settings or not
                                        project_settings["Create Train and Valid"]) else True
@@ -186,6 +186,7 @@ if __name__ == "__main__":
                 classifier_runner.run(datasets=[cur_dataset])
 
             if prediction_mode:
+                print("Running in Prediction Mode")
                 pass
 
             else:
@@ -195,5 +196,3 @@ if __name__ == "__main__":
                                       classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                       custom_effect_colours=effect_colours, addition_json_params=error_data,
                                       custom_class_colours=custom_class_colours)
-
-# immuno_preprocessor = PwdPreprocessor2(pwds, ["corticosteroids"], to_lower=True)
