@@ -30,7 +30,6 @@ router.get('/:variable', function(req, res, next) {
     }
 
     function sendData(result){
-        console.log(result);
         res.send(JSON.stringify(dataJSON));
     }
 
