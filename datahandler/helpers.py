@@ -1,5 +1,6 @@
 import os
 from datahandler import data_import as di
+import json
 
 def import_regex(regex_file):
     """Import a single regex rule file
@@ -65,3 +66,37 @@ def import_regexes(regex_directory):
     classifier_type = "RegexClassifier" if not classifier_type else classifier_type
 
     return classifier_type, classifier_args, regexes
+
+
+def import_regexes2(regexes_directory):
+    file_names = os.listdir(regexes_directory)
+    regex_filenames = [os.path.join(regexes_directory, fname) for fname in file_names if fname.endswith(".txt")]
+    regexes = {}
+
+    for file in regex_filenames:
+        _, _, _class_name, regexes[_class_name] = di.regexes_from_csv(file, use_custom_score=True)
+
+    if "rule_settings.json" not in file_names:
+        classifier_args = {}
+        classifier_type = "RegexClassifier"
+    else:
+        classifier_type, classifier_args = di.read_classifier_settings("rule_settings.json")
+
+    return classifier_type, classifier_args, regexes
+
+def get_rule_properties(rule_path, pwds=None):
+    file_name = os.path.join(rule_path, "rule_properties.json")
+
+    if "rule_properties.json" not in os.listdir(rule_path):
+        label_col = 1
+        label_func = None
+        classifier_runtime_args = {}
+    else:
+        data = json.load(file_name)
+        label_col = data["Label Col"] if "Label Col" in data else 1
+
+        #TODO: Figure out label func and classifier_runtime_args
+        label_func = None
+        classifier_runtime_args = None
+
+    return label_col, label_func, classifier_runtime_args

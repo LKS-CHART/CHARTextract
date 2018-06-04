@@ -453,6 +453,16 @@ def regexes_from_json2(filename, use_custom_score=False):
 
 
 #Old json format
+
+def read_classifier_settings(filename):
+    with open(filename, 'r') as f:
+        data = json.load(f)
+        classifier_type = data["Classifier Type"] if "Classifier Type" in data else "RegexClassifier"
+        classifier_args = data["Classifier Args"] if "Classifier Args" in data else {}
+
+    return classifier_type, classifier_args
+
+
 def regexes_from_json(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
     regexes = []
     class_name = None
