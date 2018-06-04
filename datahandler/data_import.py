@@ -88,8 +88,6 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
         ids {list} -- list of ids
     """
     concat_index = None
-
-
     # id_col which is a list
     if id_col is not None:
         cur_id = row_process_func(id_col)

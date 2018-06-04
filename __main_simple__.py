@@ -1,27 +1,44 @@
+import json
 from variable_classifiers.base_runner import Runner
+from datahandler import data_import as di
 import numpy as np
 from web.report_generator import generate_error_report
-from datahandler.helpers import import_regexes2, get_rule_properties
 import os
-import json
-from datahandler import data_import as di
-import argparse
-import csv
+import sys
+from datahandler.helpers import import_regexes2, get_rule_properties
 from stats.stat_gen import get_failures
 
-"""
-Project has project settings json. Specifies a single data file.
-Can specify a label file. If create train and valid is true, creates a train
-and validation set.
+orig_stdout = sys.stdout
+f = open(os.devnull, 'w')
+sys.stdout = f
+abspath = os.path.abspath(__file__)
+dname = os.path.dirname(abspath)
+os.chdir(dname)
+# Define after imports and globals
+available_funcs = {}
+
+def exposed_function(func):
+    available_funcs[getattr(func,'__name__')] = func
+
+'''
+####
+Expose certain functions that allow the following:
+- Run classifier
+- Change variable, datafiles/columns and labelfiles/columns
+- 
+####
+'''
+# simple JSON echo script
 
 
-Each Rule folder contains a rule properties json which specifies label column(s)
-and a label_func
+def respond(message):
+    if not type(message) == dict:
+        message = {'message': message}
+    print(json.dumps(message), file=orig_stdout)
+    orig_stdout.flush()
 
-Each Rule folder has a classifier properties json which specifies classifier properties
-minus the positive label which will be specified within the regex file.
-"""
 
+# MAIN RUNNING CODE
 def create_regex_based_classifier(rule_path=None):
     classifier_type, classifier_args, regexes_dict = import_regexes2(rule_path) if os.path.isdir(rule_path) else None
     classifier_args.update({"regexes": regexes_dict})
@@ -64,30 +81,14 @@ def get_project_settings(project_settings_path=None):
     return data
 
 
-if __name__ == "__main__":
-    #TODO: Make this work with tb duration (i.e repeated datalist)
+@exposed_function
+def run_variable(variable, settings):
     template_directory = os.path.join('web', 'templates')
     effects = ["a", "aa", "ab", "r", "rb", "ra"]
     effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
     effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
 
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("settings", metavar="S", type=str, help="Project Settings File")
-    parser.add_argument('-f', action='store', dest='cur_run_f',
-                        help='File that contains a list of variables to run')
-
-    parser.add_argument('-l', '--list', nargs='+', dest="cur_run",
-                        help='Variables to run')
-
-    parser.add_argument('-D', '--debug', dest="debug", action="store_true", default=False,
-                        help="Runs Program in Debug Mode")
-
-    parser.add_argument('--version', action='version', version='%(prog)s 1.0')
-
-    args = parser.parse_args()
-
-    project_settings = get_project_settings(args.settings)
+    project_settings = get_project_settings(settings)
     rules_folder = project_settings["Rules Folder"]
     pwds_folder = project_settings["Dictionaries Folder"] if "Dictionaries Folder" in project_settings else None
     pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)]) if pwds_folder else None
@@ -98,21 +99,13 @@ if __name__ == "__main__":
     prediction_mode = False if ("Prediction Mode" not in project_settings or not project_settings["Prediction Mode"]) \
         else True
 
-    cur_run = list(filter(lambda f: os.path.isdir(f), os.listdir(rules_folder)))
+    cur_run = [variable]
 
-    if args.cur_run_f:
-        with open(args.cur_run_f) as c_file:
-            rows = csv.reader(c_file, delimiter=',', quotechar='"')
-            cur_run = [var.strip() for row in rows for var in row]
-
-    if args.cur_run:
-        cur_run = args.cur_run
-
-    DEBUG_MODE = args.debug
+    DEBUG_MODE = False
 
     if DEBUG_MODE:
         ids, data, labels = [], [], []
-        label_file = label_id_col = label_first_row = label_func = None
+        label_file = label_id_col = label_first_row = None
 
     else:
         data_file = project_settings["Data File"]
@@ -187,7 +180,6 @@ if __name__ == "__main__":
                 classifier_runner.run(datasets=[cur_dataset])
 
             if prediction_mode:
-                print("Running in Prediction Mode")
                 pass
 
             else:
@@ -197,3 +189,22 @@ if __name__ == "__main__":
                                       classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                       custom_effect_colours=effect_colours, addition_json_params=error_data,
                                       custom_class_colours=custom_class_colours)
+
+def run(**kwargs):
+    respond({'function': 'run', 'params': kwargs})
+
+def save(**kwargs):
+    respond({'function': 'save', 'params': kwargs})
+
+# respond({'status': 'Ready'})
+for line in sys.stdin:
+    x = json.loads(line)
+    if x['function'] in available_funcs:
+        available_funcs[x['function']](**x['params'])
+        #    respond(available_funcs)
+        # sys.stdout.flush()
+        # globals()[x['function']](**x['params'])
+        #print(json.dumps(json.loads(line)))
+        respond({'status': 200})
+    else:
+        respond({'status': 404})
