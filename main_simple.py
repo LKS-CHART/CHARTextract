@@ -156,12 +156,12 @@ if __name__ == "__main__":
 
             else:
                 classifier_runner = load_classifier_data(classifier_runner, data, labels,
-                                                         ids, dataset=available_datasets)
+                                                         ids, dataset=available_datasets[0])
 
         else:
             labels = [None]*len(data)
             classifier_runner = load_classifier_data(classifier_runner, data, labels,
-                                                     ids, dataset=available_datasets)
+                                                     ids, dataset=available_datasets[0])
 
         #available_datasets = ["train"]
         for cur_dataset in available_datasets:
