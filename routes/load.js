@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 let pyshell = require('../python_connector/connector');
 let rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\tb_rules";
-rules_path = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set\\Regexes"
+//rules_path = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set\\Regexes"
 let fs = require('fs');
 let path = require('path');
 
@@ -29,6 +29,7 @@ router.get('/:variable', function(req, res, next) {
     }
 
     function sendData(){
+        console.log(JSON.stringify(dataJSON))
         res.send(JSON.stringify(dataJSON));
     }
 
