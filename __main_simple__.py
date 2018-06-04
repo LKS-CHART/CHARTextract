@@ -7,6 +7,7 @@ import os
 import sys
 from datahandler.helpers import import_regexes2, get_rule_properties
 from stats.stat_gen import get_failures
+from datahandler.preprocessors import convert_repeated_data_to_sublist
 
 orig_stdout = sys.stdout
 f = open(os.devnull, 'w')
@@ -125,6 +126,8 @@ def run_variable(variable, settings):
         data, _, ids = data_loader([data_file], data_cols=data_cols, first_row=data_first_row,
                                    id_cols=data_id_cols, repeat_ids=repeat_ids)
 
+        if repeat_ids:
+            ids, data, labels = convert_repeated_data_to_sublist(ids, repeated_data=data)
     for rule in cur_run:
         rule_file = os.path.join(rules_folder, rule)
         rule_name = rule

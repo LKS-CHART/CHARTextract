@@ -82,7 +82,7 @@ class CaptureClassifier(BaseClassifier):
             self.dataset[data_set]["scores"] = []
 
             for datum in data:
-                capture_scores = defaultdict(int) 
+                capture_scores = defaultdict(int)
                 captures = {}
                 class_matches = {}
 

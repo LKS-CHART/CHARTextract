@@ -8,6 +8,7 @@ from datahandler import data_import as di
 import argparse
 import csv
 from stats.stat_gen import get_failures
+from datahandler.preprocessors import convert_repeated_data_to_sublist
 
 """
 Project has project settings json. Specifies a single data file.
@@ -65,7 +66,6 @@ def get_project_settings(project_settings_path=None):
 
 
 if __name__ == "__main__":
-    #TODO: Make this work with tb duration (i.e repeated datalist)
     template_directory = os.path.join('web', 'templates')
     effects = ["a", "aa", "ab", "r", "rb", "ra"]
     effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
@@ -132,6 +132,9 @@ if __name__ == "__main__":
         data, _, ids = data_loader([data_file], data_cols=data_cols, first_row=data_first_row,
                                    id_cols=data_id_cols, repeat_ids=repeat_ids)
 
+        if repeat_ids:
+            ids, data, labels = convert_repeated_data_to_sublist(ids, repeated_data=data)
+
     for rule in cur_run:
         rule_file = os.path.join(rules_folder, rule)
         rule_name = rule
@@ -143,9 +146,6 @@ if __name__ == "__main__":
         available_datasets = ["train"]
 
         if not prediction_mode:
-
-            labels = None
-
             if not DEBUG_MODE:
                 ids, data, labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
                                                         label_func)
