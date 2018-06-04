@@ -3,7 +3,7 @@ let router = express.Router();
 let pyshell_connector = require("..\\python_connector\\connector");
 /* Save resource as json */
 
-pyshell = new pyshell_connector('__main__.py', {
+pyshell = new pyshell_connector('__main_ctpa__.py', {
     mode: 'json'
 }, function (err, results){
     console.log(results)
@@ -18,6 +18,7 @@ router.get('/:variable', function(req, res, next) {
         pyshell.on('message', function(message) {resolve(message)});
     });
     Promise.all([curPromise]).then(function (result) {
+        console.log(result);
         var redirect_url = "http://localhost:8080/NgramRegexNLP/generated_data/" + req.params.variable +  "/train/index.html";
         res.redirect(redirect_url);
     });
