@@ -112,6 +112,10 @@
     color: #484848;
 }
 
+.selectedNode {
+    background-color: #eee;
+
+}
 .modal-body ul {
     padding-left: 33px;
 }

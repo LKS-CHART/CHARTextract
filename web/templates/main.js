@@ -35,6 +35,7 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http) {
         restrict: "E",
         scope: {
             node: "=node",
+            display_folder: "=displayOnlyFolder"
         },
         templateUrl: "views/fileView.html",
         compile: function(element) {
@@ -42,10 +43,35 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http) {
                 scope.navigateToItem = function(node) {
                     var url = "http://localhost:3000/path/"
                     var params = {"path": node.filepath}
-
                     $http.post(url, params).then(function(data) {
                         console.log("SENT PATH REQUEST");
-                            LoaderService.setCurPath(data.data);
+                        LoaderService.setCurPath(data.data);
+                        console.log(LoaderService.getCurPath())
+                    })
+                }
+
+            })
+        }
+
+    }
+})
+
+app.directive("treeF", function(RecursionHelper, LoaderService, $http) {
+    return {
+        restrict: "E",
+        scope: {
+            node: "=node",
+            display_folder: "=displayOnlyFolder"
+        },
+        templateUrl: "views/folderView.html",
+        compile: function(element) {
+            return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {
+                scope.navigateToItem = function(node) {
+                    var url = "http://localhost:3000/path/"
+                    var params = {"path": node.filepath}
+                    $http.post(url, params).then(function(data) {
+                        console.log("SENT PATH REQUEST");
+                        LoaderService.setCurPath(data.data);
                         console.log(LoaderService.getCurPath())
                     })
                 }

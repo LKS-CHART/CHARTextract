@@ -15,7 +15,7 @@ def replace_filter(filter_func, labels_array):
 
 def replace_filter_by_label(label_of_interest, negative_label, exact_match=False, labels_array=None):
     for i, label in enumerate(labels_array):
-        if exact_match:
+        if not exact_match:
             labels_array[i] = label_of_interest if label.find(label_of_interest) >= 0 else negative_label
         else:
             labels_array[i] = label_of_interest if label_of_interest == label else negative_label

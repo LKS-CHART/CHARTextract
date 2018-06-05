@@ -8,7 +8,7 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
     function injectPath(path_obj) {
 
         var path_len = path_obj.filepath.length
-
+        path_obj.selected=true
 
         console.log(path_obj.filepath)
         console.log("INJECT BEING CALLED")
