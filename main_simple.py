@@ -98,7 +98,7 @@ if __name__ == "__main__":
     prediction_mode = False if ("Prediction Mode" not in project_settings or not project_settings["Prediction Mode"]) \
         else True
 
-    cur_run = list(filter(lambda f: os.path.isdir(f), os.listdir(rules_folder)))
+    cur_run = list(filter(lambda f: os.path.isdir(os.path.join(rules_folder, f)), os.listdir(rules_folder)))
 
     if args.cur_run_f:
         with open(args.cur_run_f) as c_file:
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     DEBUG_MODE = args.debug
 
     if DEBUG_MODE:
-        ids, data, labels = [], [], []
+        ids, data, labels = ["0","1","2"], ["This is a test", "This is not a Test", "Blob"], ["Yes", "No", "No"]
         label_file = label_id_col = label_first_row = label_func = None
 
     else:
@@ -160,7 +160,6 @@ if __name__ == "__main__":
                                                          ids, dataset=available_datasets[0])
 
         else:
-            labels = [None]*len(data)
             classifier_runner = load_classifier_data(classifier_runner, data, labels,
                                                      ids, dataset=available_datasets[0])
 
