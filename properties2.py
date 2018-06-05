@@ -201,10 +201,6 @@ file_to_args = {
                 "extra_pulmonary": {"Runner Initialization Params": {"label_func": functools.partial(
                                                                         replace_labels_with_required,
                                     "Extra Pulmonary (localized)", "None")}},
-                # "tb_duration": {"use_row_start": True, "Runner Initialization Params": {"l_label_col": 40,
-                #                                                                         "ids_list": ids_list,
-                #                                                                         "data_list": repeated_data_list},
-                #                 },
 
                 "skin_test_mm": {"Runtime Params": {"classify_func": max_classify}},
 

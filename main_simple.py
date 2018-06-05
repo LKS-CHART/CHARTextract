@@ -80,7 +80,7 @@ if __name__ == "__main__":
     parser.add_argument('-l', '--list', nargs='+', dest="cur_run",
                         help='Variables to run')
 
-    parser.add_argument('-D', '--debug', dest="debug", action="store_true", default=False,
+    parser.add_argument('--debug', dest="debug", action="store_true", default=False,
                         help="Runs Program in Debug Mode")
 
     parser.add_argument('--version', action='version', version='%(prog)s 1.0')
