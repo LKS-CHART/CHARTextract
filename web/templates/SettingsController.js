@@ -9,8 +9,9 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
             backdrop: true,
             windowClass: 'modal',
             controller: 'LoaderController as loaderCtrl',
-            templateUrl: 'views/openFolder.html'
+            templateUrl: 'views/openFolder.html',
         })
+
 
     }
 
@@ -21,8 +22,11 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
             backdrop: true,
             windowClass: 'modal',
             controller: 'LoaderController as loaderCtrl',
-            templateUrl: 'views/openFile.html'
-        })
+            templateUrl: 'views/openFile.html',
+        }).result.then(function() {
+            settingsController.dataFile = SettingsService.dataSettings.selected;
+        });
+
 
 
     }

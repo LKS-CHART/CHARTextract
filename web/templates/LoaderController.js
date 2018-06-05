@@ -11,7 +11,7 @@ app.controller("LoaderController", ["LoaderService", "$http", "$uibModalInstance
     }
 
     loaderController.save = function() {
-
+        $uibModalInstance.close();
     }
 
     loaderController.cancel = function() {
