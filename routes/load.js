@@ -14,22 +14,22 @@ router.get('/:variable', function(req, res, next) {
     function appendData(fileName, resolve, reject){
         if (path.extname(fileName) === ".txt") {
             console.log(fileName);
-            fs.readFile(path.join(filePath,fileName), {encoding: 'utf-8'}, function(err,data){
+            fs.readFile(path.join(filePath,fileName), {encoding: 'utf-8'}, function(err, data){
                 if (!err) {
                     dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"fileName": fileName, "regexesText": data};
-                    resolve(data);
+                    resolve([fileName, data]);
                 } else {
                     reject(err);
-                    console.log(err);
                     res.sendStatus(404);
                 }
             });
+        } else {
+            reject("Not a file");
         }
         return dataJSON;
     }
 
-    function sendData(){
-        console.log(JSON.stringify(dataJSON))
+    function sendData(result){
         res.send(JSON.stringify(dataJSON));
     }
 
@@ -40,9 +40,15 @@ router.get('/:variable', function(req, res, next) {
             let getFiles = files.map((item) => {
                 return new Promise((resolve, reject) => {
                     appendData(item, resolve, reject);
+                }).catch((error) => {
+                    console.log(error);
                 })
             });
-            Promise.all(getFiles).then(() => sendData());
+            //
+            console.log(getFiles);
+            // console.log(final_promises);
+            Promise.all(getFiles).then(result => sendData(result));
+
         } else {
             console.log(err);
             res.sendStatus(404);
