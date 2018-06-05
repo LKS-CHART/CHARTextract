@@ -3,6 +3,7 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
     var deferred = $q.defer()
     var url = "http://localhost:3000/path/"
     var cur_path_obj = null;
+    var saved_path_obj = null;
 
 
     function injectPath(path_obj) {
@@ -42,9 +43,19 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
         cur_path_obj = injectPath(path);
     }
 
+    var saveCurPath = function(path) {
+        saved_path_obj = path
+    }
+
+    var getSavePath = function() {
+        return saved_path_obj;
+    }
+
     return {
         getCurPath: getCurPath,
         setCurPath: setCurPath,
         getInitialPath: getInitialPath,
+        saveCurPath: saveCurPath,
+        getSavePath: getSavePath,
     }
 }])

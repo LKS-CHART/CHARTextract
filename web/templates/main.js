@@ -30,7 +30,7 @@ app.directive('ngHtmlCompile', function($compile) {
 	}
 })
 
-app.directive("tree", function(RecursionHelper, LoaderService, $http) {
+app.directive("tree", function(RecursionHelper, LoaderService, $http, SettingsService) {
     return {
         restrict: "E",
         scope: {
@@ -46,7 +46,10 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http) {
                     $http.post(url, params).then(function(data) {
                         console.log("SENT PATH REQUEST");
                         LoaderService.setCurPath(data.data);
-                        console.log(LoaderService.getCurPath())
+                        SettingsService.saveSelected(data.data.filepath)
+//                        console.log(LoaderService.getSavePath(data.data.filepath))
+//                        console.log(LoaderService.getCurPath())
+//                        $rootScope.$broadcast('tree', 'treeSave')
                     })
                 }
 

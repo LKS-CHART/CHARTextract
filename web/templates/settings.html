@@ -14,8 +14,8 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" placeholder="Text input">
-                <span ng-click="settingsCtrl.openFileDialog()" id="open-data-folder" class="btn input-group-addon">
+                <input type="text" class="form-control input-sm" ng-model="settingsCtrl.dataFile" placeholder="Text input">
+                <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getDataObj());settingsCtrl.openFileDialog()" id="open-data-folder" class="btn input-group-addon">
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
             </div>

@@ -1,5 +1,6 @@
-app.controller("SettingsController", ["$uibModal", function($uibModal, $uibModalInstance) {
+app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", function($uibModal, $uibModalInstance, SettingsService) {
     var settingsController = this;
+    settingsController.dataFile = SettingsService.dataSettings.selected;
 
     settingsController.openFolderDialog = function() {
 
@@ -26,6 +27,33 @@ app.controller("SettingsController", ["$uibModal", function($uibModal, $uibModal
 
     }
 
+    settingsController.getDataObj = function() {
+        return SettingsService.dataSettings
+    }
 
+    settingsController.getLabelObj = function() {
+        return SettingsService.labelSettings
+    }
+
+    settingsController.getRuleObj = function() {
+        return SettingsService.ruleSettings
+    }
+
+    settingsController.setWorkingObj = function(obj) {
+        SettingsService.setCurWorkingObj(obj);
+
+    }
+
+    settingsController.getDataFile = function() {
+        return SettingsService.dataSettings.selected
+    }
+
+    settingsController.getLabelFile = function() {
+        return SettingsService.labelSettings.selected
+    }
+
+    settingsController.getRuleFolder = function() {
+        return SettingsService.ruleSettings.selected
+    }
 
 }])

@@ -10,13 +10,12 @@ app.controller("LoaderController", ["LoaderService", "$http", "$uibModalInstance
         return LoaderService.getCurPath();
     }
 
+    loaderController.save = function() {
+
+    }
 
     loaderController.cancel = function() {
         $uibModalInstance.dismiss();
     }
-
-
-
-
 
 }])
