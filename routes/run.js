@@ -3,6 +3,7 @@ var router = express.Router();
 var pyshell_connector = require("..\\python_connector\\connector.js");
 var settings_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\project_settings_tb.json"
 
+
 router.get('/:variable', function(req, res, next) {
     console.time("dbsave");
     console.log(req.params);

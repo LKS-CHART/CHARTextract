@@ -39,7 +39,7 @@ function get_directory(tokenized_path){
         })
     } else {
         if (!fs.statSync(cur_path).isDirectory()){
-            return get_directory();
+            return [];
         }
         let childDirs = promisify(fs.readdir);
         return childDirs(cur_path).then(function (result){
@@ -71,10 +71,6 @@ function get_directory(tokenized_path){
 //get_directory(["Computer","Z:","GEMINI-SYNCOPE"]);
 router.post('/', function(req, res, next) {
     console.log(req.body["path"]);
-    if ((req.body["path"].length !== 1) &&
-        !(fs.statSync(path.normalize(path.join(...req.body["path"].slice(1)))).isDirectory())) {
-        req.body["path"] = req.body["path"][req.body["path"].length -1]
-    }
     if (req.body["path"].length === 1){
         let res_json = {
             "filename": req.body["path"][req.body["path"].length - 1],
@@ -89,7 +85,7 @@ router.post('/', function(req, res, next) {
             res.send(JSON.stringify(res_json));
         });
     } else {
-        let cur_path = path.normalize(path.join(...req.body["path"].slice(1)));
+        cur_path = path.normalize(path.join(...req.body["path"].slice(1)));
         console.log(cur_path);
         let res_json = {
             "filename": req.body["path"][req.body["path"].length - 1],
