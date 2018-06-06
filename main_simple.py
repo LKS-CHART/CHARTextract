@@ -129,7 +129,8 @@ if __name__ == "__main__":
             label_file = label_id_col = label_first_row = None
 
         data_loader = di.data_from_csv if data_file.endswith('.csv') else di.data_from_excel
-        data, _, ids = data_loader([data_file], data_cols=data_cols, first_row=data_first_row,
+        data_files = [data_file] if type(data_file) == str else data_file
+        data, _, ids = data_loader(data_files, data_cols=data_cols, first_row=data_first_row,
                                    id_cols=data_id_cols, repeat_ids=repeat_ids)
 
         if repeat_ids:

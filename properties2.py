@@ -4,6 +4,8 @@ from classifier.classification_functions import *
 from datahandler.preprocessors import *
 
 file_to_args = {
+                "homelessness": {"Runner Initialization Params": {"label_func": functools.partial(
+                    replace_labels_with_required, *["Homeless shelter", "None"])}},
                 "country": {"Runtime Params": {"preprocess_func": preprocess}},
                 "diag_active": {"Runner Initialization Params":
                                     {"label_func": functools.partial(replace_label_with_required,
