@@ -46,7 +46,9 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http, SettingsSe
                     $http.post(url, params).then(function(data) {
                         console.log("SENT PATH REQUEST");
                         LoaderService.setCurPath(data.data);
-                        SettingsService.saveSelected(data.data.filepath)
+                        if(node.Type === "File") {
+                            SettingsService.saveSelected(data.data.filepath)
+                        }
 //                        console.log(LoaderService.getSavePath(data.data.filepath))
 //                        console.log(LoaderService.getCurPath())
 //                        $rootScope.$broadcast('tree', 'treeSave')
@@ -59,7 +61,7 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http, SettingsSe
     }
 })
 
-app.directive("treeF", function(RecursionHelper, LoaderService, $http) {
+app.directive("treeF", function(RecursionHelper, LoaderService, $http, SettingsService) {
     return {
         restrict: "E",
         scope: {
@@ -75,6 +77,10 @@ app.directive("treeF", function(RecursionHelper, LoaderService, $http) {
                     $http.post(url, params).then(function(data) {
                         console.log("SENT PATH REQUEST");
                         LoaderService.setCurPath(data.data);
+
+                        if(node.Type === "Folder") {
+                            SettingsService.saveSelected(data.data.filepath)
+                        }
                         console.log(LoaderService.getCurPath())
                     })
                 }

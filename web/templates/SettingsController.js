@@ -1,6 +1,14 @@
 app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", function($uibModal, $uibModalInstance, SettingsService) {
     var settingsController = this;
     settingsController.dataFile = SettingsService.dataSettings.selected;
+    settingsController.labelFile = SettingsService.labelSettings.selected;
+    settingsController.ruleFolder = SettingsService.ruleSettings.selected;
+    settingsController.dataIdCol = SettingsService.dataIdCol
+    settingsController.dataFirstRow = SettingsService.dataFirstRow
+    settingsController.dataCol = SettingsService.dataCol
+    settingsController.concatenateData = SettingsService.concatenateData
+    settingsController.labelIdCol = SettingsService.labelIdCol
+    settingsController.labelFirstRow = SettingsService.labelFirstRow
 
     settingsController.openFolderDialog = function() {
 
@@ -10,11 +18,12 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
             windowClass: 'modal',
             controller: 'LoaderController as loaderCtrl',
             templateUrl: 'views/openFolder.html',
-        })
+        }).result.then(function() {
+            settingsController.ruleFolder = SettingsService.ruleSettings.selected;
+        });
 
 
     }
-
     settingsController.openFileDialog = function() {
 
         $uibModal.open({
@@ -25,6 +34,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
             templateUrl: 'views/openFile.html',
         }).result.then(function() {
             settingsController.dataFile = SettingsService.dataSettings.selected;
+            settingsController.labelFile = SettingsService.labelSettings.selected;
         });
 
 
@@ -46,18 +56,6 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.setWorkingObj = function(obj) {
         SettingsService.setCurWorkingObj(obj);
 
-    }
-
-    settingsController.getDataFile = function() {
-        return SettingsService.dataSettings.selected
-    }
-
-    settingsController.getLabelFile = function() {
-        return SettingsService.labelSettings.selected
-    }
-
-    settingsController.getRuleFolder = function() {
-        return SettingsService.ruleSettings.selected
     }
 
 }])
