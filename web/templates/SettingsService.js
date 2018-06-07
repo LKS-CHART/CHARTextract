@@ -8,6 +8,7 @@ app.service("SettingsService", [function() {
     var concatenateData = true;
     var labelIdCol = 0
     var labelFirstRow = 1
+    var createTrainAndValid = true;
 
     var curWorkingObj = null;
 
@@ -35,6 +36,7 @@ app.service("SettingsService", [function() {
         dataCol: dataCol,
         concatenateData: concatenateData,
         labelIdCol: labelIdCol,
-        labelFirstRow: labelFirstRow
+        labelFirstRow: labelFirstRow,
+        createTrainAndValid: createTrainAndValid
     }
 }])

@@ -123,3 +123,28 @@ app.controller('PollingCtrl', function($scope, $http, $timeout) {
   });
 
 });
+
+app.filter("arrayNormalize", function(){
+    return function(arr) {
+
+        if(typeof arr === "Object") {
+            for(var i = 0; i < arr.length; i++) {
+                arr[i] = arr[i].replace(/[\\/]+/g,"")
+            }
+
+            return arr;
+        }
+
+        return arr;
+    }
+
+})
+
+app.filter("pathify", function(){
+    return function(arr) {
+        var path = arr.join("/")
+
+        return path
+    }
+
+})
