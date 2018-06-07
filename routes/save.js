@@ -10,7 +10,7 @@ router.post('/:variable/:class', function(req, res, next) {
 
     var filePath = path.join(out_rules_path, req.params['variable'], req.body.filename);
 //    filePath = path.join(filePath, req.body.filename)
-    fs.writeFile(filePath, JSON.stringify(req.body.regexes), function(err) {
+    fs.writeFile(filePath, req.body.regexes, function(err) {
         if(err) {
             return console.log(err)
         }
