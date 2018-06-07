@@ -16,7 +16,7 @@ function promisify(fn) {
 }
 
 /* GET home page. */
-function get_directory(tokenized_path){
+function get_directory(tokenized_path, extensions){
     cur_path = path.normalize(path.join(...tokenized_path.slice(1)));
     console.log(tokenized_path.slice(1));
     if (tokenized_path.length === 1){
@@ -46,13 +46,26 @@ function get_directory(tokenized_path){
             let arr = [];
             result.forEach(file_name => {
                 try {
-                arr.push({
-                    "filename": file_name,
-                    "Root": tokenized_path,
-                    "filepath": tokenized_path.concat([file_name]),
-                    "Type": fs.statSync(path.join(cur_path, file_name)).isDirectory() ? "Folder" : "File",
-                    "Children": []
-                });} catch(err) {
+                    if (fs.statSync(path.join(cur_path, file_name)).isDirectory()){
+                        arr.push({
+                            "filename": file_name,
+                            "Root": tokenized_path,
+                            "filepath": tokenized_path.concat([file_name]),
+                            "Type": "Folder",
+                            "Children": []
+                        });
+                    } else {
+                        if (!(extensions instanceof Array) || extensions.indexOf(path.extname(file_name)) > -1){
+                            arr.push({
+                            "filename": file_name,
+                                "Root": tokenized_path,
+                                "filepath": tokenized_path.concat([file_name]),
+                                "Type": "File",
+                                "Children": []
+                            });
+                        }
+                    }
+                } catch(err) {
                     console.log(err);
                 }
             });
@@ -94,7 +107,7 @@ router.post('/', function(req, res, next) {
             "Type": fs.statSync(path.join(cur_path)).isDirectory() ? "Folder" : "File",
         };
         let cur_promise = new Promise(function (resolve, reject) {
-            resolve(get_directory(req.body["path"]))});
+            resolve(get_directory(req.body["path"], req.body["extensions"]))});
         cur_promise.then(function(result){
             res_json["Children"] = result;
             res.send(JSON.stringify(res_json));
@@ -112,7 +125,7 @@ router.get('/', function(req, res, next) {
         "Type": "Folder"
     };
     let cur_promise = new Promise(function (resolve, reject) {
-        resolve(get_directory(["Computer"]));
+        resolve(get_directory(["Computer"], []));
     });
     cur_promise.then(function(result){
         res_json["Children"] = result;
