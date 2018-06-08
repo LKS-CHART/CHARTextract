@@ -10,7 +10,7 @@ router.get('/:variable', function(req, res, next) {
 
     pyshell_connector.send({'function': 'run_variable', 'params': req.params});
     var curPromise = new Promise(function (resolve, reject) {
-        pyshell.on('message', function(message) {resolve(message)});
+        pyshell_connector.on('message', function(message) {resolve(message)});
     });
     Promise.all([curPromise]).then(function (result) {
         var redirect_url = "http://localhost:8080/NgramRegexNLP/generated_data/" + req.params.variable +  "/train/index.html";
