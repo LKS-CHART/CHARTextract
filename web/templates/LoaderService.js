@@ -32,6 +32,7 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
         deferred.resolve(response.data)
     })
     var getInitialPath = function() {
+        console.log("get Initial Path")
         return deferred.promise
     }
 

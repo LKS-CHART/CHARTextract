@@ -12,7 +12,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-model="settingsCtrl.dataFile | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.dataFile | arrayNormalize | pathify" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getDataObj());settingsCtrl.openFileDialog()" id="open-data-file" class="btn input-group-addon">
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
@@ -65,7 +65,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-model="settingsCtrl.labelFile | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.labelFile | arrayNormalize | pathify" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getLabelObj()); settingsCtrl.openFileDialog()" id="open-labels-file" class="btn input-group-addon">
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
@@ -94,7 +94,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-model="settingsCtrl.ruleFolder | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.ruleFolder | arrayNormalize | pathify" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getRuleObj()); settingsCtrl.openFolderDialog()" id="open-rules-folder" class="btn input-group-addon">
                         <span class="glyphicon glyphicon-folder-open"></span>
                     </span>

@@ -4,6 +4,8 @@ app.controller("LoaderController", ["LoaderService", "$http", "$uibModalInstance
 
 
     loader_data.then(function(result) {
+        console.log("Loader data?")
+        console.log(result)
         LoaderService.setCurPath(result)
     })
     loaderController.getCurPath = function() {
