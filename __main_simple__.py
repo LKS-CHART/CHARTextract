@@ -139,9 +139,6 @@ def run_variable(variable, settings):
         available_datasets = ["train"]
 
         if not prediction_mode:
-
-            labels = None
-
             if not DEBUG_MODE:
                 ids, data, labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
                                                         label_func)
