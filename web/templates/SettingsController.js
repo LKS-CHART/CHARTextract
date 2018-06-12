@@ -11,6 +11,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.labelFirstRow = SettingsService.labelFirstRow
     settingsController.createTrainAndValid = SettingsService.createTrainAndValid
 
+
     settingsController.openFolderDialog = function() {
 
         $uibModal.open({
@@ -60,6 +61,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     }
 
     settingsController.saveSettings = function() {
+
         SettingsService.dataIdCol = settingsController.dataIdCol
         SettingsService.dataFirstRow = settingsController.dataFirstRow
         SettingsService.dataCol = settingsController.dataCol
@@ -67,13 +69,18 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         SettingsService.labelIdCol = settingsController.labelIdCol
         SettingsService.labelFirstRow = settingsController.labelFirstRow
         SettingsService.createTrainAndValid = settingsController.createTrainAndValid
-        var url = "http://localhost:3000/save/save_project_settings/"
+        var url = "http://localhost:3000/save/save_project_settings"
+
+        console.log(settingsController.dataFile)
+        console.log(settingsController.labelFile)
+        console.log(settingsController.ruleFolder)
+
 
         var params = {
             "Project Settings Data": {
-                "Data File": settingsController.dataFile,
-                "Label File": settingsController.labelFile,
-                "Rules Folder": settingsController.rulesFolder,
+                "Data File": settingsController.dataFile.slice(1,settingsController.dataFile.length),
+                "Label File": settingsController.labelFile.slice(1,settingsController.labelFile.length),
+                "Rules Folder": settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length),
                 "Dictionaries Folder": "dictionaries",
                 "Data Id Cols" : settingsController.dataIdCol,
                 "Data First Row" : settingsController.dataFirstRow,
@@ -85,9 +92,17 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
             }
         }
         $http.post(url, params).then(function(data) {
+            console.log(data)
             console.log("Sent Save Settings Request")
-        })
-
+            console.log(settingsController.dataFile)
+            console.log(settingsController.labelFile)
+            console.log(settingsController.ruleFolder)
+            console.log(SettingsService.createTrainAndValid)
+        }).then(function() {
+            console.log(settingsController.dataFile)
+            console.log(settingsController.labelFile)
+            console.log(settingsController.ruleFolder)
+        });
     }
 
 }])

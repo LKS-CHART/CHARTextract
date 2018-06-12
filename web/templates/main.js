@@ -35,7 +35,7 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http, SettingsSe
         restrict: "E",
         scope: {
             node: "=node",
-            display_folder: "=displayOnlyFolder"
+            display_folder: "=displayOnlyFolder",
         },
         templateUrl: "views/fileView.html",
         compile: function(element) {
@@ -125,26 +125,35 @@ app.controller('PollingCtrl', function($scope, $http, $timeout) {
 });
 
 app.filter("arrayNormalize", function(){
-    return function(arr) {
 
-        if(typeof arr === "Object") {
+    return function(arr) {
+        if (arr === null) {
+            return [];
+        }
+        if(typeof arr === "object") {
+            console.log("HERE")
+            var arr_copy = []
             for(var i = 0; i < arr.length; i++) {
-                arr[i] = arr[i].replace(/[\\/]+/g,"")
+                arr_copy.push(arr[i].replace(/[\\/]+/g,""))
             }
 
-            return arr;
+            return arr_copy;
         }
 
         return arr;
     }
 
-})
+});
 
 app.filter("pathify", function(){
     return function(arr) {
-        var path = arr.join("/")
+        var path = "";
+
+        if (arr !== null) {
+            path = arr.join("/")
+        }
 
         return path
     }
 
-})
+});

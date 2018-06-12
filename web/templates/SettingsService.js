@@ -13,14 +13,18 @@ app.service("SettingsService", [function() {
     var curWorkingObj = null;
 
     var setCurWorkingObj = function(obj) {
+        console.log("I HAVE BEEN CALLED")
         curWorkingObj = obj
     }
 
     var getCurWorkingObj = function() {
+        console.log("I HAVE BEEN CALLED 2")
         return curWorkingObj;
     }
 
     var saveSelected = function(filepath) {
+        console.log("I HAVE BEEN CALLED 3")
+        console.log(filepath)
         curWorkingObj["selected"] = filepath
     }
 
