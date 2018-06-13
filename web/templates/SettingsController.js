@@ -75,12 +75,15 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         console.log(settingsController.labelFile)
         console.log(settingsController.ruleFolder)
 
+        dataFileNorm = settingsController.dataFile.slice(1,settingsController.dataFile.length);
+        labelFileNorm = settingsController.labelFile.slice(1,settingsController.labelFile.length);
+        ruleFolderNorm = settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length);
 
         var params = {
             "Project Settings Data": {
-                "Data File": settingsController.dataFile.slice(1,settingsController.dataFile.length),
-                "Label File": settingsController.labelFile.slice(1,settingsController.labelFile.length),
-                "Rules Folder": settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length),
+                "Data File": dataFileNorm,
+                "Label File": labelFileNorm,
+                "Rules Folder": ruleFolderNorm,
                 "Dictionaries Folder": "dictionaries",
                 "Data Id Cols" : settingsController.dataIdCol,
                 "Data First Row" : settingsController.dataFirstRow,

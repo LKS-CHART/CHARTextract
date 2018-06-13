@@ -90,7 +90,8 @@ def run_variable(variable, settings):
     effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
 
     project_settings = get_project_settings(settings)
-    rules_folder = project_settings["Rules Folder"]
+    rules_folder = os.path.join(*project_settings["Rules Folder"]) if type(project_settings["Rules Folder"]) == list \
+        else project_settings["Rules Folder"]
     pwds_folder = project_settings["Dictionaries Folder"] if "Dictionaries Folder" in project_settings else None
     pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)]) if pwds_folder else None
 
@@ -109,14 +110,16 @@ def run_variable(variable, settings):
         label_file = label_id_col = label_first_row = None
 
     else:
-        data_file = project_settings["Data File"]
+        data_file = os.path.join(*project_settings["Data File"]) if type(project_settings["Data File"]) == list \
+            else project_settings["Data File"]
         data_id_cols = project_settings["Data Id Cols"]
         data_first_row = project_settings["Data First Row"]
         data_cols = project_settings["Data Cols"]
         repeat_ids = not project_settings["Concatenate Data"]
 
         if not prediction_mode:
-            label_file = project_settings["Label File"]
+            label_file = os.path.join(*project_settings["Label File"]) if type(project_settings["Label File"]) == list \
+                else project_settings["Label File"]
             label_id_col = project_settings["Label Id Col"]
             label_first_row = project_settings["Label First Row"]
         else:
