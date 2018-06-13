@@ -5,7 +5,56 @@ let rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\
 let fs = require('fs');
 let path = require('path');
 
+function promisify(fn) {
+    /**
+     * @param {...Any} params The params to pass into *fn*
+     * @return {Promise<Any|Any[]>}
+     */
+    return function promisified(...params) {
+        return new Promise((resolve, reject) => fn(...params.concat([(err, ...args) => err ? reject(err) : resolve( args.length < 2 ? args[0] : args )])))
+    }
+}
 
+function get_directory(rules_path){
+    if (!fs.statSync(rules_path).isDirectory()){
+        return [];
+    }
+
+    var count = 0;
+
+    let childDirs = promisify(fs.readdir);
+    return childDirs(rules_path).then(function (result){
+        let arr = [];
+        result.forEach(file_name => {
+            try {
+                if (fs.statSync(path.join(rules_path, file_name)).isDirectory()) {
+                    arr.push({
+                        "id": count,
+                        "filename": file_name,
+                    });
+
+                    count++;
+                }
+            } catch(err) {
+                console.log(err);
+            }
+        });
+        return arr;
+    }).catch(function(error){
+        console.log("Error reading " + rules_path + " : " + error);
+        return "Error reading " + rules_path + " : " + error;
+    })
+}
+router.get('/variable_list', function(req, res, next) {
+    let res_json = {}
+    let cur_promise = new Promise(function (resolve, reject) {
+        resolve(get_directory(rules_path))});
+
+    cur_promise.then(function(result){
+        res_json["Variable List"] = result;
+        res.send(JSON.stringify(res_json));
+    });
+})
 router.get('/:variable', function(req, res, next) {
     console.log("Received load");
     dataJSON = {};
