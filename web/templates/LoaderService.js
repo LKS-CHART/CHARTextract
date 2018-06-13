@@ -5,6 +5,8 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
     var cur_path_obj = null;
     var saved_path_obj = null;
 
+    console.log("LOADER SERVICE CREATED")
+
 
     function injectPath(path_obj) {
 
