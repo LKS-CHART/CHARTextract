@@ -9,4 +9,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get("/get_project_settings", function(req, res, next) {
+    var json = JSON.parse(fs.readFileSync(path.join("public", "data", "project_settings.json")));
+    res.send(JSON.stringify(json));
+})
+
 module.exports = router;
