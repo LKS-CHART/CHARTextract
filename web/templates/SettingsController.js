@@ -11,6 +11,27 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.labelFirstRow = SettingsService.labelFirstRow
     settingsController.createTrainAndValid = SettingsService.createTrainAndValid
 
+    var settingsPromise = SettingsService.getSettings();
+
+    settingsPromise.then(function(result) {
+
+        settingsController.dataCol = result["Data Cols"]
+        settingsController.dataFirstRow = result["Data First Row"]
+        settingsController.dataIdCol = result["Data Id Cols"]
+        settingsController.concatenateData = result["Concatenate Data"]
+        settingsController.labelIdCol = result["Label Id Col"]
+        settingsController.labelFirstRow = result["Label First Row"]
+        settingsController.createTrainAndValid = result["Create Train and Valid"]
+
+        settingsController.dataFile = ["Computer"].concat(result["Data File"]);
+        settingsController.labelFile = ["Computer"].concat(result["Label File"]);
+        settingsController.ruleFolder = ["Computer"].concat(result["Rules Folder"]);
+
+        SettingsService.dataSettings.selected = settingsController.dataFile;
+        SettingsService.labelSettings.selected = settingsController.labelFile;
+        SettingsService.ruleSettings.selected = settingsController.ruleFolder;
+
+    });
 
     settingsController.openFolderDialog = function() {
 
