@@ -134,7 +134,9 @@ def generate_error_report(output_directory, template_directory, variable_name, c
                                                                    "views/openFolder.html",
                                                                    "views/folderView.html",
                                                                    "views/openFile.html",
-                                                                   "javascripts/SettingsService.js"])
+                                                                   "javascripts/SettingsService.js",
+                                                                   "javascripts/VariableController.js",
+                                                                   "views/variableSettings.html"])
     generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours, addition_json_params=addition_json_params)
 
 def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):

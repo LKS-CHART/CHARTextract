@@ -10,6 +10,8 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
     var labelFirstRow = 1
     var createTrainAndValid = true;
 
+    var currentVariable = null;
+
     var deferred = $q.defer()
 
     var url = "http://localhost:3000/get_project_settings"
@@ -54,6 +56,7 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
         concatenateData: concatenateData,
         labelIdCol: labelIdCol,
         labelFirstRow: labelFirstRow,
-        createTrainAndValid: createTrainAndValid
+        createTrainAndValid: createTrainAndValid,
+        currentVariable: currentVariable,
     }
 }])

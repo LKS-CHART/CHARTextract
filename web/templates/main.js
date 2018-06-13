@@ -15,6 +15,11 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).conf
         templateUrl: 'views/regexes.html',
         controller: "RuleController",
         controllerAs: "ruleCtrl"
+    }).
+    when('/variable_settings', {
+        templateUrl: 'views/variableSettings.html',
+        controller: "VariableController",
+        controllerAs: "variableCtrl"
     })
 }])
 

@@ -1,0 +1,59 @@
+{% raw %}
+<div>
+    <h1 align="center">RegexNLP</h1>
+</div>
+<h3>Variable Settings:</h3>
+<br/>
+<b>Variable:</b> {{variableCtrl.currentVariable}}<br/><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Current Variable:</span>
+    </div>
+    <div class="col-xs-4">
+        <select class="form-control input-sm" name="curvar" ng-model="variableCtrl.currentVariable">
+            <option ng-value="Variable 1">Variable 1</option>
+            <option ng-value="Variable 2">Variable 2</option>
+        </select><br>
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Label Columns:</span>
+    </div>
+    <div class="col-xs-4">
+        <input type="text" class="form-control input-sm" ng-model="variableCtrl.curVarLabelCol" placeholder="Text input">
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Required Dictionaries:</span>
+    </div>
+    <div class="col-xs-4">
+        <input type="text" class="form-control input-sm" ng-model="variableCtrl.curVarDictionaries" placeholder="Text input">
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Use Preprocessor:</span>
+    </div>
+    <div class="col-xs-4">
+        <select class="form-control input-sm" name="python" ng-model="variableCtrl.usePreprocessor">
+            <option ng-value=true>True</option>
+            <option ng-value=false>False</option>
+        </select><br>
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Specify Function with Python:</span>
+    </div>
+    <div class="col-xs-4">
+        <select class="form-control input-sm" name="python" ng-model="variableCtrl.python">
+            <option ng-value=true>True</option>
+            <option ng-value=false>False</option>
+        </select><br>
+    </div>
+</div><br/>
+
+<button type="button" ng-click="variableCtrl.saveSettings()" class="btn btn-primary">Save Variable Settings</button>
+{% endraw %}
