@@ -81,6 +81,10 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
 
     }
 
+    settingsController.getCurrentVariable = function(obj) {
+        return SettingsService.currentVariable;
+    }
+
     settingsController.saveSettings = function() {
 
         SettingsService.dataIdCol = settingsController.dataIdCol

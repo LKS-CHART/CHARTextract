@@ -3,7 +3,11 @@
     <h1 align="center">RegexNLP</h1>
 </div>
 <h3>Project Settings</h3>
+    <a href="#!/settings" class="btn btn-default">Project Settings</a>
+    <a href="#!/variable_settings" class="btn btn-default">Variable Settings</a>
     <br/>
+    <br/>
+
     <b>Variable:</b> {{errorCtrl.data["var_name"]}}<br/><br/>
 
     <div class="row vertical-align-flex">
@@ -51,7 +55,7 @@
             <select class="form-control input-sm" name="concatenate" ng-model="settingsCtrl.concatenateData">
               <option ng-value=true>True</option>
               <option ng-value=false>False</option>
-            </select><br>
+            </select>
         </div>
     </div><br/>
     <div class="row vertical-align-flex">
@@ -62,7 +66,7 @@
             <select class="form-control input-sm" name="createsets" ng-model="settingsCtrl.createTrainAndValid">
                 <option ng-value=true>True</option>
                 <option ng-value=false>False</option>
-            </select><br>
+            </select>
         </div>
     </div><br/>
     <div class="row vertical-align-flex">

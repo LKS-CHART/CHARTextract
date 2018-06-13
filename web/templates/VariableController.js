@@ -10,5 +10,13 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
     variableController.usePreprocessor = true;
 
 
+    SettingsService.requestVars().then(function(result) {
+        console.log("DONE GETTING VAR LIST")
+        variableController.availableVariables = result["Variable List"]
+    })
+
+    variableController.saveSettings = function() {
+        SettingsService.currentVariable = variableController.currentVariable;
+    }
 
 }])

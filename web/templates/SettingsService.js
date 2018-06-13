@@ -15,10 +15,13 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
     var deferred = $q.defer()
 
     var url = "http://localhost:3000/get_project_settings"
+    var url2 = "http://localhost:3000/load/variable_list"
 
     $http.get(url).then(function (response) {
         deferred.resolve(response.data)
     })
+
+
 
     var curWorkingObj = null;
 
@@ -42,6 +45,14 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
         return deferred.promise
     }
 
+    var requestVars = function() {
+        var deferred2 = $q.defer()
+        $http.get(url2).then(function (response) {
+            deferred2.resolve(response.data)
+        })
+        return deferred2.promise;
+    }
+
     return {
         getSettings: getSettingsData,
         setCurWorkingObj: setCurWorkingObj,
@@ -58,5 +69,6 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
         labelFirstRow: labelFirstRow,
         createTrainAndValid: createTrainAndValid,
         currentVariable: currentVariable,
+        requestVars: requestVars
     }
 }])
