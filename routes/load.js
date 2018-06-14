@@ -1,6 +1,7 @@
 let express = require('express');
+let save = require('./save');
 let router = express.Router();
-let rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\tb_rules";
+//let rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\tb_rules";
 //rules_path = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set\\Regexes";
 let fs = require('fs');
 let path = require('path');
@@ -47,8 +48,16 @@ function get_directory(rules_path){
 }
 router.get('/variable_list', function(req, res, next) {
     let res_json = {}
+
+    if (save.rules_path === null) {
+        console.log("Empty Rules Path");
+        res.sendStatus(404);
+        return;
+    }
+
     let cur_promise = new Promise(function (resolve, reject) {
-        resolve(get_directory(rules_path))});
+        console.log(save.rules_path)
+        resolve(get_directory(save.rules_path))});
 
     cur_promise.then(function(result){
         res_json["Variable List"] = result;
@@ -57,8 +66,16 @@ router.get('/variable_list', function(req, res, next) {
 })
 router.get('/:variable', function(req, res, next) {
     console.log("Received load");
+    console.log(save.rules_path)
+    if (save.rules_path === null) {
+        console.log("Empty Rules Path");
+        res.sendStatus(404);
+        return;
+    }
     dataJSON = {};
-    filePath = path.join(rules_path, req.params['variable']);
+    filePath = path.join(save.rules_path, req.params['variable']);
+
+    console.log(filePath);
 
     function appendData(fileName, resolve, reject){
         if (path.extname(fileName) === ".txt") {
