@@ -7,9 +7,9 @@ app.controller("LoaderController", ["LoaderService", "$http", "$uibModalInstance
         console.log("Loader data?")
         console.log(result)
 
-        if (LoaderService.getCurPath() === null) {
+//        if (LoaderService.getCurPath() === null) {
             LoaderService.setCurPath(result)
-        }
+//        }
     })
     loaderController.getCurPath = function() {
         return LoaderService.getCurPath();
