@@ -66,14 +66,19 @@ router.get('/variable_list', function(req, res, next) {
 })
 router.get('/:variable', function(req, res, next) {
     console.log("Received load");
-    console.log(save.rules_path)
+    var filePath = null;
     if (save.rules_path === null) {
-        console.log("Empty Rules Path");
-        res.sendStatus(404);
-        return;
+        var init_settings = JSON.parse(fs.readFileSync("./public/data/project_settings.json", 'utf8'));
+        if (init_settings.hasOwnProperty("Rules Folder")) {
+            console.log("SOMETHIGN HAPPENED")
+            filePath = path.join(...init_settings["Rules Folder"], req.params['variable']);
+        }
+    }
+    else {
+
+        filePath = path.join(save.rules_path, req.params['variable']);
     }
     dataJSON = {};
-    filePath = path.join(save.rules_path, req.params['variable']);
 
     console.log(filePath);
 
