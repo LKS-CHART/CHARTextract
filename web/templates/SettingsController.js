@@ -1,4 +1,4 @@
-app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", function($uibModal, $uibModalInstance, SettingsService, $http) {
+app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", "$location", function($uibModal, $uibModalInstance, SettingsService, $http, $location) {
     var settingsController = this;
     settingsController.dataFile = SettingsService.dataSettings.selected;
     settingsController.labelFile = SettingsService.labelSettings.selected;
@@ -89,9 +89,8 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.run = function() {
         console.log("BEFORE CURRENT VARIABLE");
         var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
-        $http.get(url).then(function(result) {
-            console.log("PLEASE DON'T BREAK");
-        })
+
+        window.location.href = url
     }
 
     settingsController.saveSettings = function() {
