@@ -81,8 +81,17 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
 
     }
 
-    settingsController.getCurrentVariable = function(obj) {
-        return SettingsService.currentVariable;
+    settingsController.getCurrentVariable = function() {
+        console.log("IN SETTINGS CONTROLLER CALLING GET CURRENT VARIABLE");
+        return SettingsService.getCurrentVariable();
+    }
+
+    settingsController.run = function() {
+        console.log("BEFORE CURRENT VARIABLE");
+        var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
+        $http.get(url).then(function(result) {
+            console.log("PLEASE DON'T BREAK");
+        })
     }
 
     settingsController.saveSettings = function() {

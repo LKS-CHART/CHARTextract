@@ -116,11 +116,15 @@ def compute_ppv_accuracy_capture(labels, preds, classifier_classes, negative_lab
     ppv_and_accuracy[pos_label]["npv"] = npv
     ppv_and_accuracy[pos_label]["accuracy"] = num_correct/len(labels)
     ppv_and_accuracy[pos_label]["num_correct"] = int(num_correct)
+    ppv_and_accuracy[pos_label]["true_positives"] = int(true_positives)
+    ppv_and_accuracy[pos_label]["sensitivity"] = int(true_positives)/positive_cases
 
     ppv_and_accuracy[negative_label]["ppv"] = npv
     ppv_and_accuracy[negative_label]["npv"] = ppv
     ppv_and_accuracy[negative_label]["accuracy"] = num_correct/len(labels)
     ppv_and_accuracy[negative_label]["num_correct"] = int(num_correct)
+    ppv_and_accuracy[negative_label]["true_positives"] = int(true_positives)
+    ppv_and_accuracy[negative_label]["sensitivity"] = int(true_positives)/positive_cases
 
     return ppv_and_accuracy
 
@@ -157,6 +161,11 @@ def compute_ppv_accuracy_ova(cnf, labels):
         ppv_and_accuracy[label]["npv"] = npv
         ppv_and_accuracy[label]["accuracy"] = accuracy
         ppv_and_accuracy[label]["num_correct"] = int(num_correct)
+        ppv_and_accuracy[label]["true_positives"] = int(true_pos)
+
+        false_negatives = int(np.sum(neg_calls) - np.sum(true_neg))
+        positive_cases = false_negatives + true_pos
+        ppv_and_accuracy[label]["sensitivity"] = true_pos/positive_cases
 
 
     return ppv_and_accuracy

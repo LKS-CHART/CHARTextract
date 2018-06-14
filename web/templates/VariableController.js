@@ -1,7 +1,7 @@
 app.controller("VariableController", ["SettingsService", "$http", function(SettingsService, $http) {
     var variableController = this;
 
-    variableController.currentVariable = SettingsService.currentVariable;
+    variableController.currentVariable = null;
     variableController.availableVariables = [];
 
     variableController.curVarLabelCol = 1;
@@ -16,7 +16,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
     })
 
     variableController.saveSettings = function() {
-        SettingsService.currentVariable = variableController.currentVariable;
+        SettingsService.setCurrentVariable(variableController.currentVariable);
     }
 
 }])

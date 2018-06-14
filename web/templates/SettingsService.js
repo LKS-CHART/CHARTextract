@@ -1,4 +1,4 @@
-app.service("SettingsService", ["$q", "$http", function($q, $http) {
+app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http, DataService) {
     var dataSettings = {"Data File": null, "Data ID Cols": 0, "Data First Row": 1, "Data Cols": 2, "Concatenate Data": true, "selected": null}
     var labelSettings = {"Label File": null, "Label ID Cols": 0, "Label First Row": 1, "Label Cols": 2, "selected": null}
     var ruleSettings = {"Rule Folder": null, "selected": null}
@@ -11,16 +11,25 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
     var createTrainAndValid = true;
 
     var currentVariable = null;
+    var prevVariable = null;
 
     var deferred = $q.defer()
 
     var url = "http://localhost:3000/get_project_settings"
     var url2 = "http://localhost:3000/load/variable_list"
 
+    console.log("CALLED")
+    var myDataPromise = DataService.getData();
+
+    myDataPromise.then(function(result) {
+        prevVariable = result.var_name;
+    })
+
     $http.get(url).then(function (response) {
         deferred.resolve(response.data)
     })
 
+    console.log("SETTIGNS SERVICE INITIALIZED")
 
 
     var curWorkingObj = null;
@@ -42,6 +51,7 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
     }
 
     var getSettingsData = function() {
+
         return deferred.promise
     }
 
@@ -51,6 +61,31 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
             deferred2.resolve(response.data)
         })
         return deferred2.promise;
+    }
+
+    var getCurrentVariable = function() {
+        console.log("GET CUR VAR CALLED")
+        console.log(currentVariable)
+        console.log(prevVariable)
+        if (currentVariable === null) {
+            console.log("PREV VARIABLE")
+            console.log(prevVariable)
+            return prevVariable;
+        }
+        else {
+            console.log("CURR VARIABLE")
+            console.log(currentVariable)
+            return currentVariable;
+        }
+
+    }
+
+    var setCurrentVariable = function(variable) {
+        currentVariable = variable;
+
+        if (currentVariable === null) {
+            console.log("YOU SET A NULL VARIABLE");
+        }
     }
 
     return {
@@ -68,7 +103,8 @@ app.service("SettingsService", ["$q", "$http", function($q, $http) {
         labelIdCol: labelIdCol,
         labelFirstRow: labelFirstRow,
         createTrainAndValid: createTrainAndValid,
-        currentVariable: currentVariable,
-        requestVars: requestVars
+        requestVars: requestVars,
+        getCurrentVariable: getCurrentVariable,
+        setCurrentVariable: setCurrentVariable
     }
 }])
