@@ -94,6 +94,7 @@ if __name__ == "__main__":
     rules_folder = os.path.join(*project_settings["Rules Folder"]) if type(project_settings["Rules Folder"]) == list \
         else project_settings["Rules Folder"]
     pwds_folder = project_settings["Dictionaries Folder"] if "Dictionaries Folder" in project_settings else None
+
     pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)]) if pwds_folder else None
 
     create_train_and_valid = False if ("Create Train and Valid" not in project_settings or not
@@ -141,10 +142,6 @@ if __name__ == "__main__":
 
         if repeat_ids:
             ids, data, labels = convert_repeated_data_to_sublist(ids, repeated_data=data)
-
-    print("Rules Folder: ", rules_folder)
-    print("Data File: ", data_file)
-    print("Label File: ", label_file)
 
     for rule in cur_run:
         rule_file = os.path.join(rules_folder, rule)

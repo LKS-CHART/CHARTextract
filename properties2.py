@@ -171,13 +171,22 @@ file_to_args = {
                                               },
                 "corticosteroids_immuno": {"Runner Initialization Params":
                                                    {
-                                                    "label_func": functools.partial(replace_label_with_required,
-                                                                                    {"Corticosteroids (prednisone)": "Yes",
-                                                                                     "Other": "No", 'None': "No",
-                                                                                     "Chemotherapy": "No",
-                                                                                     "TNF alpha inhibitors": "No"})
-                                                   }
-                                           },
+                                                       "label_func": functools.partial(replace_label_with_required,
+                                                                                       {"Corticosteroids (prednisone)":
+                                                                                        "Corticosteroids (prednisone)",
+                                                                                        "Other": "None",
+                                                                                        "Chemotherapy": "None",
+                                                                                        "TNF alpha inhibitors": "None"})}
+                                                    },
+                "other_immuno": {"Runner Initialization Params":
+                                                    {
+                                                        "label_func": functools.partial(replace_label_with_required,
+                                                                                        {"Corticosteroids (prednisone)":
+                                                                                             "None",
+                                                                                         "Other": "Other",
+                                                                                         "Chemotherapy": "None",
+                                                                                         "TNF alpha inhibitors": "None"})}
+                                          },
                 "chemotherapy_immuno": {"Runner Initialization Params":
                                             {
                                              "label_func": functools.partial(replace_label_with_required,
