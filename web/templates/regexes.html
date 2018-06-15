@@ -2,7 +2,7 @@
 <div class="container" style="width: 90%">
     <h1 style="text-align: center">Rules</h1>
     <span ng-repeat="(class, colour) in errorCtrl.classes">
-        <button ng-click="ruleCtrl.loadFile(class)" ng-if="class !== errorCtrl['data']['Negative Label']" class="btn btn-default">
+        <button ng-click="ruleCtrl.loadFile(class)" ng-if="class !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class}">
             {{class}}
         </button>
     </span>
