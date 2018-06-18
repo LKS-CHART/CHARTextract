@@ -1,0 +1,74 @@
+{
+  "var_name": "default",
+  "classes": {
+    "None": "hsl(15,71.4%,89%)",
+    "Default": "hsl(97,81%,91.8%)"
+  },
+  "effects": {
+    "a": "rgb(0,0,256)",
+    "aa": "rgb(0,0,256)",
+    "ab": "rgb(0,0,256)",
+    "r": "rgb(256,0,0)",
+    "rb": "rgb(256,0,0)",
+    "ra": "rgb(256,0,0)"
+  },
+  "Predicted Positive": {
+    "Default": 0,
+    "None": 0
+  },
+  "Positive Cases": {
+    "Default": 0,
+    "None": 0
+  },
+  "Predicted Negative": {
+    "Default": 0,
+    "None": 0
+  },
+  "Negative Cases": {
+    "Default": 0,
+    "None": 0
+  },
+  "False Positives": {
+    "Default": 0,
+    "None": 0
+  },
+  "False Negatives": {
+    "Default": 0,
+    "None": 0
+  },
+  "Confusion Matrix": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0
+    ]
+  ],
+  "OVA PPV and Accuracy": {
+    "Default": {
+      "ppv": 1.0,
+      "accuracy": 1.0,
+      "num_correct": 0,
+      "npv": 1.0,
+      "true_positives": 0,
+      "sensitivity": 1.0
+    },
+    "None": {
+      "ppv": 1.0,
+      "accuracy": 1.0,
+      "num_correct": 0,
+      "npv": 1.0,
+      "true_positives": 0,
+      "sensitivity": 1.0
+    }
+  },
+  "Ordered Labels": [
+    "Default",
+    "None"
+  ],
+  "Negative Label": "None",
+  "Classifier Type": "RegexClassifier",
+  "patient_cases": {}
+}

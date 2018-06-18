@@ -1,0 +1,121 @@
+.scroll-style::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+	display: none;
+}
+
+.scroll-style::-webkit-scrollbar
+{
+	width: 12px;
+	height: 12px;
+	background-color: #F5F5F5;
+}
+
+.scroll-style::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	//-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	//background-color: #555;
+	background-color: #b9b9b9;
+}
+
+.separated {
+    border-bottom: 1px solid #c9c9c9;
+
+}
+.line-break-and-tab {
+    white-space: pre-line;
+    word-break: break-all;
+}
+
+.id-active {
+    border: 1px solid #000;
+}
+
+.sMatch {
+}
+
+.highlight {
+    background-color: #d9b3ff;
+}
+.highlight-effect-ignore {
+    //text-decoration: underline;
+    border-bottom: 1px solid red;
+    z-index: 1;
+}
+
+.highlight-effect-replace {
+    //text-decoration: underline;
+    border-bottom: 1px solid blue;
+    z-index: 1;
+}
+
+.highlight-effect-add {
+    //text-decoration: underline;
+    border-bottom: 1px solid green;
+    z-index: 1;
+}
+
+.page-item {
+    margin-top: 1px;
+    margin-left: 2px;
+}
+
+.page-item.recurring > a{
+    border: 2px solid green
+}
+
+.page-item.recurring > a:hover{
+    border: 2px solid green
+}
+
+.page-item.not-recurring > a{
+    border: 2px solid #cc0000
+}
+
+.page-item.not-recurring > a:hover{
+    border: 2px solid #cc0000
+}
+
+.treeNode {
+
+  height: 40px;
+  list-style: none;
+  vertical-align: middle;
+  padding: 10px 0px 0px 10px;
+  cursor: pointer;
+
+}
+
+.treeNode > .item1 {
+  margin-right: 10px;
+  color: #aaa;
+
+}
+
+.treeNode > .item2 {
+  margin-right: 10px;
+  color: #484848;
+
+}
+
+
+.treeNode:hover {
+  background-color: #eee;
+
+}
+
+.treeNode:hover > .item1
+{
+    color: #484848;
+}
+
+.selectedNode {
+    background-color: #eee;
+
+}
+.modal-body ul {
+    padding-left: 33px;
+}
