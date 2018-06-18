@@ -63,11 +63,13 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
         {
             angular.forEach(errors, function(error, key) {
                 if (error.pred != error.actual) {
-                    if (angular.isUndefined(errorController.errors[error.actual]))
-                    {
-                        errorController.errors[error.actual] = []
+                    if (errorController.classes.hasOwnProperty(error.actual)) {
+                        if (angular.isUndefined(errorController.errors[error.actual]))
+                        {
+                            errorController.errors[error.actual] = []
+                        }
+                        errorController.errors[error.actual].push(key)
                     }
-                    errorController.errors[error.actual].push(key)
                 }
             })
         }
