@@ -90,6 +90,9 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         console.log("BEFORE CURRENT VARIABLE");
         var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
 
+        var p = SettingsService.getCurrentVariable() + "/" + "train" + "/" + "error_report.json";
+        localStorage.setItem('errorJsonPath', p);
+
         window.location.href = url
     }
 
