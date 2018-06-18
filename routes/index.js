@@ -3,6 +3,7 @@ let router = express.Router();
 let fs = require('fs');
 let path = require('path');
 let baseDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+var save = require("./save")
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -11,6 +12,15 @@ router.get('/', function(req, res, next) {
 
 router.get("/get_project_settings", function(req, res, next) {
     var json = JSON.parse(fs.readFileSync(path.join("public", "data", "project_settings.json")));
+    console.log("IN GET PROJECT SETTINGS")
+    if (json.hasOwnProperty("Rules Folder")) {
+        save.rules_path = path.join(...json["Rules Folder"]);
+        console.log("Settings Rules Path in index")
+    }
+    else {
+        save.rules_path = null;
+    }
+
     res.send(JSON.stringify(json));
 })
 

@@ -5,17 +5,6 @@ var fs = require("fs");
 var path = require("path")
 var filePath = "./public/data/project_settings.json"
 
-var init_settings = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-
-if (init_settings.hasOwnProperty("Rules Folder")) {
-    console.log("SOMETHIGN HAPPENED")
-    module.exports.rules_path = path.join(...init_settings["Rules Folder"]);
-    console.log(module.exports.rules_path);
-}
-else {
-    module.exports.rules_path = null;
-}
-
 //let out_rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\tb_rules";
 //let rules_path = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set\\Regexes";
 
