@@ -46,6 +46,24 @@ function get_directory(rules_path){
         return "Error reading " + rules_path + " : " + error;
     })
 }
+
+router.get('/variable_settings/:variable', function(req, res, next) {
+
+    var variable_filePath = path.join(save.rules_path,req.params.variable)
+
+    var variable_properties = path.join(variable_filePath, "rule_properties.json")
+
+    var fR = promisify(fs.readFile)
+
+    fR(variable_properties).then(data => {
+        var res_json = JSON.parse(data);
+        console.log(res_json)
+        res.send(JSON.stringify(res_json))
+
+    })
+
+})
+
 router.get('/variable_list', function(req, res, next) {
     let res_json = {}
 
