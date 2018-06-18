@@ -12,7 +12,7 @@
         <span>Current Variable:</span>
     </div>
     <div class="col-xs-4">
-        <select class="form-control input-sm" name="curvar" ng-model="variableCtrl.currentVariable">
+        <select class="form-control input-sm" name="curvar" ng-model="variableCtrl.currentVariable" ng-change="variableCtrl.getCurVarSettings()">
             <option ng-repeat="option in variableCtrl.availableVariables" value="{{option.filename}}">{{option.filename}}</option>
         </select>
     </div>
@@ -38,7 +38,7 @@
         <span>Use Preprocessor:</span>
     </div>
     <div class="col-xs-4">
-        <select class="form-control input-sm" name="python" ng-model="variableCtrl.usePreprocessor">
+        <select class="form-control input-sm" name="preprocessor" ng-model="variableCtrl.usePreprocessor">
             <option ng-value=true>True</option>
             <option ng-value=false>False</option>
         </select>

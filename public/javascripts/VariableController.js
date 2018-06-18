@@ -16,7 +16,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
     }
 
     function getVariableSettings() {
-        url = url + "/"  + variableController.currentVariable
+        var url = "http://localhost:3000/load/variable_settings/" + variableController.currentVariable;
 
         $http.get(url).then(function(result) {
             var data = result.data;
@@ -26,13 +26,22 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
             if (data.hasOwnProperty("Pwds")) {
                 variableController.curVarDictionaries = data["Pwds"].join(",");
             }
+            else {
+                variableController.curVarDictionaries = "";
+            }
 
             if (data.hasOwnProperty("Specify Function with Python")) {
                 variableController.python = data["Specify Function with Python"];
             }
+            else {
+                variableController.python = false;
+            }
 
             if (data.hasOwnProperty("Use Preprocessor")) {
                 variableController.usePreprocessor = data["Use Preprocessor"];
+            }
+            else {
+                variableController.usePreprocessor = false;
             }
 
         })
