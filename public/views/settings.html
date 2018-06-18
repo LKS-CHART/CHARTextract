@@ -1,0 +1,114 @@
+<div>
+    <h1 align="center">RegexNLP</h1>
+</div>
+<h3>Project Settings</h3>
+    <a href="#!/settings" class="btn btn-default">Project Settings</a>
+    <a href="#!/variable_settings" class="btn btn-default">Variable Settings</a>
+    <br/>
+    <br/>
+
+    <b>Variable:</b> {{settingsCtrl.getCurrentVariable()}}<br/><br/>
+
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Data File:</span>
+        </div>
+        <div class="col-xs-4">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.dataFile | arrayNormalize | pathify" placeholder="Text input">
+                <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getDataObj());settingsCtrl.openFileDialog()" id="open-data-file" class="btn input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+            </div>
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Data ID Column:</span>
+        </div>
+        <div class="col-xs-4">
+            <input type="number" min="0" class="form-control input-sm" ng-model="settingsCtrl.dataIdCol" placeholder="Text input">
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Data First Row:</span>
+        </div>
+        <div class="col-xs-4">
+            <input type="number" min="0" class="form-control input-sm" ng-model="settingsCtrl.dataFirstRow" placeholder="Text input">
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Data Column:</span>
+        </div>
+        <div class="col-xs-4">
+            <input type="number" min="0" ype="text" class="form-control input-sm" ng-model="settingsCtrl.dataCol" placeholder="Text input">
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Concatenate Data:</span>
+        </div>
+        <div class="col-xs-4">
+            <select class="form-control input-sm" name="concatenate" ng-model="settingsCtrl.concatenateData">
+              <option ng-value=true>True</option>
+              <option ng-value=false>False</option>
+            </select>
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Create Train and Validation Set:</span>
+        </div>
+        <div class="col-xs-4">
+            <select class="form-control input-sm" name="createsets" ng-model="settingsCtrl.createTrainAndValid">
+                <option ng-value=true>True</option>
+                <option ng-value=false>False</option>
+            </select>
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Label File:</span>
+        </div>
+        <div class="col-xs-4">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.labelFile | arrayNormalize | pathify" placeholder="Text input">
+                <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getLabelObj()); settingsCtrl.openFileDialog()" id="open-labels-file" class="btn input-group-addon">
+                    <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+            </div>
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Label ID Column:</span>
+        </div>
+        <div class="col-xs-4">
+            <input type="number" min="0" class="form-control input-sm" ng-model="settingsCtrl.labelIdCol" placeholder="Text input">
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Label First Row:</span>
+        </div>
+        <div class="col-xs-4">
+            <input type="number" min="0" class="form-control input-sm" ng-model="settingsCtrl.labelFirstRow" placeholder="Text input">
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Rules Folder:</span>
+        </div>
+        <div class="col-xs-4">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.ruleFolder | arrayNormalize | pathify" placeholder="Text input">
+                <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getRuleObj()); settingsCtrl.openFolderDialog()" id="open-rules-folder" class="btn input-group-addon">
+                        <span class="glyphicon glyphicon-folder-open"></span>
+                    </span>
+            </div>
+        </div>
+    </div><br/>
+
+    <button type="button" ng-click="settingsCtrl.saveSettings()" class="btn btn-primary">Save Project Settings</button>
