@@ -18,6 +18,7 @@ router.get('/:variable', function(req, res, next) {
     });
     Promise.all([curPromise]).then(function (result) {
         var redirect_url = "http://localhost:8080/NgramRegexNLP/generated_data/" + req.params.variable +  "/train/index.html";
+        var redirect_url = "/index.html"
         res.redirect(redirect_url);
     });
 });
