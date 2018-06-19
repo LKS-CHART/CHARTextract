@@ -4,6 +4,7 @@ let fs = require('fs');
 let path = require('path');
 const os = require('os');
 let winDrives = require('../path_helper/win-drives');
+const homedir = require('os').homedir();
 
 function promisify(fn) {
     /**
@@ -21,23 +22,55 @@ function get_directory(tokenized_path){
     cur_path = path.normalize(path.join(...tokenized_path.slice(1)));
     console.log(tokenized_path.slice(1));
     if (tokenized_path.length === 1){
-        let childDirs = winDrives.usedLetters();
-        return childDirs.then(function (result){
-            let arr = [];
-            result.forEach(file_name => {
-                 arr.push({
-                     "filename": file_name,
-                     "Root": ["Computer"],
-                     "filepath": ["Computer", file_name + "\\"],
-                     "Type": "Folder",
-                     "Children": []
-                 });
-            });
-            return arr;
-        }).catch(function(error){
-            console.log("Error reading " + cur_path + " : " + error);
-            return "Error reading " + cur_path + " : " + error;
-        })
+        if (process.platform === "win32")  {
+            let childDirs = winDrives.usedLetters();
+            console.log(childDirs)
+            return childDirs.then(function (result){
+                let arr = [];
+                result.forEach(file_name => {
+                     arr.push({
+                         "filename": file_name,
+                         "Root": ["Computer"],
+                         "filepath": ["Computer", file_name + "\\"],
+                         "Type": "Folder",
+                         "Children": []
+                     });
+                });
+                return arr;
+            }).catch(function(error){
+                console.log("Error reading " + cur_path + " : " + error);
+                return "Error reading " + cur_path + " : " + error;
+            })
+
+        } else {
+
+            let homeDirPromise = new Promise((resolve, reject) => {
+                const homeList = fs.readdirSync(homedir)
+                resolve(homeList);
+            })
+
+            return homeDirPromise.then(function(result) {
+                let arr = [];
+
+                result.forEach(file_name => {
+                    try {
+                    arr.push({
+                        "filename": file_name,
+                        "Root": ["Computer", homedir],
+                        "filepath": ["Computer", homedir, file_name],
+                        "Type": fs.statSync(path.join(homedir, file_name)).isDirectory() ? "Folder" : "File",
+                        "Children": []
+                    });} catch(err) {
+                        console.log(err);
+                    }
+                });
+                return arr;
+            }).catch(function(error) {
+                console.log("Error getting home directories of non windows based machine");
+                return "Error getting home directories of non windows based machine";
+
+            })
+        }
     } else {
         if (!fs.statSync(cur_path).isDirectory()){
             return [];

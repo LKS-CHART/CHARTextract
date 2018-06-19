@@ -138,7 +138,7 @@ app.filter("arrayNormalize", function(){
         if(typeof arr === "object") {
             var arr_copy = []
             for(var i = 0; i < arr.length; i++) {
-                arr_copy.push(arr[i].replace(/[\\/]+/g,""))
+                arr_copy.push(arr[i].replace(/[\\/]+/g,"/"))
             }
 
             return arr_copy;
