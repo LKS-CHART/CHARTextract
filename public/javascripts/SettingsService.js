@@ -16,7 +16,6 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
 
     var deferred = $q.defer()
 
-    var url = "http://localhost:3000/get_project_settings"
     var url2 = "http://localhost:3000/load/variable_list"
 
     console.log("CALLED")
@@ -26,9 +25,6 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         prevVariable = result.var_name;
     })
 
-    $http.get(url).then(function (response) {
-        deferred.resolve(response.data)
-    })
 
     console.log("SETTIGNS SERVICE INITIALIZED")
 
@@ -107,6 +103,6 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         requestVars: requestVars,
         predictionMode, predictionMode,
         getCurrentVariable: getCurrentVariable,
-        setCurrentVariable: setCurrentVariable
+        setCurrentVariable: setCurrentVariable,
     }
 }])

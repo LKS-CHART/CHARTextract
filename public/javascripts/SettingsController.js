@@ -12,10 +12,10 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.createTrainAndValid = SettingsService.createTrainAndValid
     settingsController.predictionMode = SettingsService.predictionMode
 
-    var settingsPromise = SettingsService.getSettings();
+    var url = "http://localhost:3000/get_project_settings"
 
-    settingsPromise.then(function(result) {
-
+    $http.get(url).then(function (response) {
+        var result = response.data;
         settingsController.dataCol = result["Data Cols"]
         settingsController.dataFirstRow = result["Data First Row"]
         settingsController.dataIdCol = result["Data Id Cols"]
@@ -32,8 +32,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         SettingsService.dataSettings.selected = settingsController.dataFile;
         SettingsService.labelSettings.selected = settingsController.labelFile;
         SettingsService.ruleSettings.selected = settingsController.ruleFolder;
-
-    });
+    })
 
     settingsController.openFolderDialog = function() {
 

@@ -3,7 +3,7 @@ let router = express.Router();
 let fs = require('fs');
 let path = require('path');
 let baseDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-let gen_folder = 'C:\\Users\\joshiu\\PycharmProjects\\NgramRegexNLP\\generated_data';
+let gen_folder = 'C:\\Users\\MathewSh\\PycharmProjects\\NgramRegexNLP\\generated_data';
 var save = require("./save")
 
 /* GET home page. */
@@ -31,7 +31,7 @@ router.get("/:variable/:dataset/error_report.json", function(req, res, next) {
             if (err){
                 reject(err);
             }
-            console.log(data);
+            console.log("ERROR REPORT REQUEST")
             resolve(JSON.parse(data))});
     });
     reportPromise.then(function(result){

@@ -51,14 +51,29 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
     getVariableSettings();
 
     SettingsService.requestVars().then(function(result) {
-        console.log("DONE GETTING VAR LIST")
         variableController.availableVariables = result["Variable List"]
 
     })
 
     variableController.saveSettings = function() {
+        var url2 = "http://localhost:3000/save/save_variable_settings/" + variableController.currentVariable;
+
         SettingsService.setCurrentVariable(variableController.currentVariable);
 
+        var arrayfied_dictionaries = variableController.curVarDictionaries.split(",")
+
+        var params = {
+            "Variable Settings": {
+                "Label Col": variableController.curVarLabelCol,
+                "Pwds": arrayfied_dictionaries,
+                "Specify Function with Python": variableController.python,
+                "Use Preprocessor": variableController.usePreprocessor
+            }
+        }
+        console.log(url2);
+        $http.post(url2, params).then(function(data) {
+            console.log("Sent Save Variable Settings Request")
+        })
 
     }
 
