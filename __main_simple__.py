@@ -8,6 +8,8 @@ import sys
 from datahandler.helpers import import_regexes2, get_rule_properties
 from stats.stat_gen import get_failures
 from datahandler.preprocessors import convert_repeated_data_to_sublist
+import random
+import string
 
 orig_stdout = sys.stdout
 f = open(os.devnull, 'w')
@@ -103,10 +105,10 @@ def run_variable(variable, settings):
 
     cur_run = [variable]
 
-    DEBUG_MODE = False
+    DEBUG_MODE = True
 
     if DEBUG_MODE:
-        ids, data, labels = [], [], []
+        ids, data, labels = ["1", "2", "3"], ["Test", "Not Test", "negative test"], ["Yes", "No", "No"]
         label_file = label_id_col = label_first_row = None
 
     else:
@@ -156,7 +158,7 @@ def run_variable(variable, settings):
                                                          ids, dataset=available_datasets[0])
 
         else:
-            labels = [None]*len(data)
+            labels = [''.join(random.choice(string.ascii_letters) for _ in range(9))]*len(data)
             classifier_runner = load_classifier_data(classifier_runner, data, labels,
                                                      ids, dataset=available_datasets[0])
 
@@ -183,7 +185,15 @@ def run_variable(variable, settings):
                 classifier_runner.run(datasets=[cur_dataset])
 
             if prediction_mode:
-                pass
+                predictions_dict, _ = get_failures(classifier_runner, cur_dataset, gen_path)
+                generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
+                                      template_directory, "{}".format(rule_name),
+                                      classifier_runner.classifier.regexes.keys(), predictions_dict, effects,
+                                      custom_effect_colours=effect_colours,
+                                      addition_json_params={"Prediction Mode": True,
+                                      "Negative Label": classifier_runner.classifier.negative_label,
+                                      "Classifier Type": classifier_runner.classifier_type.__name__},
+                                      custom_class_colours=custom_class_colours)
 
             else:
                 failures_dict, error_data = get_failures(classifier_runner, cur_dataset, gen_path)
