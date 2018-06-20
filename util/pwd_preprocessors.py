@@ -34,8 +34,6 @@ class PwdPreprocessor2:
             self.pwds = {category: {term for term in self.pwds[category]}
                          for category in categories_of_interest}
 
-        print(self.pwds)
-
     def _create_ngram(self, text, k=1, to_lower=False):
         text_tokens = split_string_into_words(text)
         ngrams = []

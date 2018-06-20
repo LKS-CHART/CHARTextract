@@ -70,7 +70,7 @@ class CaptureHandler(object):
                 preprocessed_data["dictionaries"] = pwds
 
             if preprocessed_data["sentence"] is None:
-                continue
+                preprocessed_data["sentence"] = sentence
 
             matches, captures, score = self.score_and_capture_sentence(preprocessed_data["sentence"], regexes,
                                                                        capture_scores,
@@ -259,7 +259,7 @@ class RegexHandler(object):
                 preprocessed_data["dictionaries"] = pwds
 
             if preprocessed_data["sentence"] is None:
-                continue
+                preprocessed_data["sentence"] = sentence
 
             matches, score = self.score_and_match_sentence(preprocessed_data["sentence"], regexes,
                                                            pwds=preprocessed_data["dictionaries"])

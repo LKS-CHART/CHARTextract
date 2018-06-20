@@ -1,1 +1,1 @@
-"roommate","room-mate","coworker","co-worker","sister","brother","sibling","cousin","son","daughter","mother","father","grandmother","grandfather","grandson","granddaughter","household","nephew","niece"
+"roommate","room-mate","coworker","co-worker","sister","brother","sibling","cousin","\bson\b","daughter","mother","father","grandmother","grandfather","grandson","granddaughter","household","nephew","niece"
