@@ -60,7 +60,9 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
         SettingsService.setCurrentVariable(variableController.currentVariable);
 
-        var arrayfied_dictionaries = variableController.curVarDictionaries.split(",")
+
+        var arrayfied_dictionaries = variableController.curVarDictionaries === "" ? [] :
+                                            variableController.curVarDictionaries.split(",")
 
         var params = {
             "Variable Settings": {
