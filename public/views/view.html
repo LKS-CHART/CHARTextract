@@ -18,7 +18,8 @@
             <div>
                 <h3>Final Score</h3>
                 <p>Score: {{errorCtrl.selected.score[errorCtrl.selected.pred]}}</p>
-                <p>was determined to be {{errorCtrl.selected.pred}}<b></b>, should be <b>{{errorCtrl.selected.actual}}</b></p>
+                <p ng-if="!errorCtrl.predictionMode">was determined to be {{errorCtrl.selected.pred}}<b></b>, should be <b>{{errorCtrl.selected.actual}}</b></p>
+                <p ng-if="errorCtrl.predictionMode">was determined to be {{errorCtrl.selected.pred}}</p>
             </div>
             <h3>Letter Text</h3>
             <p ng-cloak id="text" ng-html-compile="errorCtrl.marked_data" class="line-break-and-tab">

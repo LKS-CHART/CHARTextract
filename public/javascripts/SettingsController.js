@@ -10,6 +10,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.labelIdCol = SettingsService.labelIdCol
     settingsController.labelFirstRow = SettingsService.labelFirstRow
     settingsController.createTrainAndValid = SettingsService.createTrainAndValid
+    settingsController.predictionMode = SettingsService.predictionMode
 
     var settingsPromise = SettingsService.getSettings();
 
@@ -22,6 +23,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         settingsController.labelIdCol = result["Label Id Col"]
         settingsController.labelFirstRow = result["Label First Row"]
         settingsController.createTrainAndValid = result["Create Train and Valid"]
+        settingsController.predictionMode = !result.hasOwnProperty("Prediction Mode") ? false : result["Prediction Mode"]
 
         settingsController.dataFile = ["Computer"].concat(result["Data File"]);
         settingsController.labelFile = ["Computer"].concat(result["Label File"]);
@@ -105,6 +107,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         SettingsService.labelIdCol = settingsController.labelIdCol
         SettingsService.labelFirstRow = settingsController.labelFirstRow
         SettingsService.createTrainAndValid = settingsController.createTrainAndValid
+        SettingsService.predictionMode = settingsController.predictionMode
         var url = "http://localhost:3000/save/save_project_settings"
 
         console.log(settingsController.dataFile)
@@ -128,6 +131,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
                 "Label Id Col" : settingsController.labelIdCol,
                 "Label First Row" : settingsController.labelFirstRow,
                 "Create Train and Valid" : settingsController.createTrainAndValid,
+                "Prediction Mode": settingsController.predictionMode
             }
         }
         $http.post(url, params).then(function(data) {

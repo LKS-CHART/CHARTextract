@@ -9,6 +9,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
     var labelIdCol = 0
     var labelFirstRow = 1
     var createTrainAndValid = true;
+    var predictionMode = false;
 
     var currentVariable = null;
     var prevVariable = null;
@@ -104,6 +105,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         labelFirstRow: labelFirstRow,
         createTrainAndValid: createTrainAndValid,
         requestVars: requestVars,
+        predictionMode, predictionMode,
         getCurrentVariable: getCurrentVariable,
         setCurrentVariable: setCurrentVariable
     }

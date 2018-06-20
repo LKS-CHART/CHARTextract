@@ -32,6 +32,7 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
         errorController.classes = result.classes
         var errors = errorController.data.patient_cases
         errorController.errors = {};
+        errorController.predictionMode = result["Prediction Mode"];
 
         if (errorController.data["Classifier Type"] === "CaptureClassifier")
         {
@@ -47,31 +48,54 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
             errorController.errors[pos_label] = []
             errorController.errors[neg_label] = []
 
-            angular.forEach(errors, function(error, key) {
-                if (error.pred !== error.actual && error.actual === neg_label)
-                {
-                    errorController.errors[neg_label].push(key)
-                }
-                else {
-                    errorController.errors[pos_label].push(key)
-                }
-            })
+            if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
+                errorController.predictionMode === false) {
+
+                    angular.forEach(errors, function(error, key) {
+                        if (error.pred !== error.actual && error.actual === neg_label)
+                        {
+                            errorController.errors[neg_label].push(key)
+                        }
+                        else {
+                            errorController.errors[pos_label].push(key)
+                        }
+                    })
+
+            } else {
+
+                console.log("Running in prediction mode");
+
+            }
         }
 
         else
 
         {
-            angular.forEach(errors, function(error, key) {
-                if (error.pred != error.actual) {
-                    if (errorController.classes.hasOwnProperty(error.actual)) {
-                        if (angular.isUndefined(errorController.errors[error.actual]))
-                        {
-                            errorController.errors[error.actual] = []
+            if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
+                errorController.predictionMode === false) {
+                    angular.forEach(errors, function(error, key) {
+                        if (error.pred != error.actual) {
+                            if (errorController.classes.hasOwnProperty(error.actual)) {
+                                if (angular.isUndefined(errorController.errors[error.actual]))
+                                {
+                                    errorController.errors[error.actual] = []
+                                }
+                                errorController.errors[error.actual].push(key)
+                            }
                         }
-                        errorController.errors[error.actual].push(key)
+                })
+            } else
+
+            {
+                angular.forEach(errors, function(error, key) {
+                    if (angular.isUndefined(errorController.errors[error.pred]))
+                    {
+                        errorController.errors[error.pred] = []
                     }
-                }
-            })
+                    errorController.errors[error.pred].push(key)
+                })
+
+            }
         }
     })
 

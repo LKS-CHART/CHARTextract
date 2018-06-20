@@ -70,6 +70,17 @@
     </div><br/>
     <div class="row vertical-align-flex">
         <div class="col-xs-1">
+            <span>Prediction Mode:</span>
+        </div>
+        <div class="col-xs-4">
+            <select class="form-control input-sm" name="predictionmode" ng-model="settingsCtrl.predictionMode">
+                <option ng-value=true>True</option>
+                <option ng-value=false>False</option>
+            </select>
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
             <span>Label File:</span>
         </div>
         <div class="col-xs-4">
