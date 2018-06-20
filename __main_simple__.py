@@ -105,7 +105,7 @@ def run_variable(variable, settings):
 
     cur_run = [variable]
 
-    DEBUG_MODE = True
+    DEBUG_MODE = False
 
     if DEBUG_MODE:
         ids, data, labels = ["1", "2", "3"], ["Test", "Not Test", "negative test"], ["Yes", "No", "No"]
