@@ -41,6 +41,9 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
 
     }
 
+    ruleController.deleteFile = function() {
+
+    }
     ruleController.saveFile = function(class_name) {
         var first_line = editor.session.doc.$lines[0] //TODO: Replace this with new class name controller var
         var new_class_name = first_line.slice(1,first_line.length)
@@ -55,6 +58,19 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         })
 
         loadText();
+    }
+
+    ruleController.createNewClass = function() {
+        var temp_class_name = ruleController.availableVars.length
+        ruleController.availableVars.push(ruleController.availableVars.length);
+        ruleController.previousTab = angular.copy(ruleController.currentTab);
+        ruleController.currentTab = temp_class_name
+        ruleController.ruleData[temp_class_name] = {
+            "fileName": temp_class_name + ".txt",
+            "regexesText": "!" + temp_class_name + "\n#Change class name by editing line above"
+        }
+        ruleController.ruleData[ruleController.previousTab]["regexesText"] = editor.session.getValue();
+        editor.session.setValue(ruleController.ruleData[temp_class_name].regexesText)
     }
 
 }])
