@@ -81,6 +81,8 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
         variableController.editMode = false;
 
+        localStorage.setItem("currentVariable", variableController.currentVariable);
+
         SettingsService.requestVars().then(function(result) {
             variableController.availableVariables = result["Variable List"]
 

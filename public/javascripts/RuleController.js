@@ -38,10 +38,13 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         var params = {
             "filename": ruleController.ruleData[class_name].fileName,
             "regexes": ruleController.ruleData[class_name].regexesText,
+            "new_name": null
         }
         $http.post(url, params).then(function(data) {
             console.log("Sent Post Request")
         })
+
+        loadText();
     }
 
 }])

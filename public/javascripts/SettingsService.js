@@ -67,6 +67,12 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         if (currentVariable === null) {
             console.log("PREV VARIABLE")
             console.log(prevVariable)
+
+            if(prevVariable === null) {
+
+                return localStorage.getItem("currentVariable");
+            }
+
             return prevVariable;
         }
         else {
