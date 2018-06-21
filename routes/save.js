@@ -51,7 +51,7 @@ router.post('/save_variable_settings/:variable', function(req, res, next) {
                     return console.log(err);
                 }
 
-                fs.writeFile(path.join(save_var_path, "Yes.txt"), "!Yes\n", function(err) {
+                fs.writeFile(path.join(save_var_path, "Yes.txt"), "!Yes\n#Change class name by editing line above", function(err) {
 
                     if(err) {
                         return console.log(err);

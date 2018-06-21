@@ -10,6 +10,8 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
 
     ruleController.currentVar = SettingsService.getCurrentVariable();
 
+    ruleController.availableVars = [];
+
     function loadText() {
         var url = "http://localhost:3000/load/" + ruleController.currentVar;
         console.log(url)
@@ -19,6 +21,10 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
             var first_key = Object.keys(ruleController.ruleData)[0]
             editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
             ruleController.currentTab = first_key;
+
+            Object.keys(ruleController.ruleData).forEach(function(key, val) {
+                ruleController.availableVars.push(key);
+            })
         })
     }
 
