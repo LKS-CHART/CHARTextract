@@ -72,7 +72,9 @@ router.post('/:variable/:class', function(req, res, next) {
     }
 
     var filePath = path.join(module.exports.rules_path, req.params['variable'], req.body.filename);
-//    filePath = path.join(filePath, req.body.filename)
+
+    console.log("HERE")
+
     fs.writeFile(filePath, req.body.regexes, function(err) {
         if(err) {
             return console.log(err)

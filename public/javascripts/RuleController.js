@@ -3,7 +3,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
     var ruleController = this;
     var dataPromise = DataService.getData();
 
-    ruleController.ruleData = null;
+    ruleController.ruleData = {};
     ruleController.previousTab = null;
     ruleController.currentTab = null;
     ruleController.currentVar = null;
@@ -18,16 +18,20 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         $http.get(url).then(function(response) {
             ruleController.ruleData = response.data
             console.log(ruleController.ruleData)
-            var first_key = Object.keys(ruleController.ruleData)[0]
-            editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
-            ruleController.currentTab = first_key;
 
-            ruleController.availableVars = [];
-            Object.keys(ruleController.ruleData).forEach(function(key, val) {
-                if (ruleController.availableVars.indexOf(key) === -1) {
-                    ruleController.availableVars.push(key);
-                }
-            })
+            if (Object.keys(ruleController.ruleData).length > 0) {
+
+                var first_key = Object.keys(ruleController.ruleData)[0]
+                editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
+                ruleController.currentTab = first_key;
+
+                ruleController.availableVars = [];
+                Object.keys(ruleController.ruleData).forEach(function(key, val) {
+                    if (ruleController.availableVars.indexOf(key) === -1) {
+                        ruleController.availableVars.push(key);
+                    }
+                })
+            }
         })
     }
 
@@ -63,14 +67,31 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
     ruleController.createNewClass = function() {
         var temp_class_name = ruleController.availableVars.length
         ruleController.availableVars.push(ruleController.availableVars.length);
-        ruleController.previousTab = angular.copy(ruleController.currentTab);
+
+        if (ruleController.previousTab !== null) {
+
+            ruleController.previousTab = angular.copy(ruleController.currentTab);
+        }
         ruleController.currentTab = temp_class_name
         ruleController.ruleData[temp_class_name] = {
             "fileName": temp_class_name + ".txt",
             "regexesText": "!" + temp_class_name + "\n#Change class name by editing line above"
         }
-        ruleController.ruleData[ruleController.previousTab]["regexesText"] = editor.session.getValue();
+
+        if (ruleController.previousTab !== null) {
+            ruleController.ruleData[ruleController.previousTab]["regexesText"] = editor.session.getValue();
+        }
+
         editor.session.setValue(ruleController.ruleData[temp_class_name].regexesText)
+
+        var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + temp_class_name;
+        var params = {
+            "filename": ruleController.ruleData[temp_class_name].fileName,
+            "regexes": ruleController.ruleData[temp_class_name].regexesText
+        }
+        $http.post(url, params).then(function(data) {
+            console.log("Sent Post Request")
+        })
     }
 
 }])
