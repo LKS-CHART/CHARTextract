@@ -1,4 +1,4 @@
-app.controller("RuleController", ["DataService", "$http", function(DataService, $http) {
+app.controller("RuleController", ["DataService", "$http", "SettingsService", function(DataService, $http, SettingsService) {
 
     var ruleController = this;
     var dataPromise = DataService.getData();
@@ -7,8 +7,10 @@ app.controller("RuleController", ["DataService", "$http", function(DataService, 
     ruleController.previousTab = null;
     ruleController.currentTab = null;
     ruleController.currentVar = null;
-    dataPromise.then(function(result) {
-        ruleController.currentVar = result.var_name;
+
+    ruleController.currentVar = SettingsService.getCurrentVariable();
+
+    function loadText() {
         var url = "http://localhost:3000/load/" + ruleController.currentVar;
         console.log(url)
         $http.get(url).then(function(response) {
@@ -18,9 +20,9 @@ app.controller("RuleController", ["DataService", "$http", function(DataService, 
             editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
             ruleController.currentTab = first_key;
         })
+    }
 
-
-    })
+    loadText();
 
     ruleController.loadFile = function(class_name) {
         ruleController.previousTab = angular.copy(ruleController.currentTab);
