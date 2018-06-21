@@ -9,6 +9,8 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
     variableController.python = false;
     variableController.usePreprocessor = false;
 
+    variableController.editMode = false;
+
     var url = "http://localhost:3000/load/variable_settings"
 
     if (variableController.currentVariable === null) {
@@ -77,12 +79,27 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
             console.log("Sent Save Variable Settings Request")
         })
 
+        variableController.editMode = false;
+
+        SettingsService.requestVars().then(function(result) {
+            variableController.availableVariables = result["Variable List"]
+
+        })
     }
 
     variableController.getCurVarSettings = function() {
         console.log("IN VARIABLE CONTROLLER GET CUR VAR SETTINGS")
 
         getVariableSettings();
+    }
+
+    variableController.addVariable = function() {
+        variableController.currentVariable = "";
+        variableController.editMode = true;
+        variableController.curVarLabelCol = 1;
+        variableController.curVarDictionaries = "";
+        variableController.python = false;
+        variableController.usePreprocessor = false;
     }
 
 }])

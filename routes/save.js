@@ -25,19 +25,43 @@ router.post('/save_project_settings', function(req, res, next) {
 });
 
 router.post('/save_variable_settings/:variable', function(req, res, next) {
-    console.log("DASKJDHAKJSHDKJASHd")
     var variable = req.params.variable;
-    console.log(req.body)
+    var save_var_path = path.join(module.exports.rules_path, variable);
+    if(fs.existsSync(save_var_path)) {
+        fs.writeFile(path.join(save_var_path, "rule_properties.json"), JSON.stringify(req.body["Variable Settings"], null, 4), function(err) {
+            if(err) {
+                return console.log(err);
+            }
 
-    fs.writeFile(path.join(module.exports.rules_path, variable, "rule_properties.json"), JSON.stringify(req.body["Variable Settings"], null, 4), function(err) {
-        if(err) {
-            return console.log(err);
-        }
+            console.log("Save Variable Settings");
+            res.sendStatus(200);
 
-        console.log("Save Variable Settings");
-        res.sendStatus(200);
+        })
+    } else
+    {
+        fs.mkdirSync(save_var_path);
+        fs.writeFile(path.join(save_var_path, "rule_properties.json"), JSON.stringify(req.body["Variable Settings"], null, 4), function(err) {
+            if(err) {
+                return console.log(err);
+            }
 
-    })
+
+            fs.writeFile(path.join(save_var_path, "rule_settings.json"), JSON.stringify({"Classifier Type": "RegexClassifier"}, null, 4), function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+
+                fs.writeFile(path.join(save_var_path, "Yes.txt"), "!Yes\n", function(err) {
+
+                    if(err) {
+                        return console.log(err);
+                    }
+                    res.sendStatus(200);
+                })
+            })
+        })
+    }
+
 })
 
 router.post('/:variable/:class', function(req, res, next) {
