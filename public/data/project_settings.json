@@ -1,16 +1,42 @@
 {
     "Data File": [
+        "Z:\\",
+        "LKS-CHART",
+        "Projects",
+        "NLP POC",
+        "Study data",
+        "TB",
+        "dev",
+        "CombinedData.csv"
     ],
     "Label File": [
+        "Z:\\",
+        "LKS-CHART",
+        "Projects",
+        "NLP POC",
+        "Study data",
+        "TB",
+        "dev",
+        "Valid_set_labels.xlsx"
     ],
     "Rules Folder": [
+        "Z:\\",
+        "LKS-CHART",
+        "Projects",
+        "NLP POC",
+        "Study data",
+        "TB",
+        "dev",
+        "rules",
+        "tb_rules"
     ],
     "Dictionaries Folder": "dictionaries",
     "Data Id Cols": 0,
     "Data First Row": 1,
-    "Data Cols": 1,
+    "Data Cols": 2,
     "Concatenate Data": true,
-    "Label Id Col": 0,
-    "Label First Row": 1,
-    "Create Train and Valid": true
+    "Label Id Col": 1,
+    "Label First Row": 3,
+    "Create Train and Valid": false,
+    "Prediction Mode": false
 }

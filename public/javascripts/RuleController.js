@@ -45,12 +45,13 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
 
     }
 
+
+
     ruleController.deleteFile = function() {
 
     }
     ruleController.saveFile = function(class_name) {
-        var first_line = editor.session.doc.$lines[0] //TODO: Replace this with new class name controller var
-        var new_class_name = first_line.slice(1,first_line.length)
+        var new_class_name = ruleController.ruleData[class_name].new_name
         ruleController.ruleData[class_name]["regexesText"] = editor.session.getValue();
         var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
         var params = {
@@ -75,7 +76,8 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         ruleController.currentTab = temp_class_name
         ruleController.ruleData[temp_class_name] = {
             "fileName": temp_class_name + ".txt",
-            "regexesText": "!" + temp_class_name + "\n#Change class name by editing line above"
+            "regexesText": "!" + temp_class_name + "\n#Don't forget to save the file to preserve the new name.",
+            "new_name": null
         }
 
         if (ruleController.previousTab !== null) {
@@ -87,11 +89,24 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + temp_class_name;
         var params = {
             "filename": ruleController.ruleData[temp_class_name].fileName,
-            "regexes": ruleController.ruleData[temp_class_name].regexesText
+            "regexes": ruleController.ruleData[temp_class_name].regexesText,
+            "new_name": null
         }
         $http.post(url, params).then(function(data) {
             console.log("Sent Post Request")
         })
     }
 
+    $(document).on("keydown", ".cspan", function(e) {
+        var illegal_chars = new Set(["!", ";", ",", "\\", "/", "\"", "'", "#"])
+        if(e.keyCode == 9 || illegal_chars.has(e.key)) {
+            e.preventDefault();
+        }
+        ruleController.ruleData[ruleController.currentTab]["new_name"] = $(this).html();
+
+        editor.session.replace({start: {row: 0, column: 1},
+                              end: {row: 0, column: Number.MAX_VALUE}}, ruleController.ruleData[ruleController.currentTab]["new_name"]);
+
+
+    });
 }])

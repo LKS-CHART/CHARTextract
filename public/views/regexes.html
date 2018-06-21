@@ -1,9 +1,10 @@
 <div class="container" style="width: 90%">
     <h1 style="text-align: center">Rules</h1>
     <div style="display: inline-block">
-        <span ng-repeat="class in ruleCtrl.availableVars">
-            <button ng-click="ruleCtrl.loadFile(class)" ng-if="class !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class}">
-                {{class}}
+        <span ng-repeat="class_name in ruleCtrl.availableVars">
+            <button ng-click="ruleCtrl.loadFile(class_name)" ng-if="class_name !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class_name}">
+                <span class="cspan" style="cursor: text" contenteditable="true" id="class{{$index}}">{{class_name}}</span>
+                <!--<input style="cursor: text" contenteditable="true" ng-model="class">{{class}}</input>-->
             </button>
         </span>
         <span class="close" style="color: green; margin-left: 10px; vertical-align: middle; line-height: 34px;" ng-click="ruleCtrl.createNewClass()">+</span>

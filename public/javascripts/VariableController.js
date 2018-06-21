@@ -95,6 +95,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
         getVariableSettings();
     }
 
+
     variableController.addVariable = function() {
         variableController.currentVariable = "";
         variableController.editMode = true;
