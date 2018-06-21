@@ -1,5 +1,9 @@
 <div class="container" style="width: 90%">
     <h1 style="text-align: center">Rules</h1>
+
+    <b>Current Variable: </b> {{ruleCtrl.currentVar}}
+    <br/>
+    <br/>
     <div style="display: inline-block">
         <span ng-repeat="class_name in ruleCtrl.availableVars">
             <button ng-click="ruleCtrl.loadFile(class_name)" ng-if="class_name !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class_name}">

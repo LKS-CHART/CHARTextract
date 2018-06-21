@@ -21,9 +21,11 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
 
             if (Object.keys(ruleController.ruleData).length > 0) {
 
-                var first_key = Object.keys(ruleController.ruleData)[0]
-                editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
-                ruleController.currentTab = first_key;
+                if (ruleController.currentTab === null) {
+                    var first_key = Object.keys(ruleController.ruleData)[0]
+                    editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
+                    ruleController.currentTab = first_key;
+                }
 
                 ruleController.availableVars = [];
                 Object.keys(ruleController.ruleData).forEach(function(key, val) {
@@ -56,10 +58,13 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
         var params = {
             "filename": ruleController.ruleData[class_name].fileName,
-            "regexes": ruleController.ruleData[class_name].regexesText
+            "regexes": ruleController.ruleData[class_name].regexesText,
+            "new_name": new_class_name
         }
         $http.post(url, params).then(function(data) {
             console.log("Sent Post Request")
+        }).then(function() {
+            ruleController.currentTab = new_class_name;
         })
 
         loadText();
