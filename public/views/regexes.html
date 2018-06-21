@@ -3,7 +3,7 @@
     <div style="display: inline-block">
         <span ng-repeat="class_name in ruleCtrl.availableVars">
             <button ng-click="ruleCtrl.loadFile(class_name)" ng-if="class_name !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class_name}">
-                <div class="cspan" style="cursor: text; min-width: 20px; display: inline-block" contenteditable="true" id="class{{$index}}">{{class_name}}</div>
+                <div class="cspan" value="{{class_name}}" style="cursor: text; min-width: 20px; display: inline-block;" contenteditable="true" id="class{{$index}}">{{class_name}}</div>
                 <!--<input style="cursor: text" contenteditable="true" ng-model="class">{{class}}</input>-->
             </button>
         </span>

@@ -97,15 +97,16 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
         })
     }
 
-    $(document).on("keydown", ".cspan", function(e) {
+    $(document).on("keyup", ".cspan", function(e) {
         var illegal_chars = new Set(["!", ";", ",", "\\", "/", "\"", "'", "#"])
         if(e.keyCode == 9 || illegal_chars.has(e.key)) {
             e.preventDefault();
         }
-        ruleController.ruleData[ruleController.currentTab]["new_name"] = $(this).html();
 
         editor.session.replace({start: {row: 0, column: 1},
-                              end: {row: 0, column: Number.MAX_VALUE}}, ruleController.ruleData[ruleController.currentTab]["new_name"]);
+                              end: {row: 0, column: Number.MAX_VALUE}}, $(this).text());
+
+        ruleController.ruleData[ruleController.currentTab]["new_name"] = $(this).text();
 
 
     });
