@@ -22,8 +22,11 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
             editor.session.setValue(ruleController.ruleData[first_key]["regexesText"]);
             ruleController.currentTab = first_key;
 
+            ruleController.availableVars = [];
             Object.keys(ruleController.ruleData).forEach(function(key, val) {
-                ruleController.availableVars.push(key);
+                if (ruleController.availableVars.indexOf(key) === -1) {
+                    ruleController.availableVars.push(key);
+                }
             })
         })
     }
@@ -39,12 +42,13 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
     }
 
     ruleController.saveFile = function(class_name) {
+        var first_line = editor.session.doc.$lines[0] //TODO: Replace this with new class name controller var
+        var new_class_name = first_line.slice(1,first_line.length)
         ruleController.ruleData[class_name]["regexesText"] = editor.session.getValue();
-        var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + ruleController.currentTab
+        var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
         var params = {
             "filename": ruleController.ruleData[class_name].fileName,
-            "regexes": ruleController.ruleData[class_name].regexesText,
-            "new_name": null
+            "regexes": ruleController.ruleData[class_name].regexesText
         }
         $http.post(url, params).then(function(data) {
             console.log("Sent Post Request")
