@@ -17,6 +17,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
         variableController.currentVariable = SettingsService.getCurrentVariable();
     }
 
+
     function getVariableSettings() {
         var url = "http://localhost:3000/load/variable_settings/" + variableController.currentVariable;
 
@@ -66,9 +67,15 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
         var arrayfied_dictionaries = variableController.curVarDictionaries === "" ? [] :
                                             variableController.curVarDictionaries.split(",")
 
+        var arrayfied_label_cols = variableController.curVarLabelCol.split(",");
+
+        for (var i = 0; i < arrayfied_label_cols.length; i++) {
+            arrayfied_label_cols[i] = parseInt(arrayfied_label_cols[i])
+        }
+
         var params = {
             "Variable Settings": {
-                "Label Col": variableController.curVarLabelCol,
+                "Label Col": arrayfied_label_cols,
                 "Pwds": arrayfied_dictionaries,
                 "Specify Function with Python": variableController.python,
                 "Use Preprocessor": variableController.usePreprocessor
