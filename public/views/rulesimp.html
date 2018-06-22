@@ -1,0 +1,37 @@
+<div class="container-fluid" style="width: 100%; padding: 0px;">
+        <div>
+            <!-- <span class="fa fa-address-book fa-2x"></span> -->
+            <div style="float: left;" class="col-md-1" ng-controller="ObjectController as objectController">
+                <ul ng-if="ruleCtrl.getCurrentRule() !== null"class="nav flex-column" style="position: fixed; top: 30%;">
+                    <li class="">
+                        <!-- <span class="fa fa-address-book"></span> -->
+                        <a ng-click="objectController.addObject('TextObject');" href=""><span>Text</span></a>
+                    </li>
+                    <li class="">
+                        <!-- <span class="fa fa-address-book"></span> -->
+                        <a ng-click="objectController.addObject('WildcardObject');" href=""><span>...</span></a>
+                    </li>
+                    <li class="">
+                        <!-- <span class="fa fa-address-book"></span> -->
+                        <a ng-click="objectController.addObject('OrObject');" href=""><span>Or</span></a>
+                    </li>
+                    <li class="">
+                        <!-- <span class="fa fa-address-book"></span> -->
+                        <a ng-click="objectController.addObject('DictionaryObject');" href=""><span>Dictionary</span></a>
+                    </li>
+                </ul>
+            </div>
+            <div style="float: left; width:80%" class="col-md-11">
+                <button ng-click="ruleCtrl.addRule()"type="button" class="btn btn-default add-primary">Add Primary Rule</button>
+                <ol class="rectangle-list">
+                    <!--Primary+Secondary container rule div-->
+                    <div ng-repeat="x in ruleCtrl.rules">
+                        <!--Primary Rule-->
+                        <primary ctrl="RuleControllerSimp" rule="x">List item</primary>
+                        <!--Secondary Rules-->
+                        <secondary rule="x" ctrl="RuleControllerSimp"></secondary>
+                    </div>
+                </ol>
+            </div>
+        </div>
+</div>

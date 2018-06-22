@@ -1,0 +1,4 @@
+<div ng-if="object.type==='span'" style="display: inline-block;">
+    {{object.text}}
+</div>
+<input class="form-control" style="display: inline-block; max-width: 150px; margin-top: 5px;" type="text" ng-if="object.type==='input'" ng-model="object.text">

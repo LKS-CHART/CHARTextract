@@ -1,0 +1,174 @@
+.rectangle-list {
+    counter-reset: primary;
+}
+.rectangle-list table {
+    width: 100%;
+}
+
+.rectangle-list tr {
+    position: relative;
+    display: block;
+    padding: .4em .4em .4em .8em;
+    *padding: .4em;
+    margin: .5em 0 .5em 3.5em;
+    background: #eee;
+    color: #444;
+    text-decoration: none;
+    transition: all .3s ease-out;
+    width: 100%;
+}
+
+.primarySelected {
+    border: 3px dashed #2ecc71;
+}
+
+.replaceSelected {
+    border: 3px dashed #f39c12
+}
+
+.addSelected {
+    border: 3px dashed #3498db;
+}
+
+.ignoreSelected {
+    border: 3px dashed #fa8072;
+}
+
+.rectangle-list tr:hover{
+    background: #DDDDDD;
+}
+
+.hidden-input {
+    display: inline-block;
+    background-color: #eee;
+    border: none;
+}
+
+.rectangle-list tr:hover .hidden-input {
+    background-color: #DDDDDD;
+    transition: all .3s ease-out;
+}
+
+ol {
+    list-style: none; /* Remove default numbering */
+    *list-style: decimal; /* Keep using default numbering for IE6/7 */
+    padding: 0;  /*removes indent apparently */
+    margin-bottom: 4em;  /*does nothing ? */
+}
+
+
+.inner-ol{
+    counter-reset: x;
+    /* margin-bottom: 0em; */
+}
+
+.inner-inner-ol{
+    counter-reset: y;
+    margin-bottom: 0em;
+}
+
+ol ol {
+
+    margin: 0 0 0 2em; /* Add some left margin for inner lists */
+
+}
+
+/*Removing focus style on button click */
+/* .add-primary:focus { */
+    /* box-shadow: none !important; */
+/* } */
+
+.rectangle-list tr:before {
+    font: 15px 'trebuchet MS', 'lucida sans'; /* Font for numbers */
+    position: absolute;
+    left: -3.0em;
+    top: 50%;
+    margin-top: -1em;
+    height: 2em;
+    width: 2em;
+    line-height: 2em;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5);
+}
+
+.rectangle-list .inner-ol tr:before {
+    content: '';
+    height: 1em;
+    width: 1em;
+    margin-top: -0.5em;
+    left: -2.0em
+}
+
+.rectangle-list .primary:before {
+    content: counter(primary); /* list counter for level 1 lists (i.e primary rules)*/
+    counter-increment: primary;
+}
+
+.primary:before {
+    background: #2ecc71
+}
+
+.replace:before {
+    background: #f39c12
+}
+
+.add:before {
+    background: #3498db;
+}
+
+.ignore:before {
+    background: #fa8072;
+}
+
+.add-primary {
+
+    color:  #28a745 !important;
+    border-color: #28a745 !important;
+    margin-top: 5px;
+    transition: color .15s ease-in-out, background-color .30s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out
+
+}
+
+.add-primary:hover {
+
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.add-primary:focus {
+    background-color: transparent !important;
+    color:  #28a745 !important;
+    border-color: #28a745 !important;
+    border: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(40,167,69,.5) !important;
+    outline: 0 !important;
+}
+
+.add-primary:active {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+/* placeholder for the tiny arrow thing that pops up on hover */
+.rectangle-list tr:after {
+    position: absolute;
+    content: '';
+    border: .5em solid transparent;
+    left: -1em;
+    top: 50%;
+    margin-top: -0.5em;
+    transition: all .3s ease-out;
+}
+
+/* arrow on hover */
+.rectangle-list .primary:hover:after{
+    left: -1.0em;
+    border-left-color: #2ecc71;
+}
+
+.drop-override {
+    top: 30 !important;
+    left: inherit !important;
+    right: -3 !important;
+}

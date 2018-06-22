@@ -20,6 +20,11 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).conf
         templateUrl: 'views/variableSettings.html',
         controller: "VariableController",
         controllerAs: "variableCtrl"
+    }).
+    when('/rule_simp', {
+        templateUrl: 'views/rulesimp.html',
+        controller: "RuleControllerSimp",
+        controllerAs: "ruleCtrl"
     })
 }])
 
@@ -161,3 +166,40 @@ app.filter("pathify", function(){
     }
 
 });
+
+app.directive('ruleObject', function() {
+    return {
+        restrict: 'E',
+        scope: {
+            object: '=obj'
+        },
+        templateUrl: 'rule.html'
+    }
+
+})
+
+app.directive('primary', function() {
+    return {
+        restrict: 'E',
+        name: 'ctrl',
+        controller: '@',
+        scope: {
+            ruleInfo: '=rule',
+        },
+        controllerAs: 'primaryCtrl',
+        templateUrl: 'views/primary.html'
+    };
+})
+
+app.directive('secondary', function() {
+    return {
+        restrict: 'E',
+        name: 'ctrl',
+        controller: '@',
+        controllerAs: 'secondaryCtrl',
+        scope: {
+            ruleInfo: '=rule'
+        },
+        templateUrl: 'views/secondary.html'
+    }
+})
