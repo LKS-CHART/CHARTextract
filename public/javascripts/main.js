@@ -173,7 +173,7 @@ app.directive('ruleObject', function() {
         scope: {
             object: '=obj'
         },
-        templateUrl: 'rule.html'
+        templateUrl: '/views/rule.html'
     }
 
 })
