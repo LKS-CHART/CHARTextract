@@ -67,10 +67,21 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
         var arrayfied_dictionaries = variableController.curVarDictionaries === "" ? [] :
                                             variableController.curVarDictionaries.split(",")
 
-        var arrayfied_label_cols = variableController.curVarLabelCol.split(",");
+        console.log(variableController.curVarLabelCol)
 
-        for (var i = 0; i < arrayfied_label_cols.length; i++) {
-            arrayfied_label_cols[i] = parseInt(arrayfied_label_cols[i])
+
+        var arrayfied_label_cols = null;
+
+        if (typeof(variableController.curVarLabelCol) === "number" || typeof(variableController.curVarLabelCol) === "object") {
+            arrayfied_label_cols = variableController.curVarLabelCol
+        }
+
+        else {
+            arrayfied_label_cols = variableController.curVarLabelCol.split(",");
+
+            for (var i = 0; i < arrayfied_label_cols.length; i++) {
+                arrayfied_label_cols[i] = parseInt(arrayfied_label_cols[i])
+            }
         }
 
         var params = {
