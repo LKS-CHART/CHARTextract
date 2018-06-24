@@ -1,4 +1,4 @@
-app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", "$location", function($uibModal, $uibModalInstance, SettingsService, $http, $location) {
+app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", "$location", "$window", function($uibModal, $uibModalInstance, SettingsService, $http, $location, $window) {
     var settingsController = this;
     settingsController.dataFile = SettingsService.dataSettings.selected;
     settingsController.labelFile = SettingsService.labelSettings.selected;
@@ -32,6 +32,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         SettingsService.dataSettings.selected = settingsController.dataFile;
         SettingsService.labelSettings.selected = settingsController.labelFile;
         SettingsService.ruleSettings.selected = settingsController.ruleFolder;
+
     })
 
     settingsController.openFolderDialog = function() {
@@ -87,14 +88,29 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         return SettingsService.getCurrentVariable();
     }
 
+    settingsController.setDataset = function(dataset) {
+        sessionStorage.setItem('dataset', dataset);
+        var p = SettingsService.getCurrentVariable() + "/" + sessionStorage.getItem("dataset") + "/" + "error_report.json";
+        localStorage.setItem('errorJsonPath', p);
+    }
+
     settingsController.run = function() {
         console.log("BEFORE CURRENT VARIABLE");
         var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
+
+        if (sessionStorage.getItem("dataset") === null) {
+            sessionStorage.setItem("dataset", "train")
+        }
 
         var p = SettingsService.getCurrentVariable() + "/" + "train" + "/" + "error_report.json";
         localStorage.setItem('errorJsonPath', p);
 
         window.location.href = url
+    }
+
+    settingsController.getDataset = function() {
+        console.log(sessionStorage.getItem("dataset"))
+        return sessionStorage.getItem("dataset")
     }
 
     settingsController.saveSettings = function() {

@@ -1,4 +1,4 @@
-app.controller('ErrorController', ["$sce", "DataService", function($sce,DataService) {
+app.controller('ErrorController', ["$sce", "DataService", "$route", function($sce,DataService, $route) {
 
     var errorController = this
 
@@ -11,6 +11,7 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
     errorController.selected_matches = null;
     errorController.pos_label = null;
     errorController.neg_label = null;
+
 
     function fix_data(result) {
 
@@ -26,78 +27,93 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
         return result
     }
 
-    myDataPromise.then(function(result) {
-        errorController.data = fix_data(result)
-        console.log(errorController.data)
-        errorController.classes = result.classes
-        var errors = errorController.data.patient_cases
-        errorController.errors = {};
-        errorController.predictionMode = result["Prediction Mode"];
 
-        if (errorController.data["Classifier Type"] === "CaptureClassifier")
-        {
-            var index = errorController.data["Ordered Labels"].indexOf(errorController.data["Negative Label"])
-            var classes_copy = errorController.data["Ordered Labels"].slice();
-            if (index !== -1) classes_copy.splice(index, 1)
-            var pos_label = classes_copy[0]
-            var neg_label = errorController.data["Negative Label"]
 
-            errorController.pos_label = pos_label
-            errorController.neg_label = neg_label
+    function reloadData() {
+        myDataPromise.then(function(result) {
+            errorController.data = fix_data(result)
+            console.log(errorController.data)
+            errorController.classes = result.classes
+            var errors = errorController.data.patient_cases
+            errorController.errors = {};
+            errorController.predictionMode = result["Prediction Mode"];
 
-            errorController.errors[pos_label] = []
-            errorController.errors[neg_label] = []
+            if (errorController.data["Classifier Type"] === "CaptureClassifier")
+            {
+                var index = errorController.data["Ordered Labels"].indexOf(errorController.data["Negative Label"])
+                var classes_copy = errorController.data["Ordered Labels"].slice();
+                if (index !== -1) classes_copy.splice(index, 1)
+                var pos_label = classes_copy[0]
+                var neg_label = errorController.data["Negative Label"]
 
-            if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
-                errorController.predictionMode === false) {
+                errorController.pos_label = pos_label
+                errorController.neg_label = neg_label
 
-                    angular.forEach(errors, function(error, key) {
-                        if (error.pred !== error.actual && error.actual === neg_label)
-                        {
-                            errorController.errors[neg_label].push(key)
-                        }
-                        else {
-                            errorController.errors[pos_label].push(key)
-                        }
-                    })
+                errorController.errors[pos_label] = []
+                errorController.errors[neg_label] = []
 
-            } else {
+                if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
+                    errorController.predictionMode === false) {
 
-                console.log("Running in prediction mode");
-
-            }
-        }
-
-        else
-
-        {
-            if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
-                errorController.predictionMode === false) {
-                    angular.forEach(errors, function(error, key) {
-                        if (error.pred != error.actual) {
-                            if (errorController.classes.hasOwnProperty(error.actual)) {
-                                if (angular.isUndefined(errorController.errors[error.actual]))
-                                {
-                                    errorController.errors[error.actual] = []
-                                }
-                                errorController.errors[error.actual].push(key)
+                        angular.forEach(errors, function(error, key) {
+                            if (error.pred !== error.actual && error.actual === neg_label)
+                            {
+                                errorController.errors[neg_label].push(key)
                             }
-                        }
-                })
-            } else
+                            else {
+                                errorController.errors[pos_label].push(key)
+                            }
+                        })
+
+                } else {
+
+                    console.log("Running in prediction mode");
+
+                }
+            }
+
+            else
 
             {
-                angular.forEach(errors, function(error, key) {
-                    if (angular.isUndefined(errorController.errors[error.pred]))
-                    {
-                        errorController.errors[error.pred] = []
-                    }
-                    errorController.errors[error.pred].push(key)
-                })
+                if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
+                    errorController.predictionMode === false) {
+                        angular.forEach(errors, function(error, key) {
+                            if (error.pred != error.actual) {
+                                if (errorController.classes.hasOwnProperty(error.actual)) {
+                                    if (angular.isUndefined(errorController.errors[error.actual]))
+                                    {
+                                        errorController.errors[error.actual] = []
+                                    }
+                                    errorController.errors[error.actual].push(key)
+                                }
+                            }
+                    })
+                } else
 
+                {
+                    angular.forEach(errors, function(error, key) {
+                        if (angular.isUndefined(errorController.errors[error.pred]))
+                        {
+                            errorController.errors[error.pred] = []
+                        }
+                        errorController.errors[error.pred].push(key)
+                    })
+
+                }
             }
-        }
-    })
+        })
+
+
+
+    }
+
+    reloadData();
+
+    errorController.forceData = function() {
+        myDataPromise = DataService.getDataForce();
+        reloadData();
+
+    }
 
     errorController.gotoAnchor = function(x) {
 
