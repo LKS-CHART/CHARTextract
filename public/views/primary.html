@@ -2,13 +2,14 @@
     <table>
         <tbody>
             <tr ng-class="{primarySelected: ruleInfo.Primary.Selected}" class="primary">
-                <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 600px;" class="col-md-8">
+                <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8">
                     <span style="margin-right: 15px;">If</span>
-                    <span ng-repeat="rulePart in ruleInfo.Primary.Rule">
-                        <rule-object obj="rulePart">
-                        </rule-object>
-                        <input class="hidden-input" style="max-width: 10px;" type="text">
-                    </span>
+                    <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ruleInfo.Primary.Rule}"></js-tag>
+                    <!--<span ng-repeat="rulePart in ruleInfo.Primary.Rule">-->
+                        <!--<rule-object obj="rulePart">-->
+                        <!--</rule-object>-->
+                        <!--<input class="hidden-input" type="text" ng-keydown="">-->
+                    <!--</span>-->
                     <!-- <div style="">
                         <span style="margin-right: 15px;">If</span>
                         <div ng-repeat="rulePart in ruleInfo.Primary.Rule" style="display: inline-block; padding: 10px;">

@@ -9,7 +9,7 @@ app.controller("ObjectController", ["RuleService", function(RuleService) {
 
             var ruleObj = new classesMapping[ruleObjectType]();
             
-            oc.selectedRule.Rule.push(angular.copy(ruleObj))
+            oc.selectedRule.Rule.addTag(ruleObj.text)
         }
 
     }

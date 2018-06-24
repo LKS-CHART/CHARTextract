@@ -4,7 +4,10 @@
     <b>Current Variable: </b> {{ruleCtrl.currentVar}}
     <br/>
     <br/>
-    <button class="btn btn-default" ng-click="ruleCtrl.advancedMode=false">Simple Mode</button>
+    <div ng-switch="ruleCtrl.advancedMode">
+        <button ng-switch-when=true class="btn btn-default" ng-click="ruleCtrl.advancedMode=false">Simple Mode</button>
+        <button ng-switch-when=false class="btn btn-default" ng-click="ruleCtrl.advancedMode=true">Advanced Mode</button>
+    </div>
     <br/>
     <br/>
     <div style="display: inline-block">

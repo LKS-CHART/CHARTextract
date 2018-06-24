@@ -1,4 +1,7 @@
-<div ng-if="object.type==='span'" style="display: inline-block;">
-    {{object.text}}
+<div style="position: relative; display: inline-block; padding: 5; min-height: 44px;">
+    <div ng-if="object.type==='span'" style="">
+        {{object.text}}
+    </div>
+    <input class="form-control" style="max-width: 150px;" type="text" ng-if="object.type==='input'" ng-model="object.text">
+    <!--<span style="position: absolute; top: -5; right: -5;" class="close">x</span>-->
 </div>
-<input class="form-control" style="display: inline-block; max-width: 150px; margin-top: 5px;" type="text" ng-if="object.type==='input'" ng-model="object.text">

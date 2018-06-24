@@ -40,14 +40,11 @@
 
 .hidden-input {
     display: inline-block;
-    background-color: #eee;
+    background-color: transparent;
     border: none;
+    width: 15px;
 }
 
-.rectangle-list tr:hover .hidden-input {
-    background-color: #DDDDDD;
-    transition: all .3s ease-out;
-}
 
 ol {
     list-style: none; /* Remove default numbering */

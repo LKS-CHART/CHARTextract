@@ -1,4 +1,4 @@
-app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).config(['$routeProvider', function($routeProvider) {
+app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap', 'jsTag']).config(['$routeProvider', function($routeProvider) {
     $routeProvider.
     when('/view', {
         templateUrl: 'views/view.html',

@@ -3,13 +3,14 @@
         <table>
             <tbody>
                 <tr ng-class="{replaceSelected: replace.Selected}" class="replace">
-                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 600px;" class="col-md-8" style="vertical-align:middle">
+                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
                         <span style="margin-right: 15px;">and</span>
-                        <span ng-repeat="rulePart in replace.Rule">
-                            <rule-object obj="rulePart">
-                            </rule-object>
-                            <input class="hidden-input" style="max-width: 10px;" type="text">
-                        </span>
+                        <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: replace.Rule}"></js-tag>
+                        <!--<span ng-repeat="rulePart in replace.Rule">-->
+                            <!--<rule-object obj="rulePart">-->
+                            <!--</rule-object>-->
+                            <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                        <!--</span>-->
                     </td>
                     <td class="col-md-2">
                         <span style="white-space:nowrap;">appears, then score</span>
@@ -29,13 +30,14 @@
             <table>
                 <tbody>
                     <tr ng-class="{addSelected: add.Selected}" class="add">
-                        <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 600px;" class="col-md-8" style="vertical-align:middle">
+                        <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
                             <span style="margin-right: 15px;">if</span>
-                            <span ng-repeat="rulePart in add.Rule">
-                                <rule-object obj="rulePart">
-                                </rule-object>
-                                <input class="hidden-input" style="max-width: 10px;" type="text">
-                            </span>
+                            <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: add.Rule}"></js-tag>
+                            <!--<span ng-repeat="rulePart in add.Rule">-->
+                                <!--<rule-object obj="rulePart">-->
+                                <!--</rule-object>-->
+                                <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                            <!--</span>-->
                         </td>
                         <td class="col-md-2">
                             <span style="white-space:nowrap;">appears, then to score add</span>
@@ -57,13 +59,14 @@
         <table>
             <tbody>
                 <tr ng-class="{addSelected: add.Selected}" class="add">
-                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 600px;" class="col-md-8" style="vertical-align:middle">
+                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
                         <span style="margin-right: 15px;">if</span>
-                        <span ng-repeat="rulePart in add.Rule">
-                            <rule-object obj="rulePart">
-                            </rule-object>
-                            <input class="hidden-input" style="max-width: 10px;" type="text">
-                        </span>
+                        <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: add.Rule}"></js-tag>
+                        <!--<span ng-repeat="rulePart in add.Rule">-->
+                            <!--<rule-object obj="rulePart">-->
+                            <!--</rule-object>-->
+                            <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                        <!--</span>-->
                     </td>
                     <td class="col-md-2">
                         <span style="white-space:nowrap;">appears, then to score add</span>
@@ -84,13 +87,14 @@
         <table>
             <tbody>
                 <tr ng-class="{ignoreSelected: ignore.Selected}" class="ignore">
-                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width:600px;" class="col-md-8" style="vertical-align:middle">
+                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width:500px;" class="col-md-8" style="vertical-align:middle">
                         <span style="margin-right: 15px;">unless</span>
-                        <span ng-repeat="rulePart in ignore.Rule">
-                            <rule-object obj="rulePart">
-                            </rule-object>
-                            <input class="hidden-input" style="max-width: 10px;" type="text">
-                        </span>
+                        <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ignore.Rule}"></js-tag>
+                        <!--<span ng-repeat="rulePart in ignore.Rule">-->
+                            <!--<rule-object obj="rulePart">-->
+                            <!--</rule-object>-->
+                            <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                        <!--</span>-->
                     </td>
                     <td class="col-md-2">
                         <span style="white-space:nowrap;">appears, then ignore sentence</span>

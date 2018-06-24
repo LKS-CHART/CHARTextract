@@ -1,10 +1,10 @@
-app.service('RuleService', [function() {
+app.service('RuleService', ['JSTagsCollection', function(JSTagsCollection) {
     //List of uncompiled rules (called a Ruleset)
     var URules = []; 
 
     //Uncompiled dummy rule format
-    var Udummy_rule = {"Primary": {"Rule": [], "CRule": "This is a primary rule", "Score": 0, "Selected": false, "type": "Primary"}, "Secondary": {"Replace": [], "Ignore": [], "Add": []}}
-    var Udummy_secondary_rule = {"Rule": [], "CRule": "This is a secondary rule", "Score": 0, "Modifier": "None", "Selected": false}
+    var Udummy_rule = {"Primary": {"Rule": new JSTagsCollection([]), "CRule": "This is a primary rule", "Score": 0, "Selected": false, "type": "Primary"}, "Secondary": {"Replace": [], "Ignore": [], "Add": []}}
+    var Udummy_secondary_rule = {"Rule": new JSTagsCollection([]), "CRule": "This is a secondary rule", "Score": 0, "Modifier": "None", "Selected": false}
 
     var CurrentRule = null;
 
