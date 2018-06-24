@@ -1,7 +1,10 @@
-<div class="container" style="width: 90%">
+<div class="container-fluid" style="width: 100%">
     <h1 style="text-align: center">Rules</h1>
 
     <b>Current Variable: </b> {{ruleCtrl.currentVar}}
+    <br/>
+    <br/>
+    <button class="btn btn-default" ng-click="ruleCtrl.advancedMode=false">Simple Mode</button>
     <br/>
     <br/>
     <div style="display: inline-block">
@@ -16,7 +19,12 @@
     <button ng-click="ruleCtrl.saveFile(ruleCtrl.currentTab)" style="float: right" class="btn btn-default">
         Save File
     </button>
-    <div style="height: 100%; margin-top: 10px;" id="editor-container">
+    <div ng-if="ruleCtrl.advancedMode">
+        <div style="height: 100%; margin-top: 10px;" id="editor-container"></div>
+    </div>
+    <div ng-if="!ruleCtrl.advancedMode">
+        <div ng-include="'views/rulesimp.html'">
+        </div>
     </div>
 </div>
 <script src="javascripts/text-editor.js"></script>

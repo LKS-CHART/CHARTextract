@@ -11,6 +11,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", fun
     ruleController.currentVar = SettingsService.getCurrentVariable();
 
     ruleController.availableVars = [];
+    ruleController.advancedMode = true;
 
     function loadText() {
         var url = "http://localhost:3000/load/" + ruleController.currentVar;
