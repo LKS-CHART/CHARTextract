@@ -22,13 +22,13 @@
     <button ng-click="ruleCtrl.saveFile(ruleCtrl.currentTab)" style="float: right" class="btn btn-default">
         Save File
     </button>
-    <div ng-if="ruleCtrl.advancedMode">
+    <div ng-show="ruleCtrl.advancedMode">
         <div style="height: 100%; margin-top: 10px;" id="editor-container"></div>
+        <script src="javascripts/text-editor.js"></script>
     </div>
-    <div ng-if="!ruleCtrl.advancedMode">
+    <div ng-show="!ruleCtrl.advancedMode">
         <div ng-include="'views/rulesimp.html'">
         </div>
     </div>
 </div>
-<script src="javascripts/text-editor.js"></script>
 
