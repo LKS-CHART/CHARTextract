@@ -168,12 +168,18 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
         errorController.match_selected = true;
         var all_sentence_matches = []
         var str_id = String(sentence_id)
+
+        errorController.sentence_scores = {};
         for (var classname in errorController.selected.matches) {
 
             if (errorController.selected.matches[classname].hasOwnProperty(str_id))
             {
                 var sentence_matches = errorController.selected.matches[classname][str_id]["matches"]
 
+                if (classname !== errorController.neg_label) {
+                     var class_score = errorController.selected.matches[classname][str_id]["text_score"];
+                     errorController.sentence_scores[classname] = class_score;
+                }
 
                 for (var i = 0; i < sentence_matches.length; i++) {
                     var match_obj = sentence_matches[i];
@@ -291,7 +297,6 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
 
     errorController.getSelectedData = function() {
 
-        console.log("HAJSDHAKSJHd")
         errorController.marked_data = markData(errorController.selected.data, errorController.selected.matches)
         console.log(errorController.marked_data)
 
