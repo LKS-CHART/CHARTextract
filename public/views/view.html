@@ -17,7 +17,11 @@
             </div>
             <div>
                 <h3>Final Score</h3>
-                <p>Score: {{errorCtrl.selected.score[errorCtrl.selected.pred]}}</p>
+
+                <p ng-if="key !== errorCtrl.selected.actual" ng-repeat="(key,val) in errorCtrl.selected.score">
+                   Score for {{key}}: {{val}}
+                </p>
+                <p ng-if="!errorCtrl.predictionMode">Score for <b>{{errorCtrl.selected.actual}}</b>: {{errorCtrl.selected.score[errorCtrl.selected.actual]}}</p>
                 <p ng-if="!errorCtrl.predictionMode">was determined to be {{errorCtrl.selected.pred}}<b></b>, should be <b>{{errorCtrl.selected.actual}}</b></p>
                 <p ng-if="errorCtrl.predictionMode">was determined to be {{errorCtrl.selected.pred}}</p>
             </div>
