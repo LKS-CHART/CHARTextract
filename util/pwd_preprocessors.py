@@ -1,4 +1,5 @@
 from util.string_functions import split_string_into_words
+import copy
 
 class PwdPreprocessor:
     def __init__(self, pwds, categories_of_interest):
@@ -46,9 +47,17 @@ class PwdPreprocessor2:
 
     def preprocess(self, text, *args):
         output_dictionary = {"sentence": text, "dictionaries": {}}
-        keep_data = False
+        satisfy_all = False
 
-        for category in self.categories:
+        required_categories = tuple(self.categories)
+
+        if len(args) >= 1:
+            required_categories = tuple(args)
+            satisfy_all = True
+
+        matches = []
+
+        for i, category in enumerate(required_categories):
             output_dictionary["dictionaries"][category] = []
 
             ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,4,1)}
@@ -57,7 +66,9 @@ class PwdPreprocessor2:
                 for term in ngrams[ngram]:
                     if term in self.pwds[category]:
                         output_dictionary["dictionaries"][category].append(term)
-                        keep_data = True
+                        matches[i] = True
+
+        keep_data = any(matches)
 
         if keep_data:
             return output_dictionary
