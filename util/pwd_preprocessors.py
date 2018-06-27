@@ -55,9 +55,9 @@ class PwdPreprocessor2:
             required_categories = tuple(args)
             satisfy_all = True
 
-        matches = []
+        matches = [False]*len(required_categories)
 
-        for i, category in enumerate(required_categories):
+        for j, category in enumerate(required_categories):
             output_dictionary["dictionaries"][category] = []
 
             ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,4,1)}
@@ -66,7 +66,7 @@ class PwdPreprocessor2:
                 for term in ngrams[ngram]:
                     if term in self.pwds[category]:
                         output_dictionary["dictionaries"][category].append(term)
-                        matches[i] = True
+                        matches[j] = True
 
         keep_data = any(matches)
 

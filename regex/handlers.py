@@ -123,8 +123,14 @@ class CaptureHandler(object):
 
             preprocessed_data = {}
             if preprocess_func and self.preprocess_mode == PREPROCESS_PER_REGEX:
-                secondaries = regex.get_secondary_regexes()
-                mentioned_pwds = set({secondary._required_pwds for secondary in secondaries})
+
+                mentioned_pwds = set()
+
+                if secondaries:
+                    secondaries = regex.get_secondary_regexes()
+                    for secondary in secondaries:
+                        mentioned_pwds = set(secondary._required_pwds) | mentioned_pwds
+
                 mentioned_pwds = list(set(regex._required_pwds) | mentioned_pwds)
                 preprocessed_data = preprocess_func(text, *mentioned_pwds)
             else:
@@ -312,7 +318,13 @@ class RegexHandler(object):
             preprocessed_data = {}
             if preprocess_func and self.preprocess_mode == PREPROCESS_PER_REGEX:
                 secondaries = regex.get_secondary_regexes()
-                mentioned_pwds = set({secondary._required_pwds for secondary in secondaries})
+                mentioned_pwds = set()
+
+                if secondaries:
+                    secondaries = regex.get_secondary_regexes()
+                    for secondary in secondaries:
+                        mentioned_pwds = set(secondary._required_pwds) | mentioned_pwds
+
                 mentioned_pwds = list(set(regex._required_pwds) | mentioned_pwds)
                 preprocessed_data = preprocess_func(text, *mentioned_pwds)
             else:
@@ -320,6 +332,7 @@ class RegexHandler(object):
                 preprocessed_data["dictionaries"] = pwds
 
             if preprocessed_data["sentence"] is None:
+                print("Hererere")
                 continue
 
             regex_matches = regex.determine_matches(preprocessed_data["sentence"], pwds=preprocessed_data["dictionaries"])
