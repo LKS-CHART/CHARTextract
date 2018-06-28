@@ -249,7 +249,13 @@ app.directive('tagEditor', function() {
             }
 
             element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "delimiter": ";",
-            "placeholder": "Enter a word", "forceLowercase": false, "removeDuplicates": false, "animateDelete": 30});
+            "placeholder": "Enter a word", "forceLowercase": false, "removeDuplicates": false, "animateDelete": 30,
+            "autocomplete": {
+                delay: 0,
+                position: {collision: 'flip'},
+                source: ["{test1}", "OR", "{test2}"],
+                minLength: 0
+            }});
 
 
             scope.$on("reloadTags", function(event, data) {
