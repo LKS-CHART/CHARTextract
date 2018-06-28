@@ -61,6 +61,7 @@
 .page-item {
     margin-top: 1px;
     margin-left: 2px;
+    display: inline-block !important;
 }
 
 .page-item.recurring > a{
