@@ -239,6 +239,8 @@ app.directive('tagEditor', function() {
                             else {
                                 found_tag.removeClass('red-tag');
                                 found_delete.removeClass('red-tag');
+                                found_tag.removeClass('green-tag');
+                                found_delete.removeClass('green-tag');
                             }
 
                         }
