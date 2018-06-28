@@ -1,4 +1,4 @@
-app.controller("ObjectController", ["RuleService", function(RuleService) {
+app.controller("ObjectController", ["RuleService", "$rootScope", function(RuleService, $rootScope) {
     var oc = this;
 
     oc.rules = RuleService.getRuleset();
@@ -8,8 +8,8 @@ app.controller("ObjectController", ["RuleService", function(RuleService) {
         if (oc.selectedRule.Selected === true ) {
 
             var ruleObj = new classesMapping[ruleObjectType]();
-            
-            oc.selectedRule.Rule.addTag(ruleObj.text)
+            $rootScope.$broadcast("reloadTags", {"rule": oc.selectedRule, "text": ruleObj.text})
+
         }
 
     }

@@ -1,7 +1,17 @@
 //Controls the addition and manipulation of Rules
 app.controller("RuleControllerSimp", ["RuleService", function(RuleService){
-    var rc = this;
+    /*
 
+        MainRuleService:
+
+        list of all rules for all classes. Indexed by class name. Raw text and structured ones from RcSimp.
+        Can reference and index by class name.
+
+        Have reference to RuleService in RuleController.
+        Set RuleSet on tab swap, save and create
+    */
+    var rc = this;
+    console.log("IN RuleControllerSimp")
     rc.test = "This is a test";
     rc.rules = RuleService.getRuleset();
     rc.selectedRuleObject = "alskdjalskdjaslkdj";

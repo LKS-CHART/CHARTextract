@@ -1,4 +1,4 @@
-app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap', 'jsTag']).config(['$routeProvider', function($routeProvider) {
+app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).config(['$routeProvider', function($routeProvider) {
     $routeProvider.
     when('/view', {
         templateUrl: 'views/view.html',
@@ -202,4 +202,65 @@ app.directive('secondary', function() {
         },
         templateUrl: 'views/secondary.html'
     }
+})
+
+app.directive('tagEditor', function() {
+    return {
+        restrict: 'E',
+        template: '<input type="text" class="form-control">',
+        scope: {
+            ruleContainer: '='
+        },
+        link: function(scope, element, attrs) {
+
+
+            function tagCallback(field, editor, tags) {
+                scope.ruleContainer = tags
+                var i = 0;
+                $('li', editor).each(function(){
+
+                    if (i !== 0) {
+
+                        var li = $(this);
+
+                        if(li.find('.tag-editor-tag')) {
+
+                            var found_tag = $(li.find('.tag-editor-tag'))
+                            var found_delete = $(li.find('.tag-editor-delete'))
+
+                            if (li.find('.tag-editor-tag').html() == 'OR') {
+                                found_tag.addClass('green-tag');
+                                found_delete.addClass('green-tag');
+                            }
+                            else if (li.find('.tag-editor-tag').html() !== undefined && li.find('.tag-editor-tag').html().match("\{[a-zA-Z0-9_\s]+\}")) {
+                                found_tag.addClass('red-tag');
+                                found_delete.addClass('red-tag');
+                            }
+                            else {
+                                found_tag.removeClass('red-tag');
+                                found_delete.removeClass('red-tag');
+                            }
+
+                        }
+                    }
+                    i++;
+
+                });
+            }
+
+            element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "delimiter": ";",
+            "placeholder": "Enter a word", "forceLowercase": false, "removeDuplicates": false, "animateDelete": 30});
+
+
+            scope.$on("reloadTags", function(event, data) {
+                if(attrs.id === data.rule.u_id) {
+                    element.tagEditor("addTag", data.text)
+                    tagCallback(null, element)
+                }
+            })
+
+        }
+
+    }
+
 })

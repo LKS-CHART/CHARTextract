@@ -5,7 +5,7 @@
                 <tr ng-class="{replaceSelected: replace.Selected}" class="replace">
                     <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
                         <span style="margin-right: 15px;">and</span>
-                        <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: replace.Rule}"></js-tag>
+                        <tag-editor ng-attr-id="{{replace.u_id}}" rule-container="replace.Rule"></tag-editor>
                         <!--<span ng-repeat="rulePart in replace.Rule">-->
                             <!--<rule-object obj="rulePart">-->
                             <!--</rule-object>-->
@@ -32,7 +32,7 @@
                     <tr ng-class="{addSelected: add.Selected}" class="add">
                         <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
                             <span style="margin-right: 15px;">if</span>
-                            <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: add.Rule}"></js-tag>
+                            <tag-editor ng-attr-id="{{add.u_id}}" rule-container="add.Rule"></tag-editor>
                             <!--<span ng-repeat="rulePart in add.Rule">-->
                                 <!--<rule-object obj="rulePart">-->
                                 <!--</rule-object>-->
@@ -61,7 +61,7 @@
                 <tr ng-class="{addSelected: add.Selected}" class="add">
                     <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
                         <span style="margin-right: 15px;">if</span>
-                        <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: add.Rule}"></js-tag>
+                        <tag-editor ng-attr-id="{{add.u_id}}" rule-container="add.Rule"></tag-editor>
                         <!--<span ng-repeat="rulePart in add.Rule">-->
                             <!--<rule-object obj="rulePart">-->
                             <!--</rule-object>-->
@@ -89,7 +89,7 @@
                 <tr ng-class="{ignoreSelected: ignore.Selected}" class="ignore">
                     <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width:500px;" class="col-md-8" style="vertical-align:middle">
                         <span style="margin-right: 15px;">unless</span>
-                        <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ignore.Rule}"></js-tag>
+                        <tag-editor ng-attr-id="{{ignore.u_id}}" rule-container="ignore.Rule"></tag-editor>
                         <!--<span ng-repeat="rulePart in ignore.Rule">-->
                             <!--<rule-object obj="rulePart">-->
                             <!--</rule-object>-->

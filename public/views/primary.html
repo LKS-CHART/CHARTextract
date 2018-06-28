@@ -4,8 +4,9 @@
             <tr ng-class="{primarySelected: ruleInfo.Primary.Selected}" class="primary">
                 <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8">
                     <span style="margin-right: 15px;">If</span>
-                    <js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ruleInfo.Primary.Rule,
-                    breakCodes: [13],  splitter: ';'}"></js-tag>
+                    <tag-editor ng-attr-id="{{ruleInfo.Primary.u_id}}" rule-container="ruleInfo.Primary.Rule"></tag-editor>
+                    <!--<js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ruleInfo.Primary.Rule,-->
+                    <!--breakCodes: [13],  splitter: ';'}"></js-tag>-->
                     <!--<span ng-repeat="rulePart in ruleInfo.Primary.Rule">-->
                         <!--<rule-object obj="rulePart">-->
                         <!--</rule-object>-->
