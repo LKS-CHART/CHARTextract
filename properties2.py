@@ -35,12 +35,12 @@ file_to_args = {
                 "hiv_negative": {"Runner Initialization Params":
                                          {
                                           "label_func": functools.partial(replace_label_with_required,
-                                                                          {"Positive": "None", "Unknown": "None"})}
+                                                                          {"Positive": "None", "Unknown": "None", "Not dictated": "None"})}
                                      },
                 "hiv_positive": {"Runner Initialization Params":
                                          {
                                           "label_func": functools.partial(replace_label_with_required,
-                                                                          {"Negative": "None", "Unknown": "None"})}
+                                                                          {"Negative": "None", "Unknown": "None", "Not dictated": "None"})}
                                      },
                 "hiv_not_dictated": {"Runner Initialization Params":
                                              {
@@ -53,7 +53,7 @@ file_to_args = {
                 "hiv_unknown": {"Runner Initialization Params":
                                         {
                                          "label_func": functools.partial(replace_label_with_required,
-                                                                         {"Positive": "None", "Negative": "None"})}
+                                                                         {"Positive": "None", "Negative": "None", "Not dictated": "None"})}
                                     },
                 "immigration": {"Runner Initialization Params":
                                         {
@@ -176,7 +176,8 @@ file_to_args = {
                                                                                         "Corticosteroids (prednisone)",
                                                                                         "Other": "None",
                                                                                         "Chemotherapy": "None",
-                                                                                        "TNF alpha inhibitors": "None"})}
+                                                                                        "TNF alpha inhibitors": "None",
+                                                                                        "None": "None"})}
                                                     },
                 "other_immuno": {"Runner Initialization Params":
                                                     {

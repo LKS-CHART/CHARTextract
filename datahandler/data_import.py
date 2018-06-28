@@ -300,6 +300,9 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
                     count += 1
 
                     #getting data, label and ids from each row and concatenating it
+
+
+
                     data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
                                                  data, labels, ids, repeat_ids, lambda col: str(row[col]))
 

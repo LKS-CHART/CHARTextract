@@ -72,17 +72,17 @@ if __name__ == "__main__":
     effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
     effect_colours.update(dict.fromkeys(["r", "rb", "ra"], "rgb(256,0,0)"))
 
-    filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all0.xlsx')
+    filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all.xlsx')
     # filename = os.path.join(os.getenv('DATA_FOLDER'), 'all.xlsx')
     #filenames = [os.path.join(os.getenv('DATA_FOLDER'), 'du', file) for file in os.listdir(os.path.join(os.getenv('DATA_FOLDER'))) if ('.du' in file and '~' not in file and file.endswith('.xlsx'))]
 
-    label_filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all0.xlsx')
+    label_filename = os.path.join(os.getenv('DATA_FOLDER'), 'du', 'all.xlsx')
     label_filename = filename
     label_files_dict = dict()
     label_files_dict["train"] = label_filename
     label_files_dict["valid"] = label_filename
 
-    rules_path = os.path.join(os.getenv('DATA_FOLDER'), 'Regexes')
+    rules_path = os.path.join(os.getenv('TB_DATA_FOLDER'), 'rules')
 
     # loading data
     if not debug:
@@ -91,15 +91,15 @@ if __name__ == "__main__":
     else:
         pass
 
-    ctpa_rules = os.path.join(rules_path)
+    ctpa_rules = os.path.join(rules_path, "du")
 
-    file_to_args = {"dvt_iterative.txt": {"Runner Initialization Params": {"l_label_col": 3, "l_id_col": 1, "l_first_row": 1,
+    file_to_args = {"dvt-iterative.txt": {"Runner Initialization Params": {"l_label_col": 3, "l_id_col": 1, "l_first_row": 1,
                                                                   "label_func": functools.partial(replace_label_with_required, {"None": "n"}),
                                                                            "label_file": label_filename}}}
 
     datasets = ["train", "valid"]
 
-    cur_run = ["dvt_iterative.txt"]
+    cur_run = ["dvt-iterative.txt"]
 
     # TODO: Add functools label_funcs for some of the classifiers
     # TODO: Use country preprocessor from old code
@@ -150,13 +150,12 @@ if __name__ == "__main__":
 
             cur_labels_list = sorted(list(set(classifier_runner.classifier.dataset[cur_dataset]["preds"].tolist()) |
                                           set(classifier_runner.classifier.dataset[cur_dataset]["labels"].tolist())))
-            print(cur_labels_list)
             accuracy, \
             incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[cur_dataset]["preds"],
                                                    classifier_runner.classifier.dataset[cur_dataset]["labels"])
 
             print("\nAccuracy: ", accuracy)
-            print("\nIds: ", classifier_runner.classifier.dataset[cur_dataset]["ids"])
+            # print("\nIds: ", classifier_runner.classifier.dataset[cur_dataset]["ids"])
             print("Predictions: ", classifier_runner.classifier.dataset[cur_dataset]["preds"])
             print("Labels: ", classifier_runner.classifier.dataset[cur_dataset]["labels"])
 
@@ -241,9 +240,9 @@ if __name__ == "__main__":
 
             custom_class_colours = None
 
-            if rule == "dvt_iterative.txt":
-                custom_class_colours={"n": "hsl({},{}%,{}%)".format(15,71.4,89),
-                                      "y": "hsl({},{}%,{}%)".format(97,81,91.8)}
+            if rule == "acute.txt":
+                custom_class_colours={"Not Acute PE": "hsl({},{}%,{}%)".format(15,71.4,89),
+                                      "Acute PE": "hsl({},{}%,{}%)".format(97,81,91.8)}
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
                                   classifier_runner.classifier.regexes.keys(), failures_dict, effects,

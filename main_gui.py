@@ -16,6 +16,8 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 
+import tkinter.tix
+
 def create_regex_based_classifier(rule_path=None):
     """Creates a Regex based classifier Runner object which is later used to run the classifier
 
@@ -80,8 +82,6 @@ def load_rules(rule_folder, tree, runner_list):
     runner_list = runner_copy.copy()
 
 def edit_tree(item):
-    print("EDITING TREE")
-
     selected_row = rules_view_tree.focus()
 
     rvt_item = partial(rules_view_tree.item, selected_row)
@@ -98,6 +98,9 @@ def edit_label_col(*args):
     print(rules_view_tree.focus())
     rules_view_tree.item(rules_view_tree.focus(), values=selected_label_col_text.get())
 
+def clear_rules():
+    rules_view_tree.delete(*rules_view_tree.get_children())
+
 def run_rules():
     pass
 
@@ -106,7 +109,7 @@ if __name__ == "__main__":
     root = Tk()
     root.title("RegexNLP")
 
-    content = ttk.Frame(root, padding="3 3 3 12", width=300, height=300)
+    content = ttk.Frame(root, padding="3 3 3 12")
     content.grid(column=0, row=0, sticky=(N, S, E, W))
 
     rule_folder = StringVar()
@@ -131,50 +134,58 @@ if __name__ == "__main__":
     rules_view_tree.column("#0", anchor=W)
     rules_view_tree.heading('labelcols', text="Label Column Numbers")
     rules_view_tree.column('labelcols', anchor='center', width=200)
-    rules_view_tree.grid(row=8, columnspan=5, sticky=(N, S, E, W))
+    rules_view_tree.grid(row=8, column=1, columnspan=5, sticky=(N, S, E, W))
     rules_view_tree.bind('<<TreeviewSelect>>', edit_tree)
 
-    rule_folder_label = ttk.Label(content, text="Rule Folder: ").grid(column=0, row=0, sticky=W)
-    rule_folder_text = ttk.Entry(content, textvariable=rule_folder, width=30).grid(column=1, row=0, columnspan=3,
+    # checkbox_frame = ttk.Frame(content, width=40).grid(column=0, row=7, sticky=(N,S,E,W))
+    # content.grid_columnconfigure(0, minsize=40)
+    # check_button_1 = ttk.Button(checkbox_frame, text="a").grid(row=0)
+    # check_button_2 = ttk.Button(checkbox_frame, text="a").grid()
+    # check_button_3 = ttk.Checkbutton(checkbox_frame).grid(column=0, row=2, sticky=W)
+
+    rule_folder_label = ttk.Label(content, text="Rule Folder: ").grid(column=1, row=0, sticky=W)
+    rule_folder_text = ttk.Entry(content, textvariable=rule_folder, width=30).grid(column=2, row=0, columnspan=3,
                                                                                    sticky=(E, W))
 
     rule_folder_button = ttk.Button(content, text="Open Folder", command=partial(load_folder, rule_folder, load_rules,
                                                                                  *[rule_folder, rules_view_tree,
-                                                                                   runners_list])).grid(column=4, row=0,
+                                                                                   runners_list])).grid(column=5, row=0,
                                                                                                         sticky=W)
 
     # load_rules(rule_folder, rules_view_tree, runners_list)
 
-    data_file_label = ttk.Label(content, text="Data File: ").grid(column=0, row=1, sticky=W)
-    data_file_text = ttk.Entry(content, textvariable=data_file).grid(column=1, row=1, columnspan=3, sticky=(E, W))
-    data_file_button = ttk.Button(content, text="Open File", command=partial(load_file, data_file)).grid(column=4,
+    data_file_label = ttk.Label(content, text="Data File: ").grid(column=1, row=1, sticky=W)
+    data_file_text = ttk.Entry(content, textvariable=data_file).grid(column=2, row=1, columnspan=3, sticky=(E, W))
+    data_file_button = ttk.Button(content, text="Open File", command=partial(load_file, data_file)).grid(column=5,
                                                                                                          row=1,
                                                                                                          sticky=W)
 
-    data_columns_label = ttk.Label(content, text="Data Columns: ").grid(column=0, row=2, sticky=W)
-    data_columns_text = ttk.Entry(content, textvariable=data_cols).grid(column=1, row=2, columnspan=3, sticky=(E, W))
+    data_columns_label = ttk.Label(content, text="Data Columns: ").grid(column=1, row=2, sticky=W)
+    data_columns_text = ttk.Entry(content, textvariable=data_cols).grid(column=2, row=2, columnspan=3, sticky=(E, W))
 
-    data_id_label = ttk.Label(content, text="Data ID Column: ").grid(column=0, row=3, sticky=W)
-    data_id_text = ttk.Entry(content, textvariable=data_id_col).grid(column=1, row=3, columnspan=3, sticky=(E, W))
+    data_id_label = ttk.Label(content, text="Data ID Column: ").grid(column=1, row=3, sticky=W)
+    data_id_text = ttk.Entry(content, textvariable=data_id_col).grid(column=2, row=3, columnspan=3, sticky=(E, W))
 
-    label_file_label = ttk.Label(content, text="Label File: ").grid(column=0, row=4, sticky=W)
-    label_file_text = ttk.Entry(content, textvariable=label_file).grid(column=1, row=4, columnspan=3, sticky=(E, W))
-    label_file_button = ttk.Button(content, text="Open File", command=partial(load_file, label_file)).grid(column=4,
+    label_file_label = ttk.Label(content, text="Label File: ").grid(column=1, row=4, sticky=W)
+    label_file_text = ttk.Entry(content, textvariable=label_file).grid(column=2, row=4, columnspan=3, sticky=(E, W))
+    label_file_button = ttk.Button(content, text="Open File", command=partial(load_file, label_file)).grid(column=5,
                                                                                                            row=4,
                                                                                                            sticky=W)
 
     content.grid_rowconfigure(5, minsize=20)
 
-    run_button = ttk.Button(content, text="Run").grid(column=0, row=6, sticky=W)
+    run_button = ttk.Button(content, text="Run").grid(column=1, row=6, sticky=W)
+
+    clear_rules_button = ttk.Button(content, text="Clear Rules", command=clear_rules).grid(column=5, row=6, sticky=W)
 
     content.grid_rowconfigure(7, minsize=10)
 
-    selected_label_col_label = ttk.Label(content, textvariable=selected_row_rule).grid(column=0, columnspan=2, row=9,
+    selected_label_col_label = ttk.Label(content, textvariable=selected_row_rule).grid(column=1, columnspan=2, row=9,
                                                                                        sticky=W)
     selected_label_col_text = ttk.Entry(content, textvariable=selected_row_label_col)
     selected_label_col_text.bind("<Return>", edit_label_col)
 
-    selected_label_col_text.grid(column=3, row=9, sticky=(E, W))
+    selected_label_col_text.grid(column=4, row=9, sticky=(E, W))
 
 
     # def run_script():
