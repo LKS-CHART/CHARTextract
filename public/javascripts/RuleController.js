@@ -1,7 +1,6 @@
-app.controller("RuleController", ["DataService", "$http", "SettingsService", function(DataService, $http, SettingsService) {
+app.controller("RuleController", ["DataService", "$http", "SettingsService", "MainRuleService", function(DataService, $http, SettingsService, MainRuleService) {
 
     var ruleController = this;
-    var dataPromise = DataService.getData();
 
     ruleController.ruleData = {};
     ruleController.previousTab = null;
