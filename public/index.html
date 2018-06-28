@@ -121,11 +121,11 @@
             </div>
             <div class="nav navbar-nav" style="padding-left:20px; max-width:80%">
                 <div style="min-height: 40px; line-height: 40px;" ng-repeat="(class, colour) in errorCtrl.classes">
-                    <div style="display: inline-block; position: relative; min-width: 100px; margin: auto; float: left;">{{class}}</div>
+                    <div style="display: inline-block; position: relative; min-width: 150px; margin: auto; float: left;">{{class}}</div>
                     <!--<span class="page-item" ng-repeat="error in errorCtrl.errors[class]">-->
                     <!--1-->
                     <!--</span>-->
-                    <ul style="display: inline-block; margin: 0; vertical-align: middle; white-space: nowrap; max-width: 800px; overflow-x:scroll; float: none"class="nav navbar-nav pagination">
+                    <ul style="display: flex; margin: 0; vertical-align: middle; white-space: nowrap; width: 80%; overflow-x:scroll; float: none"class="nav navbar-nav pagination">
                         <li class="page-item {{errorCtrl.getIdInfo(error).recurring ? 'recurring' : 'not-recurring'}}"  ng-repeat="error in errorCtrl.errors[class]" >
                             <a ng-href="#!/view" ng-click="errorCtrl.setSelected(error); errorCtrl.getSelectedData()" style="background: {{errorCtrl.classes[errorCtrl.getIdInfo(error).pred]}}">{{error}}</a>
                         </li>
