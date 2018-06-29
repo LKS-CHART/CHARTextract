@@ -17,7 +17,7 @@ def preprocess_data(data):
         modified_data {string} -- modified data
     """
     #print("HER")
-    data = data.replace('_x000D_', '').replace('\n#\n', '\n').replace('#', '\n').replace('\\n','\n')
+    data = data.replace('_x000D_', '').replace("\n\n",".").replace('\n#\n', '.').replace('#', '\n').replace('\\n','\n')
     #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
     data, _ = re.subn(r'\bM.{1,2}\.', '', data)
     data, _ = re.subn(r'\bD.{1,2}\.', '', data)
@@ -302,11 +302,13 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
                     count += 1
 
                     #getting data, label and ids from each row and concatenating it
-
-
-
-                    data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
+                    try:
+                        data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
                                                  data, labels, ids, repeat_ids, lambda col: str(row[col]))
+                    except:
+                        raise(Exception("{}{}{}".format(data_cols, label_cols, id_cols)))
+
+
 
     if preprocess_func is not None:
         for i in range(len(data)):

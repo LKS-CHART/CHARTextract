@@ -13,21 +13,17 @@ from datahandler.helpers import import_regex, import_regexes
 from datahandler.preprocessors import replace_filter_by_label, replace_labels_with_required, \
     replace_label_with_required, replace_filter, convert_repeated_data_to_sublist
 from util.pwd_preprocessors import PwdPreprocessor2
+from datahandler.data_sampling import create_train_and_valid
 
-
-def load_classifier_data(runner, classifier_data_list, labels_list, classifier_ids_list, dataset=None,
-                         create_train_valid=False, train_percent=.6, random_seed=0):
+def load_data(data_list, labels_list, ids_list, train_percent=.6, random_seed=0):
     # If training is enabled
     # Storing data within classifier and creating validation and training sets
-    classifier_data_list = np.array(classifier_data_list) if classifier_data_list else None
-    labels_list = np.array(labels_list) if labels_list else [None] * len(classifier_data_list)
-    classifier_ids_list = np.array(classifier_ids_list) if classifier_ids_list else [None] * len(classifier_data_list)
+    data_list = np.array(data_list) if data_list else None
+    labels_list = np.array(labels_list) if labels_list else [None] * len(data_list)
+    ids_list = np.array(ids_list) if ids_list else [None] * len(data_list)
 
-    if not create_train_valid:
-        runner.classifier.load_dataset(dataset, data=classifier_data_list, labels=labels_list, ids=classifier_ids_list)
-    else:
-        runner.classifier.create_train_and_valid(ids=classifier_ids_list, data=classifier_data_list, labels=labels_list,
-                                                 train_percent=train_percent, random_seed=random_seed)
+    create_train_and_valid(ids=ids_list, data=data_list, labels=labels_list, train_percent=train_percent)
+
     return runner
 
 
