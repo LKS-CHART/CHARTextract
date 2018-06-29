@@ -47,25 +47,32 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
 
     }
 
-
+    ruleController.getNegativeLabel = function() {
+        return SettingsService.getCurrentNegativeLabel();
+    }
 
     ruleController.deleteFile = function() {
 
     }
     ruleController.saveFile = function(class_name) {
+
         var new_class_name = ruleController.ruleData[class_name].new_name || class_name
-        ruleController.ruleData[class_name]["regexesText"] = editor.session.getValue();
-        var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
-        var params = {
-            "filename": ruleController.ruleData[class_name].fileName,
-            "regexes": ruleController.ruleData[class_name].regexesText,
-            "new_name": new_class_name
+
+        if (new_class_name !== SettingsService.getCurrentNegativeLabel()) {
+
+            ruleController.ruleData[class_name]["regexesText"] = editor.session.getValue();
+            var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
+            var params = {
+                "filename": ruleController.ruleData[class_name].fileName,
+                "regexes": ruleController.ruleData[class_name].regexesText,
+                "new_name": new_class_name
+            }
+            $http.post(url, params).then(function(data) {
+                console.log("Sent Post Request")
+            }).then(function() {
+                ruleController.currentTab = new_class_name;
+            })
         }
-        $http.post(url, params).then(function(data) {
-            console.log("Sent Post Request")
-        }).then(function() {
-            ruleController.currentTab = new_class_name;
-        })
 
         loadText();
     }

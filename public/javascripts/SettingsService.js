@@ -19,6 +19,8 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
 
     var url2 = "http://localhost:3000/load/variable_list"
 
+    var negativeLabel = "None";
+
     console.log("CALLED")
     var myDataPromise = DataService.getData();
 
@@ -82,6 +84,17 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
 
     }
 
+    var getCurrentNegativeLabel = function() {
+        if (sessionStorage.getItem("currentNegativeLabel") === null || sessionStorage.getItem("currentNegativeLabel") === undefined) {
+            return "None"
+        }
+        return sessionStorage.getItem("currentNegativeLabel");
+    }
+
+    var setCurrentNegativeLabel = function(negative_label) {
+        sessionStorage.setItem("currentNegativeLabel", negative_label)
+    }
+
     var setCurrentVariable = function(variable) {
         currentVariable = variable;
 
@@ -110,5 +123,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         predictionMode, predictionMode,
         getCurrentVariable: getCurrentVariable,
         setCurrentVariable: setCurrentVariable,
+        getCurrentNegativeLabel: getCurrentNegativeLabel,
+        setCurrentNegativeLabel: setCurrentNegativeLabel
     }
 }])

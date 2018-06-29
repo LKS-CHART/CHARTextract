@@ -2,14 +2,18 @@ app.service('DataService', function($http, $q) {
 
     var deferred = $q.defer()
 
-    var url = "";
-    
-    if (localStorage.getItem("errorJsonPath") === null) {
-        url = "/data/error_report.json";
-    } else {
-        url = "/" + localStorage.getItem("errorJsonPath");
+
+    if(localStorage.getItem("errorJsonPath") === null || localStorage.getItem("errorJsonPath") === undefined) {
+        var url = "/data/error_report.json"
+    }
+    else
+    {
+
+        var url = "/" + localStorage.getItem("errorJsonPath");
     }
 
+
+    //var url = "/data/error_report.json"
     $http.get(url).then(function (response) {
         deferred.resolve(response.data)
     })

@@ -64,6 +64,19 @@ router.get('/variable_settings/:variable', function(req, res, next) {
 
 })
 
+router.get('/classifier_settings/:variable', function(req, res, next) {
+    var variable_filePath = path.join(save.rules_path, req.params.variable)
+    var classifier_settings = path.join(variable_filePath, "rule_settings.json")
+
+    var fR = promisify(fs.readFile)
+
+    fR(classifier_settings).then(data => {
+        var res_json = JSON.parse(data);
+        res.send(JSON.stringify(res_json))
+    })
+
+})
+
 router.get('/variable_list', function(req, res, next) {
     let res_json = {}
 

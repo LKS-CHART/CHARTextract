@@ -63,12 +63,8 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
         SettingsService.setCurrentVariable(variableController.currentVariable);
 
-
         var arrayfied_dictionaries = variableController.curVarDictionaries === "" ? [] :
                                             variableController.curVarDictionaries.split(",")
-
-        console.log(variableController.curVarLabelCol)
-
 
         var arrayfied_label_cols = null;
 
@@ -92,10 +88,23 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
                 "Use Preprocessor": variableController.usePreprocessor
             }
         }
-        console.log(url2);
+
         $http.post(url2, params).then(function(data) {
             console.log("Sent Save Variable Settings Request")
-        })
+
+            var url3 = "http://localhost:3000/load/classifier_settings/" + SettingsService.getCurrentVariable();
+
+            $http.get(url3).then(function(result) {
+                var data = result.data;
+
+                    if (data.hasOwnProperty("Classifier Args") && data["Classifier Args"].hasOwnProperty("negative_label")) {
+                        SettingsService.setCurrentNegativeLabel(data["Classifier Args"]["negative_label"])
+                    } else {
+
+                        SettingsService.setCurrentNegativeLabel("None")
+                    }
+                })
+            })
 
         variableController.editMode = false;
 
@@ -103,14 +112,15 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
         SettingsService.requestVars().then(function(result) {
             variableController.availableVariables = result["Variable List"]
-
         })
     }
 
     variableController.getCurVarSettings = function() {
-        console.log("IN VARIABLE CONTROLLER GET CUR VAR SETTINGS")
-
         getVariableSettings();
+    }
+
+    variableController.savedVariable = function() {
+        return SettingsService.getCurrentVariable();
     }
 
 

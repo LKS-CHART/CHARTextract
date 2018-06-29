@@ -25,6 +25,11 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).conf
         templateUrl: 'views/rulesimp.html',
         controller: "RuleControllerSimp",
         controllerAs: "ruleCtrl"
+    }).
+    when('/classifier_settings', {
+        templateUrl: 'views/classifierSettings.html',
+        controller: "ClassifierController",
+        controllerAs: "classifierCtrl"
     })
 }])
 

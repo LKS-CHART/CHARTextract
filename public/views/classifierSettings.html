@@ -1,0 +1,54 @@
+<div>
+    <h1 align="center">RegexNLP</h1>
+</div>
+<h3>Classifier Settings</h3>
+<a href="#!/settings" class="btn btn-default">Project Settings</a>
+<a href="#!/variable_settings" class="btn btn-default">Variable Settings</a>
+<a href="#!/classifier_settings" class="btn btn-default">Classifier Settings</a>
+<br/>
+<br/>
+
+<div style="display: inline-block">
+    <b>Variable:</b>
+    <span>{{classifierCtrl.getCurrentVariable()}}</span>
+</div>
+<br/><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Classifier Type:</span>
+    </div>
+    <div class="col-xs-4">
+        <select class="form-control input-sm" name="classifier_type" ng-model="classifierCtrl.currentClassifier">
+            <option ng-repeat="(key, val) in classifierCtrl.availableClassifiers" value="{{key}}">{{key}}</option>
+        </select>
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Negative Label:</span>
+    </div>
+    <div class="col-xs-4">
+        <input type="text" class="form-control input-sm" ng-model="classifierCtrl.negativeLabel" placeholder="Text input">
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Bias</th>
+                    <th><span class="close" ng-click="classifierCtrl.addBias()" style="color: green" aria-hidden="true">+</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="val in classifierCtrl.biases">
+                    <td><input class="form-control" ng-model="val.class"></td>
+                    <td><input class="form-control" type="number" step="1" ng-model="val.bias"></td>
+                    <td><span ng-click="classifierCtrl.removeBias($index)" class="close" style="color: red; padding-top:5px;" aria-hidden="true">&times;</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><br/>
+<button type="button" ng-click="classifierCtrl.saveSettings()" class="btn btn-primary">Save Classifier Settings</button>

@@ -64,6 +64,22 @@ router.post('/save_variable_settings/:variable', function(req, res, next) {
 
 })
 
+router.post('/save_classifier_settings/:variable', function(req, res, next) {
+    var variable = req.params.variable;
+    var save_var_path = path.join(module.exports.rules_path, variable);
+    if(fs.existsSync(save_var_path)) {
+        fs.writeFile(path.join(save_var_path, "rule_settings.json"), JSON.stringify(req.body["Classifier Settings"], null, 4), function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("Save Classifier Settings");
+            res.sendStatus(200);
+
+        })
+    }
+})
+
 router.post('/:variable/:class', function(req, res, next) {
 
     if (module.exports.rules_path === null) {
