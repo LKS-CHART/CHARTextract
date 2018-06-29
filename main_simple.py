@@ -115,9 +115,11 @@ if __name__ == "__main__":
     DEBUG_MODE = args.debug
 
     if DEBUG_MODE:
-        ids, data, labels = ["0","1","2"], ["This is a test", "This is not a Test", "Blob"], ["Yes", "No", "No"]
+        train_ids, train_data, train_labels = ["0","1","2"], ["This is a test", "This is not a Test", "Blob"], ["Yes", "No", "No"]
         label_file = label_id_col = label_first_row = label_func = None
-
+        valid_file_exists = False
+        valid_label_file = None
+        valid_ids = valid_data = valid_labels = None
     else:
         data_file = os.path.join(*project_settings["Data File"]) if type(project_settings["Data File"]) == list \
             else project_settings["Data File"]
@@ -126,13 +128,14 @@ if __name__ == "__main__":
         data_cols = project_settings["Data Cols"]
         repeat_ids = not project_settings["Concatenate Data"]
         valid_file_exists = False
+        valid_label_file = None
+        valid_ids = valid_data = valid_labels = None
 
         if not prediction_mode:
             label_file = os.path.join(*project_settings["Label File"]) if type(project_settings["Label File"]) == list \
                 else project_settings["Label File"]
             label_id_col = project_settings["Label Id Col"]
             label_first_row = project_settings["Label First Row"]
-            valid_label_file = None
 
             if "Valid Label File" in project_settings:
                 if len(project_settings["Valid Label File"]) > 0:
@@ -163,7 +166,7 @@ if __name__ == "__main__":
 
         if not prediction_mode:
             if not DEBUG_MODE:
-                ids, data, labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
+                train_ids, train_data, train_labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
                                                         label_func)
 
                 if valid_file_exists:
@@ -171,19 +174,19 @@ if __name__ == "__main__":
                                                                               label_func)
 
             if create_train_and_valid:
-                classifier_runner = load_classifier_data(classifier_runner, data, labels, ids,
+                classifier_runner = load_classifier_data(classifier_runner, train_data, train_labels, train_ids,
                                                          create_train_valid=True, train_percent=.6, random_seed=0)
                 available_datasets = ["train", "valid"]
 
             elif valid_file_exists:
                 available_datasets = ["train", "valid"]
-                classifier_runner = load_classifier_data(classifier_runner, data, labels,
-                                                         ids, dataset=available_datasets[0])
+                classifier_runner = load_classifier_data(classifier_runner, train_data, train_labels,
+                                                         train_ids, dataset=available_datasets[0])
                 classifier_runner = load_classifier_data(classifier_runner, valid_data, valid_labels,
                                                          valid_ids, dataset=available_datasets[1])
             else:
-                classifier_runner = load_classifier_data(classifier_runner, data, labels,
-                                                         ids, dataset=available_datasets[0])
+                classifier_runner = load_classifier_data(classifier_runner, train_data, train_labels,
+                                                         train_ids, dataset=available_datasets[0])
 
         else:
             labels = [''.join(random.choice(string.ascii_letters) for _ in range(9))]*len(data)

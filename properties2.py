@@ -12,6 +12,16 @@ file_to_args = {
                                                                      {"LTBI": "None"})
                                     }
                                 },
+                "tb_old_not_dictated": {
+                    "Runner Initialization Params": {
+                        "label_func": functools.partial(replace_label_with_required, {"None": "Not dictated", "Yes": "Dictated", "No": "Dictated"})
+                    }
+                },
+                "tb_old": {
+                    "Runner Initialization Params": {
+                        "label_func": functools.partial(replace_label_with_required, {"None": "No", "Yes": "Yes", "No": "No"})
+                    }
+                },
                 "diag_method_clinical": {"Runner Initialization Params":
                                                  {
                                                   "label_func": functools.partial(replace_label_with_required,
