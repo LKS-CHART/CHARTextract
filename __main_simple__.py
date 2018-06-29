@@ -165,7 +165,7 @@ def run_variable(variable, settings):
                                                     label_func)
 
             if create_train_and_valid and not valid_file_exists:
-                classifier_runner = load_classifier_data(classifier_runner, data, labels, ids,
+                classifier_runner = load_classifier_data(classifier_runner, train_data, train_labels, train_ids,
                                                          create_train_valid=True, train_percent=.6, random_seed=0)
                 available_datasets = ["train", "valid"]
 
