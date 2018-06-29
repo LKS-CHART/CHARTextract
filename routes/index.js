@@ -31,8 +31,11 @@ router.get("/:variable/:dataset/error_report.json", function(req, res, next) {
             if (err){
                 reject(err);
             }
-            console.log("ERROR REPORT REQUEST")
-            resolve(JSON.parse(data))});
+            else {
+             resolve(JSON.parse(data))
+            }
+
+           });
     });
     reportPromise.then(function(result){
         res.send(JSON.stringify(result));
