@@ -102,7 +102,9 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
         #If we are concatenating data (i.e repeat_ids = False), use all the diagnoses
         cur_label = []
         for actual_label_col in label_col:
-            cur_label.append(row_process_func(actual_label_col))
+            val = row_process_func(actual_label_col)
+            val = "None" if not val else val
+            cur_label.append(val)
         if concat_index is not None:
             if type(labels[concat_index]) == list:
                 labels[concat_index].extend(cur_label)
