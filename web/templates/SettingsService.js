@@ -1,7 +1,8 @@
 app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http, DataService) {
-    var dataSettings = {"Data File": null, "Data ID Cols": 0, "Data First Row": 1, "Data Cols": 2, "Concatenate Data": true, "selected": null}
-    var labelSettings = {"Label File": null, "Label ID Cols": 0, "Label First Row": 1, "Label Cols": 2, "selected": null}
-    var ruleSettings = {"Rule Folder": null, "selected": null}
+    var dataSettings = {"selected": null}
+    var labelSettings = {"selected": null}
+    var ruleSettings = {"selected": null}
+    var validLabelSettings = {"selected": null}
     var dataIdCol = 0
     var dataFirstRow = 1
     var dataCol = 2
@@ -9,13 +10,13 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
     var labelIdCol = 0
     var labelFirstRow = 1
     var createTrainAndValid = true;
+    var predictionMode = false;
 
     var currentVariable = null;
     var prevVariable = null;
 
     var deferred = $q.defer()
 
-    var url = "http://localhost:3000/get_project_settings"
     var url2 = "http://localhost:3000/load/variable_list"
 
     console.log("CALLED")
@@ -25,12 +26,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         prevVariable = result.var_name;
     })
 
-    $http.get(url).then(function (response) {
-        deferred.resolve(response.data)
-    })
-
     console.log("SETTIGNS SERVICE INITIALIZED")
-
 
     var curWorkingObj = null;
 
@@ -70,7 +66,13 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         if (currentVariable === null) {
             console.log("PREV VARIABLE")
             console.log(prevVariable)
-            return prevVariable;
+
+            if(localStorage.getItem("currentVariable") === null) {
+
+                return prevVariable
+            }
+
+            return localStorage.getItem("currentVariable");
         }
         else {
             console.log("CURR VARIABLE")
@@ -96,6 +98,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         dataSettings: dataSettings,
         labelSettings: labelSettings,
         ruleSettings: ruleSettings,
+        validLabelSettings: validLabelSettings,
         dataIdCol: dataIdCol,
         dataFirstRow: dataFirstRow,
         dataCol: dataCol,
@@ -104,7 +107,8 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         labelFirstRow: labelFirstRow,
         createTrainAndValid: createTrainAndValid,
         requestVars: requestVars,
+        predictionMode, predictionMode,
         getCurrentVariable: getCurrentVariable,
-        setCurrentVariable: setCurrentVariable
+        setCurrentVariable: setCurrentVariable,
     }
 }])

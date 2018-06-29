@@ -332,7 +332,6 @@ class RegexHandler(object):
                 preprocessed_data["dictionaries"] = pwds
 
             if preprocessed_data["sentence"] is None:
-                print("Hererere")
                 continue
 
             regex_matches = regex.determine_matches(preprocessed_data["sentence"], pwds=preprocessed_data["dictionaries"])

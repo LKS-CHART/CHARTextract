@@ -195,10 +195,6 @@ class Regex(object):
             #Use re.search if not and return a list version
             matches = self._match_func(self.regex, text) if self._should_compile else self._match_func(regex, text, self.flags)
             matches = [] if matches is None else [matches]
-
-            if matches:
-                print(matches)
-                print(regex)
         return matches
 
     def get_secondary_regexes(self, type_list=None):

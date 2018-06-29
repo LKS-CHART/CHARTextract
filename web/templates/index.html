@@ -7,6 +7,11 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/rulecreator.css">
+    <link rel="stylesheet" href="stylesheets/jquery.tag-editor.css">
+    <link rel="stylesheet" href="stylesheets/jquery-ui.min.css">
+    <link rel="stylesheet" href="stylesheets/jquery-ui.structure.min.css">
+    <link rel="stylesheet" href="stylesheets/jquery-ui.theme.min.css">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
@@ -18,9 +23,13 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular.min.js"></script>
     <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular-route.min.js"></script>
     <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.10/angular-sanitize.js"></script>
+    <script src="javascripts/jquery-ui.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/theme-monokai.js"></script>
+    <script src="javascripts/jquery.caret.min.js"></script>
+    <script src="javascripts/jquery.tag-editor.js"></script>
+    <script src="javascripts/GuiObjects.js"></script>
     <script src="javascripts/angular-recursion.js"></script>
     <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.min.js"></script>
     <script src="javascripts/main.js"></script>
@@ -32,6 +41,10 @@
     <script src="javascripts/RuleController.js"></script>
     <script src="javascripts/LoaderController.js"></script>
     <script src="javascripts/VariableController.js"></script>
+    <script src="javascripts/ObjectController.js"></script>
+    <script src="javascripts/RuleService.js"></script>
+    <script src="javascripts/MainRuleService.js"></script>
+    <script src="javascripts/RuleControllerSimp.js"></script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -73,6 +86,28 @@
                             </li>
                         </ul>
                     </li>
+                    <li ng-controller="SettingsController as settingsCtrl3" >
+                        <ul ng-cloak ng-if="settingsCtrl3.getDataset() === 'train' && settingsCtrl3.hasMultipleDatasets() === 'true'" class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                            <li class="page-item">
+                                <a ng-click="settingsCtrl3.setDataset('valid'); errorCtrl.forceData()" style="min-width: 90px; cursor: pointer">
+                                    <p align="center" style="margin: 0 0">
+                                        Switch To Valid
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li ng-controller="SettingsController as settingsCtrl3">
+                        <ul  ng-if="settingsCtrl3.getDataset() === 'valid' && settingsCtrl3.hasMultipleDatasets() === 'true'" class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                            <li class="page-item">
+                                <a ng-click="settingsCtrl3.setDataset('train'); errorCtrl.forceData()" style="min-width: 90px; cursor: pointer">
+                                    <p align="center" style="margin: 0 0">
+                                        Switch To Train
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                     <li ng-controller="SettingsController as settingsCtrl2">
                         <ul class="nav navbar-nav pagination" style="margin: 2px 0px;">
                             <li class="page-item">
@@ -86,15 +121,15 @@
                     </li>
                 </ul>
             </div>
-            <div class="nav navbar-nav" style="padding-left:20px; max-width:80%">
+            <div class="nav navbar-nav" style="padding-left:20px; width:80%">
                 <div style="min-height: 40px; line-height: 40px;" ng-repeat="(class, colour) in errorCtrl.classes">
-                    <div style="display: inline-block; position: relative; min-width: 100px; margin: auto; float: left;">{{class}}</div>
+                    <div style="display: inline-block; position: relative; min-width: 150px; margin: auto; float: left;">{{class}}</div>
                     <!--<span class="page-item" ng-repeat="error in errorCtrl.errors[class]">-->
                     <!--1-->
                     <!--</span>-->
-                    <ul style="display: inline-block; margin: 0; vertical-align: middle;"class="nav navbar-nav pagination">
-                        <li class="page-item {{errorCtrl.getIdInfo(error).recurring ? 'recurring' : 'not-recurring'}}"  ng-repeat="error in errorCtrl.errors[class]" >
-                            <a ng-href="#!/view" ng-click="errorCtrl.setSelected(error); errorCtrl.getSelectedData()" style="background: {{errorCtrl.classes[errorCtrl.getIdInfo(error).pred]}}">{{error}}</a>
+                    <ul style="display: flex; margin: 0; vertical-align: middle; white-space: nowrap; width: 80%; overflow-x:scroll; float: none"class="nav navbar-nav pagination">
+                        <li class="page-item {{errorCtrl.getIdInfo(error).recurring ? 'recurring' : 'not-recurring'}} {{errorCtrl.selected_id === error ? 'active-link' : ''}}" ng-repeat="error in errorCtrl.errors[class]" >
+                            <a ng-href="#!/view" ng-click="errorCtrl.setSelected(error); errorCtrl.getSelectedData();" style="background: {{errorCtrl.classes[errorCtrl.getIdInfo(error).pred]}}">{{error}}</a>
                         </li>
                     </ul>
 
