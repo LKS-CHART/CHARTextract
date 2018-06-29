@@ -204,7 +204,7 @@ app.directive('secondary', function() {
     }
 })
 
-app.directive('tagEditor', function() {
+app.directive('tagEditor', function(RuleService) {
     return {
         restrict: 'E',
         template: '<input type="text" class="form-control">',
@@ -213,6 +213,22 @@ app.directive('tagEditor', function() {
         },
         link: function(scope, element, attrs) {
 
+
+            scope.availableTags = ["OR", "{test1}", "{test2}"]
+            scope.requiredTags = ["OR", "{test1}", "{test2}"]
+
+            function tagSave(field, editor, tags, tag, val) {
+                if (!scope.availableTags.includes(val)) {
+                    scope.availableTags.push(val)
+                }
+            }
+
+            function tagDelete(field, editor, tags, val) {
+//                if(!scope.requiredTags.includes(val)) {
+//                    scope.availableTags.splice(scope.availableTags.indexOf(val),1);
+//                }
+
+            }
 
             function tagCallback(field, editor, tags) {
                 scope.ruleContainer = tags
@@ -248,14 +264,16 @@ app.directive('tagEditor', function() {
                     i++;
 
                 });
+
             }
 
-            element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "delimiter": ";",
+
+            element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "beforeTagSave": tagSave, "beforeTagDelete": tagDelete, "delimiter": ";",
             "placeholder": "Enter a word", "forceLowercase": false, "removeDuplicates": false, "animateDelete": 30,
             "autocomplete": {
                 delay: 0,
                 position: {collision: 'flip'},
-                source: ["{test1}", "OR", "{test2}"],
+                source: scope.availableTags,
                 minLength: 0
             }});
 

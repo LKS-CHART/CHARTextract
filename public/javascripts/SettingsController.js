@@ -2,7 +2,9 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     var settingsController = this;
     settingsController.dataFile = SettingsService.dataSettings.selected;
     settingsController.labelFile = SettingsService.labelSettings.selected;
+    settingsController.validLabelFile = SettingsService.validLabelSettings.selected;
     settingsController.ruleFolder = SettingsService.ruleSettings.selected;
+
     settingsController.dataIdCol = SettingsService.dataIdCol
     settingsController.dataFirstRow = SettingsService.dataFirstRow
     settingsController.dataCol = SettingsService.dataCol
@@ -25,13 +27,16 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         settingsController.createTrainAndValid = result["Create Train and Valid"]
         settingsController.predictionMode = !result.hasOwnProperty("Prediction Mode") ? false : result["Prediction Mode"]
 
+
         settingsController.dataFile = ["Computer"].concat(result["Data File"]);
         settingsController.labelFile = ["Computer"].concat(result["Label File"]);
         settingsController.ruleFolder = ["Computer"].concat(result["Rules Folder"]);
+        settingsController.validLabelFile = result.hasOwnProperty("Valid Label File") ? ["Computer"].concat(result["Valid Label File"]) : ["Computer"]
 
         SettingsService.dataSettings.selected = settingsController.dataFile;
         SettingsService.labelSettings.selected = settingsController.labelFile;
         SettingsService.ruleSettings.selected = settingsController.ruleFolder;
+        SettingsService.validLabelSettings.selected = settingsController.validLabelFile;
 
     })
 
@@ -60,10 +65,8 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         }).result.then(function() {
             settingsController.dataFile = SettingsService.dataSettings.selected;
             settingsController.labelFile = SettingsService.labelSettings.selected;
+            settingsController.validLabelFile = SettingsService.validLabelSettings.selected;
         });
-
-
-
     }
 
     settingsController.getDataObj = function() {
@@ -72,6 +75,10 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
 
     settingsController.getLabelObj = function() {
         return SettingsService.labelSettings
+    }
+
+    settingsController.getValidLabelObj = function() {
+        return SettingsService.validLabelSettings
     }
 
     settingsController.getRuleObj = function() {
@@ -109,8 +116,16 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     }
 
     settingsController.getDataset = function() {
-        console.log(sessionStorage.getItem("dataset"))
         return sessionStorage.getItem("dataset")
+    }
+
+    settingsController.hasMultipleDatasets = function() {
+        if(sessionStorage.getItem('twoSets') === null) {
+            return false;
+        } else {
+            return sessionStorage.getItem('twoSets');
+        }
+
     }
 
     settingsController.saveSettings = function() {
@@ -132,6 +147,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         dataFileNorm = settingsController.dataFile.slice(1,settingsController.dataFile.length);
         labelFileNorm = settingsController.labelFile.slice(1,settingsController.labelFile.length);
         ruleFolderNorm = settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length);
+        validLabelFileNorm = settingsController.validLabelFile.slice(1,settingsController.validLabelFile.length);
 
         var params = {
             "Project Settings Data": {
@@ -146,10 +162,23 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
                 "Label Id Col" : settingsController.labelIdCol,
                 "Label First Row" : settingsController.labelFirstRow,
                 "Create Train and Valid" : settingsController.createTrainAndValid,
-                "Prediction Mode": settingsController.predictionMode
+                "Prediction Mode": settingsController.predictionMode,
+                "Valid Label File": validLabelFileNorm
             }
         }
         $http.post(url, params).then(function(data) {
+
+            if ((validLabelFileNorm.length > 1 || settingsController.createTrainAndValid) && !settingsController.predictionMode) {
+                sessionStorage.setItem('twoSets', "true")
+                console.log("Two sets:" + sessionStorage.getItem('twoSets'))
+            }
+            else {
+                sessionStorage.setItem('twoSets', "false")
+                console.log("Two sets:" + sessionStorage.getItem('twoSets'))
+            }
+
+            sessionStorage.setItem("dataset", "train")
+
             console.log(data)
             console.log("Sent Save Settings Request")
             console.log(settingsController.dataFile)
@@ -160,6 +189,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
             console.log(settingsController.dataFile)
             console.log(settingsController.labelFile)
             console.log(settingsController.ruleFolder)
+            console.log(settingsController.validLabelFile)
         });
     }
 

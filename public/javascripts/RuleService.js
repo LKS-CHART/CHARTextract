@@ -8,7 +8,6 @@ app.service('RuleService', [function() {
 
     var CurrentRule = null;
 
-
     function generateId() {
 
         return Math.random().toString(36).substring(7);
@@ -58,6 +57,14 @@ app.service('RuleService', [function() {
         return CurrentRule;
     }
 
+    var getAvailableTags = function() {
+        return availableTags;
+    }
+
+    var addTag = function(tag) {
+        availableTags.push(tag)
+    }
+
     return {
         addDummyRule: addDummyRule,
         getRuleset: getRuleset,
@@ -66,7 +73,7 @@ app.service('RuleService', [function() {
         addDummySecondary: addDummySecondary,
         deleteSecondaryRule: deleteSecondaryRule,
         getCurrentRule: getCurrentRule,
-        setCurrentRule: setCurrentRule
+        setCurrentRule: setCurrentRule,
     };
 
 }])

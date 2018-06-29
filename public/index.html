@@ -86,22 +86,22 @@
                         </ul>
                     </li>
                     <li ng-controller="SettingsController as settingsCtrl3" >
-                        <ul ng-cloak ng-if="settingsCtrl3.getDataset() === 'train' && settingsCtrl3.createTrainAndValid && !settingsCtrl3.predictionMode" class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                        <ul ng-cloak ng-if="settingsCtrl3.getDataset() === 'train' && settingsCtrl3.hasMultipleDatasets() === 'true'" class="nav navbar-nav pagination" style="margin: 2px 0px;">
                             <li class="page-item">
                                 <a ng-click="settingsCtrl3.setDataset('valid'); errorCtrl.forceData()" style="min-width: 90px; cursor: pointer">
                                     <p align="center" style="margin: 0 0">
-                                        View Valid
+                                        Switch To Valid
                                     </p>
                                 </a>
                             </li>
                         </ul>
                     </li>
                     <li ng-controller="SettingsController as settingsCtrl3">
-                        <ul  ng-if="settingsCtrl3.getDataset() === 'valid'" class="nav navbar-nav pagination" style="margin: 2px 0px;">
+                        <ul  ng-if="settingsCtrl3.getDataset() === 'valid' && settingsCtrl3.hasMultipleDatasets() === 'true'" class="nav navbar-nav pagination" style="margin: 2px 0px;">
                             <li class="page-item">
                                 <a ng-click="settingsCtrl3.setDataset('train'); errorCtrl.forceData()" style="min-width: 90px; cursor: pointer">
                                     <p align="center" style="margin: 0 0">
-                                        View Train
+                                        Switch To Train
                                     </p>
                                 </a>
                             </li>

@@ -1,7 +1,8 @@
 app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http, DataService) {
-    var dataSettings = {"Data File": null, "Data ID Cols": 0, "Data First Row": 1, "Data Cols": 2, "Concatenate Data": true, "selected": null}
-    var labelSettings = {"Label File": null, "Label ID Cols": 0, "Label First Row": 1, "Label Cols": 2, "selected": null}
-    var ruleSettings = {"Rule Folder": null, "selected": null}
+    var dataSettings = {"selected": null}
+    var labelSettings = {"selected": null}
+    var ruleSettings = {"selected": null}
+    var validLabelSettings = {"selected": null}
     var dataIdCol = 0
     var dataFirstRow = 1
     var dataCol = 2
@@ -25,9 +26,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         prevVariable = result.var_name;
     })
 
-
     console.log("SETTIGNS SERVICE INITIALIZED")
-
 
     var curWorkingObj = null;
 
@@ -99,6 +98,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         dataSettings: dataSettings,
         labelSettings: labelSettings,
         ruleSettings: ruleSettings,
+        validLabelSettings: validLabelSettings,
         dataIdCol: dataIdCol,
         dataFirstRow: dataFirstRow,
         dataCol: dataCol,
