@@ -105,9 +105,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         console.log("BEFORE CURRENT VARIABLE");
         var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
 
-        if (sessionStorage.getItem("dataset") === null) {
-            sessionStorage.setItem("dataset", "train")
-        }
+        sessionStorage.setItem("dataset", "train")
 
         var p = SettingsService.getCurrentVariable() + "/" + "train" + "/" + "error_report.json";
         localStorage.setItem('errorJsonPath', p);

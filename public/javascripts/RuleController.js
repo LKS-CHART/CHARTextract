@@ -53,7 +53,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
 
     }
     ruleController.saveFile = function(class_name) {
-        var new_class_name = ruleController.ruleData[class_name].new_name
+        var new_class_name = ruleController.ruleData[class_name].new_name || class_name
         ruleController.ruleData[class_name]["regexesText"] = editor.session.getValue();
         var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
         var params = {
