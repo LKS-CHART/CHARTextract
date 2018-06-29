@@ -1,5 +1,4 @@
 from util.string_functions import split_string_into_sentences
-from itertools import product
 from heapq import *
 from collections import defaultdict
 from regex.regex_functions import match_secondary
@@ -117,13 +116,12 @@ class CaptureHandler(object):
         captures = []
         total_score = 0
 
-
         # For every regex we want to get the captures, matches and compute a score using the primary regex score
         for regex in regexes:
 
             preprocessed_data = {}
             if preprocess_func and self.preprocess_mode == PREPROCESS_PER_REGEX:
-
+                secondaries = regex.get_secondary_regexes()
                 mentioned_pwds = set()
 
                 if secondaries:
