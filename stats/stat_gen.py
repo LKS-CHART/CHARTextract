@@ -7,10 +7,11 @@ from stats.basic import plot_confusion_matrix, get_classification_stats, compute
 
 def get_failures(classifier_runner, cur_dataset, conf_path, print_output=True):
     failures_dict = {}
-
-    cur_labels_list = sorted(list(set(classifier_runner.classifier.dataset[cur_dataset]["preds"].tolist()) |
+    try:
+        cur_labels_list = sorted(list(set(classifier_runner.classifier.dataset[cur_dataset]["preds"].tolist()) |
                                   set(classifier_runner.classifier.dataset[cur_dataset]["labels"].tolist())))
-
+    except TypeError:
+        raise TypeError(classifier_runner.classifier.dataset[cur_dataset]["labels"])
     accuracy, \
         incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[cur_dataset]["preds"],
                                                classifier_runner.classifier.dataset[cur_dataset]["labels"])

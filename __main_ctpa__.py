@@ -22,7 +22,7 @@ import os
 import sys
 orig_stdout = sys.stdout
 f = open(os.devnull, 'w')
-#sys.stdout = f
+sys.stdout = f
 os.environ['DATA_FOLDER'] = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set"
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
@@ -105,7 +105,7 @@ def load_classifier_data(runner, classifier_data_list, labels_list, classifier_i
     return runner
 
 
-@exposed_function
+#@exposed_function
 def run_variable(variable):
     debug = False
 
@@ -125,12 +125,14 @@ def run_variable(variable):
     # filename = os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', 'all0.xlsx')
     # filename = os.path.join(os.getenv('DATA_FOLDER'), 'all.xlsx')
     filenames = {}
-    filenames["ctpa"] = [os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', file) for file in os.listdir(os.path.join(os.getenv('DATA_FOLDER'), "ctpa")) if ('~' not in file and file.endswith('.xlsx'))]
+    #filenames["ctpa"] = [os.path.join(os.getenv('DATA_FOLDER'), 'ctpa', file) for file in os.listdir(os.path.join(os.getenv('DATA_FOLDER'), "ctpa")) if ('~' not in file and file.endswith('.xlsx'))]
+    filenames["pe"] = [os.path.join(os.getenv('DATA_FOLDER'), "ctpa", "all.xlsx")]
     filenames["vq"] = [os.path.join(os.getenv('DATA_FOLDER'), "vq", "all.xlsx")]
     filenames["dvt_iterative"] = [os.path.join(os.getenv('DATA_FOLDER'), "du", "all0.xlsx")]
     label_files_dict = dict()
     #print(os.getenv('DATA_FOLDER'))
     vq_label_filename = os.path.join(os.getenv('DATA_FOLDER'), "vq","all.xlsx")
+    pe_label_filename = os.path.join(os.getenv('DATA_FOLDER'), "ctpa", "all.xlsx")
     rules_path = os.path.join(os.getenv('DATA_FOLDER'), 'Regexes')
 
     dvt_label_filename = os.path.join(os.getenv('DATA_FOLDER'), "du","all0.xlsx")
@@ -145,10 +147,12 @@ def run_variable(variable):
         pass
     # TODO: Update Headers
     ctpa_rules = rules_path
-    file_to_args = {"dvt_iterative": {"Runner Initialization Params": {"l_label_col": 4, "l_id_col": 1, "l_first_row": 1},
-                                      "label_file": dvt_label_filename},
+    file_to_args = {"dvt_iterative": {"Runner Initialization Params": {"l_label_col": 4, "l_id_col": 1, "l_first_row": 1,
+                                      "label_file": dvt_label_filename}},
                     "vq": {"Runner Initialization Params": {"l_label_col": 5, "l_id_col": 0, "l_first_row": 1,
-                                                            "label_file": vq_label_filename}}
+                                                            "label_file": vq_label_filename}},
+                    "pe": {"Runner Initialization Params": {"l_label_col": 11, "l_id_col": 0, "l_first_row": 1,
+                                                            "label_file": pe_label_filename}}
                     }
     datasets = ["train", "valid"]
 
@@ -176,7 +180,6 @@ def run_variable(variable):
 
         print("=" * 100)
         rule_file = os.path.join(ctpa_rules, rule)
-
         classifier_runner = create_regex_based_classifier(rule_file)
         cur_params = file_to_args[rule]["Runner Initialization Params"]
         if "data_list" not in cur_params:
@@ -187,10 +190,10 @@ def run_variable(variable):
         data = {}
         labels = {}
         ids = {}
+
         if "label_file" in cur_params:
-            print("HEREEEEEE")
             ids["all"], data["all"], labels["all"] = di.get_labeled_data(**cur_params)
-            print("NOT HEREEEEEE")
+
             classifier_runner = load_classifier_data(classifier_runner, data["all"], labels['all'], ids["all"],
                                                      create_train_valid=True, train_percent=.6, random_seed=0)
         else:
@@ -310,7 +313,7 @@ def run_variable(variable):
                 positive_label = next(filter(lambda i: i != negative_label, classifier_classes))
                 custom_class_colours = {negative_label: "hsl({},{}%,{}%)".format(15,71.4,89),
                                         positive_label: "hsl({},{}%,{}%)".format(97,81,91.8)}
-
+            print(os.path.join("generated_data", rule_name, cur_dataset))
             generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                   template_directory, "{}".format(rule_name),
                                   classifier_runner.classifier.regexes.keys(), failures_dict, effects,
@@ -324,17 +327,15 @@ def run_variable(variable):
 
             # de.export_data_to_excel("{}.xlsx".format(excel_path), all_classifications, headers, mode="r")
 
+run_variable("pe")
+exit()
+
 def run(**kwargs):
     respond({'function': 'run', 'params': kwargs})
 
 def save(**kwargs):
     respond({'function': 'save', 'params': kwargs})
 
-x = {}
-x['function'] = "run_variable"
-x['params'] = {"variable": "dvt_iterative"}
-available_funcs[x['function']](**x['params'])
-exit()
 # respond({'status': 'Ready'})
 for line in sys.stdin:
     x = json.loads(line)

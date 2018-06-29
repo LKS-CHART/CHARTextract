@@ -134,6 +134,8 @@ if __name__ == "__main__":
                                                          debug_ids, dataset=cur_dataset)
 
         for cur_dataset in datasets:
+            if len(classifier_runner.classifier.dataset[cur_dataset]["data"]) == 0:
+                break
             all_classifications = []
             print("\nRunning on rule: {} - {}".format(rule_name, cur_dataset))
 
