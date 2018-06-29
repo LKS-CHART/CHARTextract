@@ -1,4 +1,4 @@
-app.controller('ErrorController', ["$sce", "DataService", function($sce,DataService) {
+app.controller('ErrorController', ["$sce", "DataService", "$route", function($sce,DataService, $route) {
 
     var errorController = this
 
@@ -11,6 +11,7 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
     errorController.selected_matches = null;
     errorController.pos_label = null;
     errorController.neg_label = null;
+
 
     function fix_data(result) {
 
@@ -26,54 +27,93 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
         return result
     }
 
-    myDataPromise.then(function(result) {
-        errorController.data = fix_data(result)
-        console.log(errorController.data)
-        errorController.classes = result.classes
-        var errors = errorController.data.patient_cases
-        errorController.errors = {};
 
-        if (errorController.data["Classifier Type"] === "CaptureClassifier")
-        {
-            var index = errorController.data["Ordered Labels"].indexOf(errorController.data["Negative Label"])
-            var classes_copy = errorController.data["Ordered Labels"].slice();
-            if (index !== -1) classes_copy.splice(index, 1)
-            var pos_label = classes_copy[0]
-            var neg_label = errorController.data["Negative Label"]
 
-            errorController.pos_label = pos_label
-            errorController.neg_label = neg_label
+    function reloadData() {
+        myDataPromise.then(function(result) {
+            errorController.data = fix_data(result)
+            console.log(errorController.data)
+            errorController.classes = result.classes
+            var errors = errorController.data.patient_cases
+            errorController.errors = {};
+            errorController.predictionMode = result["Prediction Mode"];
 
-            errorController.errors[pos_label] = []
-            errorController.errors[neg_label] = []
+            if (errorController.data["Classifier Type"] === "CaptureClassifier")
+            {
+                var index = errorController.data["Ordered Labels"].indexOf(errorController.data["Negative Label"])
+                var classes_copy = errorController.data["Ordered Labels"].slice();
+                if (index !== -1) classes_copy.splice(index, 1)
+                var pos_label = classes_copy[0]
+                var neg_label = errorController.data["Negative Label"]
 
-            angular.forEach(errors, function(error, key) {
-                if (error.pred !== error.actual && error.actual === neg_label)
+                errorController.pos_label = pos_label
+                errorController.neg_label = neg_label
+
+                errorController.errors[pos_label] = []
+                errorController.errors[neg_label] = []
+
+                if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
+                    errorController.predictionMode === false) {
+
+                        angular.forEach(errors, function(error, key) {
+                            if (error.pred !== error.actual && error.actual === neg_label)
+                            {
+                                errorController.errors[neg_label].push(key)
+                            }
+                            else {
+                                errorController.errors[pos_label].push(key)
+                            }
+                        })
+
+                } else {
+
+                    console.log("Running in prediction mode");
+
+                }
+            }
+
+            else
+
+            {
+                if (errorController.predictionMode === undefined || errorController.predictionMode === null ||
+                    errorController.predictionMode === false) {
+                        angular.forEach(errors, function(error, key) {
+                            if (error.pred != error.actual) {
+                                if (errorController.classes.hasOwnProperty(error.actual)) {
+                                    if (angular.isUndefined(errorController.errors[error.actual]))
+                                    {
+                                        errorController.errors[error.actual] = []
+                                    }
+                                    errorController.errors[error.actual].push(key)
+                                }
+                            }
+                    })
+                } else
+
                 {
-                    errorController.errors[neg_label].push(key)
-                }
-                else {
-                    errorController.errors[pos_label].push(key)
-                }
-            })
-        }
-
-        else
-
-        {
-            angular.forEach(errors, function(error, key) {
-                if (error.pred != error.actual) {
-                    if (errorController.classes.hasOwnProperty(error.actual)) {
-                        if (angular.isUndefined(errorController.errors[error.actual]))
+                    angular.forEach(errors, function(error, key) {
+                        if (angular.isUndefined(errorController.errors[error.pred]))
                         {
-                            errorController.errors[error.actual] = []
+                            errorController.errors[error.pred] = []
                         }
-                        errorController.errors[error.actual].push(key)
-                    }
+                        errorController.errors[error.pred].push(key)
+                    })
+
                 }
-            })
-        }
-    })
+            }
+        })
+
+
+
+    }
+
+    reloadData();
+
+    errorController.forceData = function() {
+        myDataPromise = DataService.getDataForce();
+        reloadData();
+
+    }
 
     errorController.gotoAnchor = function(x) {
 
@@ -128,12 +168,18 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
         errorController.match_selected = true;
         var all_sentence_matches = []
         var str_id = String(sentence_id)
+
+        errorController.sentence_scores = {};
         for (var classname in errorController.selected.matches) {
 
             if (errorController.selected.matches[classname].hasOwnProperty(str_id))
             {
                 var sentence_matches = errorController.selected.matches[classname][str_id]["matches"]
 
+                if (classname !== errorController.neg_label) {
+                     var class_score = errorController.selected.matches[classname][str_id]["text_score"];
+                     errorController.sentence_scores[classname] = class_score;
+                }
 
                 for (var i = 0; i < sentence_matches.length; i++) {
                     var match_obj = sentence_matches[i];
@@ -251,7 +297,6 @@ app.controller('ErrorController', ["$sce", "DataService", function($sce,DataServ
 
     errorController.getSelectedData = function() {
 
-        console.log("HAJSDHAKSJHd")
         errorController.marked_data = markData(errorController.selected.data, errorController.selected.matches)
         console.log(errorController.marked_data)
 

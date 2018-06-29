@@ -118,12 +118,20 @@ def run_variable(variable, settings):
         data_first_row = project_settings["Data First Row"]
         data_cols = project_settings["Data Cols"]
         repeat_ids = not project_settings["Concatenate Data"]
+        valid_file_exists = False
 
         if not prediction_mode:
             label_file = os.path.join(*project_settings["Label File"]) if type(project_settings["Label File"]) == list \
                 else project_settings["Label File"]
             label_id_col = project_settings["Label Id Col"]
             label_first_row = project_settings["Label First Row"]
+            valid_label_file = None
+
+            if "Valid Label File" in project_settings:
+                if len(project_settings["Valid Label File"]) > 0:
+                    valid_label_file = os.path.join(*project_settings["Valid Label File"]) if type(project_settings["Valid Label File"]) == list \
+                        else project_settings["Valid Label File"]
+                    valid_file_exists = True
         else:
             label_file = label_id_col = label_first_row = None
 
@@ -146,13 +154,23 @@ def run_variable(variable, settings):
         if not prediction_mode:
             if not DEBUG_MODE:
                 ids, data, labels = di.get_labeled_data(ids, data, label_file, label_id_col, label_col, label_first_row,
-                                                        label_func)
+                                                    label_func)
 
-            if create_train_and_valid:
+                if valid_file_exists:
+                    valid_ids, valid_data, valid_labels = di.get_labeled_data(ids, data, valid_label_file, label_id_col, label_col, label_first_row,
+                                                    label_func)
+
+            if create_train_and_valid and not valid_file_exists:
                 classifier_runner = load_classifier_data(classifier_runner, data, labels, ids,
                                                          create_train_valid=True, train_percent=.6, random_seed=0)
                 available_datasets = ["train", "valid"]
 
+            elif valid_file_exists:
+                available_datasets = ["train", "valid"]
+                classifier_runner = load_classifier_data(classifier_runner, data, labels,
+                                                         ids, dataset=available_datasets[0])
+                classifier_runner = load_classifier_data(classifier_runner, valid_data, valid_labels,
+                                                         valid_ids, dataset=available_datasets[1])
             else:
                 classifier_runner = load_classifier_data(classifier_runner, data, labels,
                                                          ids, dataset=available_datasets[0])

@@ -82,6 +82,7 @@ if __name__ == "__main__":
         "ethambutol_medication","rifabutin_medication", "moxifloxacin_medication", "rifapentine_medication",
          "capreomycin_medication", "amikacin_medication", "pas_medication", "cycloserine_medication",
          "ethionamide_medication", "vitamin_b6_medication"]
+        cur_run = ["tb_duration"]
     else:
         file_to_args["debug"] = {}
         cur_run = ["debug"]
@@ -112,7 +113,7 @@ if __name__ == "__main__":
                 cur_params["ids_list"] = ids_list
 
             if "label_file" in cur_params:
-                ids["all"], data["all"], labels["all"]= di.get_labeled_data(**cur_params)
+                ids["all"], data["all"], labels["all"] = di.get_labeled_data(**cur_params)
                 classifier_runner = load_classifier_data(classifier_runner, data["all"], labels['all'], ids["all"],
                                                          create_train_valid=True, train_percent=.6, random_seed=0)
             else:

@@ -20,6 +20,11 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).conf
         templateUrl: 'views/variableSettings.html',
         controller: "VariableController",
         controllerAs: "variableCtrl"
+    }).
+    when('/rule_simp', {
+        templateUrl: 'views/rulesimp.html',
+        controller: "RuleControllerSimp",
+        controllerAs: "ruleCtrl"
     })
 }])
 
@@ -138,7 +143,7 @@ app.filter("arrayNormalize", function(){
         if(typeof arr === "object") {
             var arr_copy = []
             for(var i = 0; i < arr.length; i++) {
-                arr_copy.push(arr[i].replace(/[\\/]+/g,""))
+                arr_copy.push(arr[i].replace(/[\\/]+/g,"/"))
             }
 
             return arr_copy;
@@ -161,3 +166,127 @@ app.filter("pathify", function(){
     }
 
 });
+
+app.directive('ruleObject', function() {
+    return {
+        restrict: 'E',
+        scope: {
+            object: '=obj'
+        },
+        templateUrl: '/views/rule.html'
+    }
+
+})
+
+app.directive('primary', function() {
+    return {
+        restrict: 'E',
+        name: 'ctrl',
+        controller: '@',
+        scope: {
+            ruleInfo: '=rule',
+        },
+        controllerAs: 'primaryCtrl',
+        templateUrl: 'views/primary.html'
+    };
+})
+
+app.directive('secondary', function() {
+    return {
+        restrict: 'E',
+        name: 'ctrl',
+        controller: '@',
+        controllerAs: 'secondaryCtrl',
+        scope: {
+            ruleInfo: '=rule'
+        },
+        templateUrl: 'views/secondary.html'
+    }
+})
+
+app.directive('tagEditor', function(RuleService) {
+    return {
+        restrict: 'E',
+        template: '<input type="text" class="form-control">',
+        scope: {
+            ruleContainer: '='
+        },
+        link: function(scope, element, attrs) {
+
+
+            scope.availableTags = ["OR", "{test1}", "{test2}"]
+            scope.requiredTags = ["OR", "{test1}", "{test2}"]
+
+            function tagSave(field, editor, tags, tag, val) {
+                if (!scope.availableTags.includes(val)) {
+                    scope.availableTags.push(val)
+                }
+            }
+
+            function tagDelete(field, editor, tags, val) {
+//                if(!scope.requiredTags.includes(val)) {
+//                    scope.availableTags.splice(scope.availableTags.indexOf(val),1);
+//                }
+
+            }
+
+            function tagCallback(field, editor, tags) {
+                scope.ruleContainer = tags
+                var i = 0;
+                $('li', editor).each(function(){
+
+                    if (i !== 0) {
+
+                        var li = $(this);
+
+                        if(li.find('.tag-editor-tag')) {
+
+                            var found_tag = $(li.find('.tag-editor-tag'))
+                            var found_delete = $(li.find('.tag-editor-delete'))
+
+                            if (li.find('.tag-editor-tag').html() == 'OR') {
+                                found_tag.addClass('green-tag');
+                                found_delete.addClass('green-tag');
+                            }
+                            else if (li.find('.tag-editor-tag').html() !== undefined && li.find('.tag-editor-tag').html().match("\{[a-zA-Z0-9_\s]+\}")) {
+                                found_tag.addClass('red-tag');
+                                found_delete.addClass('red-tag');
+                            }
+                            else {
+                                found_tag.removeClass('red-tag');
+                                found_delete.removeClass('red-tag');
+                                found_tag.removeClass('green-tag');
+                                found_delete.removeClass('green-tag');
+                            }
+
+                        }
+                    }
+                    i++;
+
+                });
+
+            }
+
+
+            element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "beforeTagSave": tagSave, "beforeTagDelete": tagDelete, "delimiter": ";",
+            "placeholder": "Enter a word", "forceLowercase": false, "removeDuplicates": false, "animateDelete": 30,
+            "autocomplete": {
+                delay: 0,
+                position: {collision: 'flip'},
+                source: scope.availableTags,
+                minLength: 0
+            }});
+
+
+            scope.$on("reloadTags", function(event, data) {
+                if(attrs.id === data.rule.u_id) {
+                    element.tagEditor("addTag", data.text)
+                    tagCallback(null, element)
+                }
+            })
+
+        }
+
+    }
+
+})

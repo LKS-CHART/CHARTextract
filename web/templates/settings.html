@@ -22,6 +22,7 @@
                 </span>
             </div>
         </div>
+        <span ng-click="settingsCtrl.dataFile = ['Computer']" class="close" style="color: red; float: left; margin-top: 4">&times</span>
     </div><br/>
     <div class="row vertical-align-flex">
         <div class="col-xs-1">
@@ -71,7 +72,18 @@
     </div><br/>
     <div class="row vertical-align-flex">
         <div class="col-xs-1">
-            <span>Label File:</span>
+            <span>Prediction Mode:</span>
+        </div>
+        <div class="col-xs-4">
+            <select class="form-control input-sm" name="predictionmode" ng-model="settingsCtrl.predictionMode">
+                <option ng-value=true>True</option>
+                <option ng-value=false>False</option>
+            </select>
+        </div>
+    </div><br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Train Label File:</span>
         </div>
         <div class="col-xs-4">
             <div class="input-group">
@@ -81,6 +93,22 @@
                 </span>
             </div>
         </div>
+        <span ng-click="settingsCtrl.labelFile = ['Computer']" class="close" style="color: red; float: left; margin-top: 4">&times</span>
+    </div>
+    <br/>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Valid Label File:</span>
+        </div>
+        <div class="col-xs-4">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.validLabelFile | arrayNormalize | pathify" placeholder="Text input">
+                <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getValidLabelObj()); settingsCtrl.openFileDialog()" id="open-valid-labels-file" class="btn input-group-addon">
+                        <span class="glyphicon glyphicon-folder-open"></span>
+                </span>
+            </div>
+        </div>
+        <span ng-click="settingsCtrl.validLabelFile = ['Computer']" class="close" style="color: red; float: left; margin-top: 4">&times</span>
     </div><br/>
     <div class="row vertical-align-flex">
         <div class="col-xs-1">
@@ -110,7 +138,10 @@
                     </span>
             </div>
         </div>
-    </div><br/>
+        <span ng-click="settingsCtrl.ruleFolder = ['Computer']" class="close" style="color: red; float: left; margin-top: 4">&times</span>
+    </div>
+
+    <br/>
 
     <button type="button" ng-click="settingsCtrl.saveSettings()" class="btn btn-primary">Save Project Settings</button>
 {% endraw %}

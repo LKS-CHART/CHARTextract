@@ -1,0 +1,110 @@
+{% raw %}
+<ol class="inner-ol" style>
+    <li ng-click="secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(replace)" ng-repeat="replace in ruleInfo.Secondary.Replace" style="margin-bottom: 0px;">
+        <table>
+            <tbody>
+                <tr ng-class="{replaceSelected: replace.Selected}" class="replace">
+                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
+                        <span style="margin-right: 15px;">and</span>
+                        <tag-editor ng-attr-id="{{replace.u_id}}" rule-container="replace.Rule"></tag-editor>
+                        <!--<span ng-repeat="rulePart in replace.Rule">-->
+                            <!--<rule-object obj="rulePart">-->
+                            <!--</rule-object>-->
+                            <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                        <!--</span>-->
+                    </td>
+                    <td class="col-md-2">
+                        <span style="white-space:nowrap;">appears, then score</span>
+                    </td>
+                    <td class="col-md-1">
+                        <input style="width: 100px;" type="number" class="form-control" ng-model="replace.Score">
+                    </td>
+                    <td class="col-md-1">
+                        <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, replace, 'Replace')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </li>
+    <ol ng-if="ruleInfo.Secondary.Replace.length > 0" class="inner-inner-ol">
+        <li ng-click= "secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(add)" ng-repeat="add in ruleInfo.Secondary.Add" style="margin-bottom: 0px;">
+            <table>
+                <tbody>
+                    <tr ng-class="{addSelected: add.Selected}" class="add">
+                        <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
+                            <span style="margin-right: 15px;">if</span>
+                            <tag-editor ng-attr-id="{{add.u_id}}" rule-container="add.Rule"></tag-editor>
+                            <!--<span ng-repeat="rulePart in add.Rule">-->
+                                <!--<rule-object obj="rulePart">-->
+                                <!--</rule-object>-->
+                                <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                            <!--</span>-->
+                        </td>
+                        <td class="col-md-2">
+                            <span style="white-space:nowrap;">appears, then to score add</span>
+                        </td>
+                        <td class="col-md-1">
+                            <input style="width: 100px;" type="number" class="form-control" ng-model="add.Score">
+                        </td>
+                        <td class="col-md-1">
+                            <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, add, 'Add')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </li>
+    </ol>
+</ol>
+<ol ng-if="ruleInfo.Secondary.Replace.length === 0" class="inner-ol">
+    <li ng-click= "secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(add)" ng-repeat="add in ruleInfo.Secondary.Add">
+        <table>
+            <tbody>
+                <tr ng-class="{addSelected: add.Selected}" class="add">
+                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width: 500px;" class="col-md-8" style="vertical-align:middle">
+                        <span style="margin-right: 15px;">if</span>
+                        <tag-editor ng-attr-id="{{add.u_id}}" rule-container="add.Rule"></tag-editor>
+                        <!--<span ng-repeat="rulePart in add.Rule">-->
+                            <!--<rule-object obj="rulePart">-->
+                            <!--</rule-object>-->
+                            <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                        <!--</span>-->
+                    </td>
+                    <td class="col-md-2">
+                        <span style="white-space:nowrap;">appears, then to score add</span>
+                    </td>
+                    <td class="col-md-1">
+                        <input style="width: 100px;" type="number" class="form-control" ng-model="add.Score">
+                    </td>
+                    <td class="col-md-1">
+                        <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, add, 'Add')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </li>
+</ol>
+<ol class="inner-ol">
+    <li ng-click="secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(ignore)" ng-repeat="ignore in ruleInfo.Secondary.Ignore">
+        <table>
+            <tbody>
+                <tr ng-class="{ignoreSelected: ignore.Selected}" class="ignore">
+                    <td style="padding: 0px; white-space: nowrap; overflow-x: auto; max-width:500px;" class="col-md-8" style="vertical-align:middle">
+                        <span style="margin-right: 15px;">unless</span>
+                        <tag-editor ng-attr-id="{{ignore.u_id}}" rule-container="ignore.Rule"></tag-editor>
+                        <!--<span ng-repeat="rulePart in ignore.Rule">-->
+                            <!--<rule-object obj="rulePart">-->
+                            <!--</rule-object>-->
+                            <!--<input class="hidden-input" style="max-width: 10px;" type="text">-->
+                        <!--</span>-->
+                    </td>
+                    <td class="col-md-2">
+                        <span style="white-space:nowrap;">appears, then ignore sentence</span>
+                    </td>
+                    <td class="col-md-2">
+                        <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, ignore, 'Ignore')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </li>
+</ol>{% endraw %}

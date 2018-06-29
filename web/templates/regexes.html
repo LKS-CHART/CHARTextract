@@ -1,17 +1,36 @@
 {% raw %}
-<div class="container" style="width: 90%">
+<div class="container-fluid" style="width: 100%">
     <h1 style="text-align: center">Rules</h1>
-    <span ng-repeat="(class, colour) in errorCtrl.classes">
-        <button ng-click="ruleCtrl.loadFile(class)" ng-if="class !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class}">
-            {{class}}
-        </button>
-    </span>
+
+    <b>Current Variable: </b> {{ruleCtrl.currentVar}}
+    <br/>
+    <br/>
+    <div ng-switch="ruleCtrl.advancedMode">
+        <button ng-switch-when=true class="btn btn-default" ng-click="ruleCtrl.advancedMode=false">Simple Mode</button>
+        <button ng-switch-when=false class="btn btn-default" ng-click="ruleCtrl.advancedMode=true">Advanced Mode</button>
+    </div>
+    <br/>
+    <br/>
+    <div style="display: inline-block">
+        <span ng-repeat="class_name in ruleCtrl.availableVars">
+            <button ng-click="ruleCtrl.loadFile(class_name)" ng-if="class_name !== errorCtrl['data']['Negative Label']" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class_name}">
+                <div class="cspan" value="{{class_name}}" style="cursor: text; min-width: 20px; display: inline-block;" contenteditable="true" id="class{{$index}}">{{class_name}}</div>
+                <!--<input style="cursor: text" contenteditable="true" ng-model="class">{{class}}</input>-->
+            </button>
+        </span>
+        <span class="close" style="color: green; margin-left: 10px; vertical-align: middle; line-height: 34px;" ng-click="ruleCtrl.createNewClass()">+</span>
+    </div>
     <button ng-click="ruleCtrl.saveFile(ruleCtrl.currentTab)" style="float: right" class="btn btn-default">
         Save File
     </button>
-    <div style="height: 100%; margin-top: 10px;" id="editor-container">
+    <div ng-show="ruleCtrl.advancedMode">
+        <div style="height: 100%; margin-top: 10px;" id="editor-container"></div>
+        <script src="javascripts/text-editor.js"></script>
+    </div>
+    <div ng-show="!ruleCtrl.advancedMode">
+        <div ng-include="'views/rulesimp.html'">
+        </div>
     </div>
 </div>
-<script src="javascripts/text-editor.js"></script>
-{% endraw %}
 
+{% endraw %}
