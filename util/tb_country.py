@@ -23,11 +23,15 @@ for each in pycountry.countries:
     country_list.append(each.name)
     if each.name.find(",") >= 0:
         common_name = each.name.split(",")[0]
-        common_names[common_name] = each.name
+
+        if common_name not in common_names:
+            common_names[common_name] = each.name
     try:
-        common_names[each.common_name] = each.name
+        if each.common_name not in common_names:
+            common_names[each.common_name] = each.name
     except AttributeError:
         pass
+
 subdivisions = {}
 for country_code in country_lists.subdivision_list:
     subdivs = pycountry.subdivisions.get(country_code=country_code)
@@ -107,6 +111,8 @@ def preprocess(text, *args):
                     offset = len(common_name)
                     keep_data = True
                     word_checked = True
+                    print(common_name)
+                    print(common_names[common_name])
                     countries_found.append(common_names[common_name])
                     break
 
