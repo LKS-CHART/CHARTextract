@@ -250,6 +250,7 @@ app.directive('tagEditor', function(RuleService) {
                 } else {
                     console.log("DESYNC")
                     console.log(curRule)
+                    RuleService.setCurrentRuleVals(scope.ruleContainer);
                 }
 
                 var i = 0;
