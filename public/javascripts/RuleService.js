@@ -75,6 +75,8 @@ app.service('RuleService', [function() {
 
                 if (primary_rule.u_id === id) {
                     CurrentRule = primary_rule
+                    console.log("1")
+                    console.log(CurrentRule)
                     return CurrentRule
                 }
 
@@ -85,6 +87,8 @@ app.service('RuleService', [function() {
 
                         if (secondary_rule.u_id === id) {
                             CurrentRule = secondary_rule;
+                            console.log("2")
+                            console.log(CurrentRule)
                             return CurrentRule
                         }
 
@@ -98,6 +102,7 @@ app.service('RuleService', [function() {
         }
 
         else {
+            console.log("DUP RULE")
             return CurrentRule;
 
         }

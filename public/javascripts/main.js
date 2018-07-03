@@ -243,7 +243,13 @@ app.directive('tagEditor', function(RuleService) {
                 if (curRule !== null && curRule !== undefined) {
                     if (scope.ruleContainer !== undefined) {
                         RuleService.setCurrentRuleVals(scope.ruleContainer);
+                    } else {
+
+                        console.log("DESYNC0")
                     }
+                } else {
+                    console.log("DESYNC")
+                    console.log(curRule)
                 }
 
                 var i = 0;
