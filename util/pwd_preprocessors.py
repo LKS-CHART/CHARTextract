@@ -47,13 +47,11 @@ class PwdPreprocessor2:
 
     def preprocess(self, text, *args):
         output_dictionary = {"sentence": text, "dictionaries": {}}
-        satisfy_all = False
 
         required_categories = tuple(self.categories)
 
         if len(args) >= 1:
             required_categories = tuple(args)
-            satisfy_all = True
 
         matches = [False]*len(required_categories)
 

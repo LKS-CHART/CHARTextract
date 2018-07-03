@@ -24,7 +24,6 @@ class CaptureHandler(object):
         self.DEBUG = False
         self.return_ignores = return_ignores
         self.preprocess_mode = preprocess_mode
-        pass
 
     def score_data(self, text, regexes, pwds=None, preprocess_func=None, capture_convert=None):
         matches_scores_dict, captures, capture_scores = self.score_and_capture_sentences(text, regexes, pwds=pwds,
@@ -66,6 +65,7 @@ class CaptureHandler(object):
             preprocessed_data = {}
 
             # Preprocessing sentence
+
             if preprocess_func and self.preprocess_mode==PREPROCESS_BEFORE_REGEXES:
                 preprocessed_data = preprocess_func(sentence)
             else:

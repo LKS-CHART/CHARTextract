@@ -25,9 +25,13 @@ Each Rule folder has a classifier properties json which specifies classifier pro
 minus the positive label which will be specified within the regex file.
 """
 
-def create_regex_based_classifier(rule_path=None):
+def create_regex_based_classifier(rule_path=None, additional_args=None):
     classifier_type, classifier_args, regexes_dict = import_regexes2(rule_path) if os.path.isdir(rule_path) else None
     classifier_args.update({"regexes": regexes_dict})
+
+    if additional_args:
+        classifier_args.update(additional_args)
+
     runner = Runner(classifier_type, **classifier_args)
 
     return runner
@@ -159,9 +163,10 @@ if __name__ == "__main__":
         rule_name = rule
 
         print("="*100)
-        classifier_runner = create_regex_based_classifier(rule_file)
 
-        label_col, label_func, classifier_runtime_args = get_rule_properties(rule_file, rule_name, pwds)
+        label_col, label_func, classifier_runtime_args, classifier_init_args = get_rule_properties(rule_file, rule_name, pwds)
+        classifier_runner = create_regex_based_classifier(rule_file, classifier_init_args)
+
         available_datasets = ["train"]
 
         if not prediction_mode:

@@ -94,6 +94,7 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
         label_col = 1
         label_func = None
         classifier_runtime_args = {}
+        classifier_initialization_args = None
     else:
         with open(file_name) as j:
             data = json.load(j)
@@ -107,6 +108,7 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
         preprocessor = PwdPreprocessor2(pwds, required_pwds, to_lower=True) if use_preprocessor else None
 
         classifier_runtime_args = {"pwds": cur_pwds, "preprocess_func": preprocessor.preprocess if preprocessor else None}
+        classifier_initialization_args = None
 
         use_python = False if ("Specify Function with Python" not in data or not data["Specify Function with Python"])\
             else True
@@ -124,4 +126,8 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
                     label_func = file_to_args[rule_name]["Runner Initialization Params"]["label_func"] \
                         if "label_func" in file_to_args[rule_name]["Runner Initialization Params"] else None
 
-    return label_col, label_func, classifier_runtime_args
+                    classifier_initialization_args = {key : file_to_args[rule_name]["Runner Initialization Params"][key]
+                                                     for key in file_to_args[rule_name]["Runner Initialization Params"]
+                                                     if key != "label_func"}
+
+    return label_col, label_func, classifier_runtime_args, classifier_initialization_args
