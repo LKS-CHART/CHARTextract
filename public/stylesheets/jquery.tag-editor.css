@@ -2,7 +2,7 @@
 .tag-editor {
     list-style-type: none; padding: 0 5px 0 0; margin: 0; overflow-x: auto; border: 1px solid #eee; cursor: text;
     font: normal 14px sans-serif; color: #555; background: #fff; line-height: 20px; white-space: nowrap; display: inline-block;
-    max-width: 500px; vertical-align: middle;
+    max-width: 800px; vertical-align: middle;
 }
 
 .red-tag {
