@@ -100,7 +100,8 @@ class TemporalRegexClassifier(BaseClassifier):
                             case_matches, case_score = self.handler.score_data(case, self.regexes[class_name],
                                                                                pwds=pwds, index_start=index_start)
 
-                        class_scores[i][class_name] = self.biases[class_name] + case_score
+                        class_scores[i][class_name] = self.biases[class_name] + case_score if \
+                            class_name != self.negative_label else self.biases[class_name]
 
                         #storing matches for that class
                         class_matches[i][class_name] = case_matches
@@ -119,7 +120,7 @@ class TemporalRegexClassifier(BaseClassifier):
                                                    negative_label=self.negative_label, **kwargs)
 
                 self.dataset[data_set]["matches"].append(unrolled_class_matches)
-                self.dataset[data_set]["scores"].append(class_scores)
+                self.dataset[data_set]["scores"].append(class_scores[latest_index_w_matches])
 
                 preds.append(classification)
 

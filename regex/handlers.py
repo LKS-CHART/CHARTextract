@@ -20,7 +20,7 @@ class CaptureHandler(object):
     """Used for capturing and scoring sentences. Can be used by CaptureClassifier
     """
 
-    def __init__(self, return_ignores=False, preprocess_mode=PREPROCESS_PER_REGEX):
+    def __init__(self, return_ignores=True, preprocess_mode=PREPROCESS_PER_REGEX):
         self.DEBUG = False
         self.return_ignores = return_ignores
         self.preprocess_mode = preprocess_mode
@@ -235,7 +235,7 @@ class RegexHandler(object):
     """Used for matching and scoring sentences. Can be used by RegexClassifier
     """
 
-    def __init__(self, return_ignores=False, preprocess_mode=PREPROCESS_PER_REGEX):
+    def __init__(self, return_ignores=True, preprocess_mode=PREPROCESS_PER_REGEX):
         self.DEBUG = False
         self.return_ignores = return_ignores
         self.preprocess_mode = preprocess_mode

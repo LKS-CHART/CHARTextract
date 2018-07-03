@@ -2,11 +2,15 @@ from util.tb_country import preprocess
 import functools
 from classifier.classification_functions import *
 from datahandler.preprocessors import *
+from regex.handlers import CaptureHandler
+from regex.handlers import PREPROCESS_BEFORE_REGEXES
 
 file_to_args = {
                 "homelessness": {"Runner Initialization Params": {"label_func": functools.partial(
                     replace_labels_with_required, *["Homeless shelter", "None"])}},
-                "country": {"Runtime Params": {"preprocess_func": preprocess}},
+                "country": {"Runner Initialization Params":
+                                {"handler": CaptureHandler(preprocess_mode=PREPROCESS_BEFORE_REGEXES)},
+                                 "Runtime Params": {"preprocess_func": preprocess}},
                 "diag_active": {"Runner Initialization Params":
                                     {"label_func": functools.partial(replace_label_with_required,
                                                                      {"LTBI": "None"})
