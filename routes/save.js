@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var pyshell = require('../python_connector/connector');
 var fs = require("fs");
 var path = require("path");
 var filePath = "./public/data/project_settings.json";

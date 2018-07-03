@@ -107,7 +107,7 @@ router.get('/:variable', function(req, res, next) {
             console.log(fileName);
             fs.readFile(path.join(filePath,fileName), {encoding: 'utf-8'}, function(err, data){
                 if (!err) {
-                    dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"fileName": fileName, "regexesText": data};
+                    dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"filename": fileName, "regexesText": data, "regexesSimple": []};
                     resolve([fileName, data]);
                 } else {
                     reject(err);

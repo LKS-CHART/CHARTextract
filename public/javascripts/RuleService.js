@@ -3,10 +3,12 @@ app.service('RuleService', [function() {
     var URules = []; 
 
     //Uncompiled dummy rule format
-    var Udummy_rule = {"Primary": {"Rule": [], "CRule": "This is a primary rule", "Score": 0, "Selected": false, "type": "Primary"}, "Secondary": {"Replace": [], "Ignore": [], "Add": []}}
-    var Udummy_secondary_rule = {"Rule": [], "CRule": "This is a secondary rule", "Score": 0, "Modifier": "None", "Selected": false}
+    var Udummy_rule = {"Primary": {"Rule": [], "Score": 0, "Selected": false, "type": "Primary"}, "Secondary": {"Replace": [], "Ignore": [], "Add": []}}
+    var Udummy_secondary_rule = {"Rule": [],  "Score": 0, "Modifier": "None", "Selected": false}
 
     var CurrentRule = null;
+
+    var cached_id = null;
 
     function generateId() {
 
@@ -34,6 +36,10 @@ app.service('RuleService', [function() {
         return URules;
     }
 
+    var setRuleset = function(new_ruleset) {
+        URules = new_ruleset;
+    }
+
     var getRule = function(index) {
         return URules[index];
     }
@@ -57,12 +63,44 @@ app.service('RuleService', [function() {
         return CurrentRule;
     }
 
-    var getAvailableTags = function() {
-        return availableTags;
+    var setCurrentRuleVals = function(vals) {
+        CurrentRule["Rule"] = vals;
     }
 
-    var addTag = function(tag) {
-        availableTags.push(tag)
+    var getRuleById = function(id) {
+        if (CurrentRule === null || CurrentRule.u_id !== id) {
+
+            for(var rule_index = 0; rule_index < URules.length; rule_index++) {
+                var primary_rule = URules[rule_index]["Primary"]
+
+                if (primary_rule.u_id === id) {
+                    CurrentRule = primary_rule
+                    return CurrentRule
+                }
+
+                Object.keys(URules[rule_index]["Secondary"]).forEach(function(secType) {
+
+                    for (var sec_rule_index = 0; sec_rule_index < URules[rule_index]["Secondary"][secType].length; sec_rule_index++) {
+                        var secondary_rule = URules[rule_index]["Secondary"][secType][sec_rule_index]
+
+                        if (secondary_rule.u_id === id) {
+                            CurrentRule = secondary_rule;
+                            return CurrentRule
+                        }
+
+                    }
+
+                })
+
+
+            }
+
+        }
+
+        else {
+            return CurrentRule;
+
+        }
     }
 
     return {
@@ -74,6 +112,9 @@ app.service('RuleService', [function() {
         deleteSecondaryRule: deleteSecondaryRule,
         getCurrentRule: getCurrentRule,
         setCurrentRule: setCurrentRule,
+        setRuleset: setRuleset,
+        getRuleById: getRuleById,
+        setCurrentRuleVals: setCurrentRuleVals
     };
 
 }])

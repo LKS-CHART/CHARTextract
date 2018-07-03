@@ -14,10 +14,34 @@ app.service("MainRuleService", ["RuleService", function(RuleService) {
         allRulesets[class_name] = ruleset;
     }
 
+    var clearRulesets = function() {
+        allRulesets = {};
+    }
+
+    var setRuleset = function(class_name, new_ruleset) {
+        allRulesets[class_name] = new_ruleset;
+    }
+
+    var setRulesetParam = function(class_name, param, value) {
+        allRulesets[class_name][param] = value;
+    }
+    var getRulesetParam = function(class_name, param) {
+        return allRulesets[class_name][param];
+    }
+
+    var deleteRuleset = function(class_name) {
+        delete allRulesets[class_name];
+    }
+
     return {
-        allRulesets: allRulesets,
+        getRulesets: getRulesets,
         getRuleset: getRuleset,
-        addToRulesets: addToRulesets
+        addToRulesets: addToRulesets,
+        setRuleset: setRuleset,
+        clearRulesets: clearRulesets,
+        setRulesetParam: setRulesetParam,
+        getRulesetParam: getRulesetParam,
+        deleteRuleset: deleteRuleset
     }
 
 }])

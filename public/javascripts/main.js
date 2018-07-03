@@ -237,6 +237,15 @@ app.directive('tagEditor', function(RuleService) {
 
             function tagCallback(field, editor, tags) {
                 scope.ruleContainer = tags
+
+                var curRule = RuleService.getRuleById(attrs.id)
+
+                if (curRule !== null && curRule !== undefined) {
+                    if (scope.ruleContainer !== undefined) {
+                        RuleService.setCurrentRuleVals(scope.ruleContainer);
+                    }
+                }
+
                 var i = 0;
                 $('li', editor).each(function(){
 

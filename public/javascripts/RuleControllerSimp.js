@@ -1,5 +1,5 @@
 //Controls the addition and manipulation of Rules
-app.controller("RuleControllerSimp", ["RuleService", function(RuleService){
+app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleService, $scope){
     /*
 
         MainRuleService:
@@ -21,6 +21,10 @@ app.controller("RuleControllerSimp", ["RuleService", function(RuleService){
     rc.addRule = function() {
        rc.selectRule(RuleService.addDummyRule().Primary);
     }
+
+    $scope.$on("ruleSetUpdate", function(event, data) {
+        rc.rules = RuleService.getRuleset();
+    })
 
     rc.getCurrentRule = function() {
         return RuleService.getCurrentRule();
