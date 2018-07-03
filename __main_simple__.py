@@ -155,8 +155,6 @@ def run_variable(variable, settings):
         print("="*100)
         label_col, label_func, classifier_runtime_args, classifier_init_args = get_rule_properties(rule_file, rule_name, pwds)
         classifier_runner = create_regex_based_classifier(rule_file, classifier_init_args)
-
-        label_col, label_func, classifier_runtime_args = get_rule_properties(rule_file, rule_name, pwds)
         available_datasets = ["train"]
 
         if not prediction_mode:

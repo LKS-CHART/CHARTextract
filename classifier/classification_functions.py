@@ -6,9 +6,11 @@ def max_classify(class_matches, class_captures, class_capture_scores, negative_l
             del(class_capture_scores[negative_label])
     if None in class_capture_scores:
         del (class_capture_scores[None])
-    print(class_capture_scores)
-    return max(class_capture_scores, key=int) if len(class_capture_scores) > 0 else negative_label
 
+    truncated_capture_scores = {key : class_capture_scores[key] for key in class_capture_scores
+                                if class_capture_scores[key] > 0}
+
+    return max(truncated_capture_scores, key=int) if len(truncated_capture_scores) > 0 else negative_label
 
 def min_classify(class_matches, class_captures, class_capture_scores, negative_label="None"):
     return min(class_capture_scores, key=int) if class_capture_scores else negative_label

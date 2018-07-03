@@ -117,14 +117,14 @@ def compute_ppv_accuracy_capture(labels, preds, classifier_classes, negative_lab
     ppv_and_accuracy[pos_label]["accuracy"] = num_correct/len(labels)
     ppv_and_accuracy[pos_label]["num_correct"] = int(num_correct)
     ppv_and_accuracy[pos_label]["true_positives"] = int(true_positives)
-    ppv_and_accuracy[pos_label]["sensitivity"] = int(true_positives)/positive_cases if positive_cases > 0 else "nan"
+    ppv_and_accuracy[pos_label]["sensitivity"] = int(true_positives)/len(positive_cases) if len(positive_cases) > 0 else "nan"
 
     ppv_and_accuracy[negative_label]["ppv"] = npv
     ppv_and_accuracy[negative_label]["npv"] = ppv
     ppv_and_accuracy[negative_label]["accuracy"] = num_correct/len(labels)
     ppv_and_accuracy[negative_label]["num_correct"] = int(num_correct)
     ppv_and_accuracy[negative_label]["true_positives"] = int(true_positives)
-    ppv_and_accuracy[negative_label]["sensitivity"] = true_positives/positive_cases if positive_cases > 0 else "nan"
+    ppv_and_accuracy[negative_label]["sensitivity"] = true_positives/len(positive_cases) if len(positive_cases) > 0 else "nan"
 
     return ppv_and_accuracy
 
