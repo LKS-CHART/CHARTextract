@@ -67,7 +67,16 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
 
                 } else {
 
-                    console.log("Running in prediction mode");
+                    angular .forEach(errors, function(error, key) {
+                        if (error.pred === errorController.data["Negative Label"]) {
+                            errorController.errors[neg_label].push(key)
+                        } else {
+
+                            errorController.errors[pos_label].push(key)
+
+                        }
+
+                    })
 
                 }
             }
