@@ -1,6 +1,7 @@
 import re
 from regex.regex_functions import combine_flags
 import time
+from util.SpecialException import SpecialException
 
 class Regex(object):
     """Container class for regexes, scores and matches
@@ -58,12 +59,16 @@ class Regex(object):
         #string.format can't work if we regexes which have curly braces like so \d{4} since str.format expects a value
         #opting for a simple replace method
 
-        regex_pwds = {key: "|".join(pwds[key]) for key in required_pwds}
+        try:
+            regex_pwds = {key: "|".join(pwds[key]) for key in required_pwds}
 
-        for key in regex_pwds:
-            if regex_pwds[key]:
-                regex = regex.replace("{{{}}}".format(key), regex_pwds[key])
-
+            for key in regex_pwds:
+                if regex_pwds[key]:
+                    regex = regex.replace("{{{}}}".format(key), regex_pwds[key])
+        except KeyError as e:
+            cause = e.args[0]
+            raise SpecialException("Could not find dictionary {}. Make sure it is included in "
+                                   "the Required Dictionaries textfield of the Variable Settings tab.".format(cause))
         return regex
 
 

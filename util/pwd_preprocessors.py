@@ -1,5 +1,5 @@
 from util.string_functions import split_string_into_words
-import copy
+from util.SpecialException import SpecialException
 
 class PwdPreprocessor:
     def __init__(self, pwds, categories_of_interest):
@@ -24,16 +24,20 @@ class PwdPreprocessor:
 
 class PwdPreprocessor2:
     def __init__(self, pwds, categories_of_interest, to_lower=False):
-        self.pwds = pwds
-        self.categories = categories_of_interest
-        self.to_lower = to_lower
+        try:
+            self.pwds = pwds
+            self.categories = categories_of_interest
+            self.to_lower = to_lower
 
-        if self.to_lower:
-            self.pwds = {category: {term.lower() for term in self.pwds[category]}
-                         for category in categories_of_interest}
-        else:
-            self.pwds = {category: {term for term in self.pwds[category]}
-                         for category in categories_of_interest}
+            if self.to_lower:
+                self.pwds = {category: {term.lower() for term in self.pwds[category]}
+                             for category in categories_of_interest}
+            else:
+                self.pwds = {category: {term for term in self.pwds[category]}
+                             for category in categories_of_interest}
+        except KeyError as e:
+            cause = e.args[0]
+            raise SpecialException("Could not find dictionary {}".format(cause))
 
     def _create_ngram(self, text, k=1, to_lower=False):
         text_tokens = split_string_into_words(text)
@@ -46,27 +50,30 @@ class PwdPreprocessor2:
         return ngrams
 
     def preprocess(self, text, *args):
-        output_dictionary = {"sentence": text, "dictionaries": {}}
+        try:
+            output_dictionary = {"sentence": text, "dictionaries": {}}
 
-        required_categories = tuple(self.categories)
+            required_categories = tuple(self.categories)
 
-        if len(args) >= 1:
-            required_categories = tuple(args)
+            if len(args) >= 1:
+                required_categories = tuple(args)
 
-        matches = [False]*len(required_categories)
+            matches = [False]*len(required_categories)
 
-        for j, category in enumerate(required_categories):
-            output_dictionary["dictionaries"][category] = []
+            for j, category in enumerate(required_categories):
+                output_dictionary["dictionaries"][category] = []
 
-            ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,4,1)}
+                ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,4,1)}
 
-            for ngram in ngrams:
-                for term in ngrams[ngram]:
-                    if term in self.pwds[category]:
-                        output_dictionary["dictionaries"][category].append(term)
-                        matches[j] = True
+                for ngram in ngrams:
+                    for term in ngrams[ngram]:
+                        if term in self.pwds[category]:
+                            output_dictionary["dictionaries"][category].append(term)
+                            matches[j] = True
 
-        keep_data = any(matches)
+            keep_data = any(matches)
+        except Exception:
+            raise SpecialException("Missing Dictionary")
 
         if keep_data:
             return output_dictionary

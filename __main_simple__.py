@@ -10,6 +10,7 @@ from stats.stat_gen import get_failures
 from datahandler.preprocessors import convert_repeated_data_to_sublist
 import random
 import string
+from util.SpecialException import SpecialException
 
 orig_stdout = sys.stdout
 f = open(os.devnull, 'w')
@@ -229,8 +230,13 @@ def run_variable(variable, settings):
                                           classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                           custom_effect_colours=effect_colours, addition_json_params=error_data,
                                           custom_class_colours=custom_class_colours)
+
+    except SpecialException as e:
+        respond({'status': 404, 'message': str(e)})
+
     except Exception:
-        respond({'status': 404, 'message': 'An error has occurred'})
+        respond({'status': 404, 'message': "An Unknown Error Occurred"})
+
 def run(**kwargs):
     respond({'function': 'run', 'params': kwargs})
 

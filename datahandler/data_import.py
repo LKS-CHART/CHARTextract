@@ -6,6 +6,7 @@ from time import time
 import ast
 import os
 import json
+from util.SpecialException import SpecialException
 
 def preprocess_data(data):
     """Preprocesses data
@@ -41,30 +42,34 @@ def get_labeled_data(ids_list, data_list, label_file, l_id_col=1, l_label_col=No
     :return:
     """
 
-    new_data_list = []
-    new_labels_list = []
-    new_ids_list = []
+    try:
+        new_data_list = []
+        new_labels_list = []
+        new_ids_list = []
 
-    local_data_loader = data_from_csv if label_file.endswith('.csv') else data_from_excel
-    # TODO: accordingly increment/decrement l_id_col, l_label_col, l_first_row, check_col depending on filetype
-    _, temp_labels, temp_ids = local_data_loader([label_file], id_cols=l_id_col, label_cols=l_label_col,
-                                          repeat_ids=False, first_row=l_first_row, check_col=1)
+        local_data_loader = data_from_csv if label_file.endswith('.csv') else data_from_excel
+        # TODO: accordingly increment/decrement l_id_col, l_label_col, l_first_row, check_col depending on filetype
+        _, temp_labels, temp_ids = local_data_loader([label_file], id_cols=l_id_col, label_cols=l_label_col,
+                                              repeat_ids=False, first_row=l_first_row, check_col=1)
 
-    new_list = []
-    for i, data_id in enumerate(ids_list):
-        if data_id in temp_ids:
-            # temp_ids must be unique
-            new_list.append([temp_labels[temp_ids.index(data_id)], data_list[i], data_id])
+        new_list = []
+        for i, data_id in enumerate(ids_list):
+            if data_id in temp_ids:
+                # temp_ids must be unique
+                new_list.append([temp_labels[temp_ids.index(data_id)], data_list[i], data_id])
 
-    new_list = sorted(new_list, key=lambda j: j[2])
+        new_list = sorted(new_list, key=lambda j: j[2])
 
-    for each in new_list:
-        new_labels_list.append(each[0])
-        new_data_list.append(each[1])
-        new_ids_list.append(each[2])
+        for each in new_list:
+            new_labels_list.append(each[0])
+            new_data_list.append(each[1])
+            new_ids_list.append(each[2])
 
-    if label_func:
-        label_func(new_labels_list)
+        if label_func:
+            label_func(new_labels_list)
+
+    except IndexError:
+        raise SpecialException("Specified label column does not appear in the file.")
 
     return new_ids_list, new_data_list, new_labels_list
 
@@ -87,46 +92,50 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
         labels {list} -- list of labels
         ids {list} -- list of ids
     """
-    concat_index = None
-    # id_col which is a list
-    if id_col is not None:
-        cur_id = row_process_func(id_col)
+    try:
+        concat_index = None
+        # id_col which is a list
+        if id_col is not None:
+            cur_id = row_process_func(id_col)
 
-        #if repeat ids is false and id in ids, we want to concatenate the ids
-        if not repeat_ids and cur_id in ids:
-            concat_index = ids.index(cur_id)
-        else:
-            ids.append(cur_id)
-
-    if label_col is not None:
-        #If we are concatenating data (i.e repeat_ids = False), use all the diagnoses
-        cur_label = []
-        for actual_label_col in label_col:
-            val = row_process_func(actual_label_col)
-            val = "None" if not val else val
-            cur_label.append(val)
-        if concat_index is not None:
-            if type(labels[concat_index]) == list:
-                labels[concat_index].extend(cur_label)
+            #if repeat ids is false and id in ids, we want to concatenate the ids
+            if not repeat_ids and cur_id in ids:
+                concat_index = ids.index(cur_id)
             else:
-                labels[concat_index] = [labels[concat_index]].extend(cur_label)
-        else:
-            if len(cur_label) == 1:
-                labels.append(cur_label[0])
+                ids.append(cur_id)
+
+        if label_col is not None:
+            #If we are concatenating data (i.e repeat_ids = False), use all the diagnoses
+            cur_label = []
+            for actual_label_col in label_col:
+                val = row_process_func(actual_label_col)
+                val = "None" if not val else val
+                cur_label.append(val)
+            if concat_index is not None:
+                if type(labels[concat_index]) == list:
+                    labels[concat_index].extend(cur_label)
+                else:
+                    labels[concat_index] = [labels[concat_index]].extend(cur_label)
             else:
-                labels.append(cur_label)
+                if len(cur_label) == 1:
+                    labels.append(cur_label[0])
+                else:
+                    labels.append(cur_label)
 
-    if data_col is not None:
-        data_string = row_process_func(data_col[0])
-        for i in range(1, len(data_col)):
-            data_string += "\n{}".format(row_process_func(data_col[i]))
-        # print("-"*100)
-        # print('NoneType has been found' if datum is None else datum)
+        if data_col is not None:
+            data_string = row_process_func(data_col[0])
+            for i in range(1, len(data_col)):
+                data_string += "\n{}".format(row_process_func(data_col[i]))
+            # print("-"*100)
+            # print('NoneType has been found' if datum is None else datum)
 
-        if concat_index is not None:
-            data[concat_index] += "{}\n".format(preprocess_data(data_string))
-        else:
-            data.append(preprocess_data(data_string))
+            if concat_index is not None:
+                data[concat_index] += "{}\n".format(preprocess_data(data_string))
+            else:
+                data.append(preprocess_data(data_string))
+
+    except IndexError:
+        raise SpecialException("Specified column does not appear in the file.")
 
     return data, labels, ids
 
@@ -205,33 +214,40 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
         ids {list} -- list of ids
     """
 
-    data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
+    try:
+        data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
 
-    print("Reading data from excel file...")
+        print("Reading data from excel file...")
 
-    count = 0
-    for file_num, filename in enumerate(filenames):
-        if limit is not None and count == limit:
-            break
+        count = 0
+        for file_num, filename in enumerate(filenames):
+            if limit is not None and count == limit:
+                break
 
-        workbook = openpyxl.load_workbook(filename, data_only=True, read_only=True)
-        sheet_names = workbook.get_sheet_names()
-        for sheet_name in sheet_names:
-            #getting rows in worksheet
-            cur_ws = workbook[sheet_name].rows
-            for i, row in enumerate(cur_ws):
-                if i >= first_row:
-                   #If check column is empty don't include it
-                    if row[check_col].value is None:
-                        continue
-                    count += 1
-                    #getting data, label and ids from each row and concatenating it
-                    data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
-                                                 data, labels, ids, repeat_ids, lambda col: str(row[col].value))
-        end = time()
-    if preprocess_func is not None:
-        for i in range(len(data)):
-            data[i] = preprocess_func(data[i])
+            workbook = openpyxl.load_workbook(filename, data_only=True, read_only=True)
+            sheet_names = workbook.get_sheet_names()
+            for sheet_name in sheet_names:
+                #getting rows in worksheet
+                cur_ws = workbook[sheet_name].rows
+                for i, row in enumerate(cur_ws):
+                    if i >= first_row:
+                       #If check column is empty don't include it
+                        if row[check_col].value is None:
+                            continue
+                        count += 1
+                        #getting data, label and ids from each row and concatenating it
+                        data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
+                                                     data, labels, ids, repeat_ids, lambda col: str(row[col].value))
+            end = time()
+        if preprocess_func is not None:
+            for i in range(len(data)):
+                data[i] = preprocess_func(data[i])
+
+    except SpecialException as e:
+        raise SpecialException(str(e))
+
+    except Exception:
+        raise SpecialException("An error has occurred while reading the data")
 
     return data, labels, ids
 
@@ -248,14 +264,17 @@ def import_pwds(filenames, pwd_names=None):
         pwds {dict} -- Personal word dictionary which is a dictionary which maps pwd_name -> list of words
     """
 
-    pwds = {}
-    pwd_names = [(lambda f: f.split(os.sep)[-1].split(".")[0])(file) for file in filenames] if not pwd_names else pwd_names
+    try:
+        pwds = {}
+        pwd_names = [(lambda f: f.split(os.sep)[-1].split(".")[0])(file) for file in filenames] if not pwd_names else pwd_names
 
-    for file, pwd_name in zip(filenames, pwd_names):
-        pwds[pwd_name] = []
-        with open(file, 'r', encoding='utf8') as csv_file:
-            rows = csv.reader(csv_file, delimiter=',', quotechar='"')
-            pwds[pwd_name] = [word.strip() for row in rows for word in row]
+        for file, pwd_name in zip(filenames, pwd_names):
+            pwds[pwd_name] = []
+            with open(file, 'r', encoding='utf8') as csv_file:
+                rows = csv.reader(csv_file, delimiter=',', quotechar='"')
+                pwds[pwd_name] = [word.strip() for row in rows for word in row]
+    except Exception:
+        raise SpecialException("An error occurred while parsing the dictionaries")
 
     return pwds
 
@@ -283,37 +302,43 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
         ids {list} -- list of ids
     """
 
-    data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
+    try:
+        data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
 
-    print("Reading data from csv file...")
+        print("Reading data from csv file...")
 
-    count = 0
-    for file_num, filename in enumerate(filenames):
-        if limit is not None and count == limit:
-            break
-        with open(filename, 'r', encoding='utf8') as csv_file:
-            rows = csv.reader(csv_file, delimiter=',', quotechar='"')
-            for i, row in enumerate(rows):
-                if i >= first_row:
-                    #If label column is empty don't include it
-                    if row[check_col] == '':
-                        continue
+        count = 0
+        for file_num, filename in enumerate(filenames):
+            if limit is not None and count == limit:
+                break
+            with open(filename, 'r', encoding='utf8') as csv_file:
+                rows = csv.reader(csv_file, delimiter=',', quotechar='"')
+                for i, row in enumerate(rows):
+                    if i >= first_row:
+                        #If label column is empty don't include it
+                        if row[check_col] == '':
+                            continue
 
-                    count += 1
+                        count += 1
 
-                    #getting data, label and ids from each row and concatenating it
-                    try:
-                        data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
-                                                 data, labels, ids, repeat_ids, lambda col: str(row[col]))
-                    except:
-                        raise(Exception("{}{}{}".format(data_cols, label_cols, id_cols)))
+                        #getting data, label and ids from each row and concatenating it
+                        try:
+                            data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
+                                                     data, labels, ids, repeat_ids, lambda col: str(row[col]))
+                        except:
+                            raise(Exception("{}{}{}".format(data_cols, label_cols, id_cols)))
 
 
 
-    if preprocess_func is not None:
-        for i in range(len(data)):
-            data[i] = preprocess_func(data[i])
+        if preprocess_func is not None:
+            for i in range(len(data)):
+                data[i] = preprocess_func(data[i])
 
+    except SpecialException as e:
+        raise SpecialException(str(e))
+
+    except Exception:
+        raise SpecialException("An error occurred when reading the data")
     return data, labels, ids
 
 #TODO: Probably shouldn't have default mutable args. Change later
@@ -338,63 +363,67 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
         regexes {list} -- List of Regex objects
     """
 
-    regexes = []
-    classifier_type = None
-    classifier_args = {}
-    class_name = None
+    try:
+        regexes = []
+        classifier_type = None
+        classifier_args = {}
+        class_name = None
 
-    with open(filename, 'r', encoding='utf8') as f:
-        lines = csv.reader(f, delimiter=',', quotechar='"')
-        for i, line in enumerate(lines):
-            if i == 0:
-                if not line[0].startswith("!"):
-                    raise Exception("Rule file requires label name at start of file. Specify as !label_name")
+        with open(filename, 'r', encoding='utf8') as f:
+            lines = csv.reader(f, delimiter=',', quotechar='"')
+            for i, line in enumerate(lines):
+                if i == 0:
+                    if not line[0].startswith("!"):
+                        raise Exception("Rule file requires label name at start of file. Specify as !label_name")
 
-                #Name of class
-                class_name = line[0][1:]
-                if len(line) > 1:
-                    #Type of classifier
-                    classifier_type = line[1]
-                    #Looping through remaining pairs of arg_name, arg_val and evaluating using ast.literal_eval
-                    for j in range(2, len(line) - 1, 2):
-                        print(line[j+1])
-                        # TODO: Make safer
-                        classifier_args[line[j]] = ast.literal_eval(line[j+1])
+                    #Name of class
+                    class_name = line[0][1:]
+                    if len(line) > 1:
+                        #Type of classifier
+                        classifier_type = line[1]
+                        #Looping through remaining pairs of arg_name, arg_val and evaluating using ast.literal_eval
+                        for j in range(2, len(line) - 1, 2):
+                            print(line[j+1])
+                            # TODO: Make safer
+                            classifier_args[line[j]] = ast.literal_eval(line[j+1])
 
-                continue
+                    continue
 
-            #blank line check
-            if len(line) == 0:
-                continue
+                #blank line check
+                if len(line) == 0:
+                    continue
 
-            #comment code
-            if line[0].startswith("#"):
-                continue
+                #comment code
+                if line[0].startswith("#"):
+                    continue
 
-            #Reading primary score and primary regex
-            score = None if not use_custom_score else int(line[1])
-            regex = line[0]
+                #Reading primary score and primary regex
+                score = None if not use_custom_score else int(line[1])
+                regex = line[0]
 
-            secondary_regexes = []
+                secondary_regexes = []
 
-            #Creating list of secondary regexes for the primary regex
-            for j in range(2, len(line) - 2, 3):
-                pattern = line[j]
-                effect = line[j+1]
-                secondary_score = None if not use_custom_score else int(line[j+2])
+                #Creating list of secondary regexes for the primary regex
+                for j in range(2, len(line) - 2, 3):
+                    pattern = line[j]
+                    effect = line[j+1]
+                    secondary_score = None if not use_custom_score else int(line[j+2])
 
-                secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), class_name),
-                                        regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
+                    secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), class_name),
+                                            regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
 
-                secondary_regexes.append(secondary_regex)
-
-
-            #Creating regex
-            cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
-                              secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
+                    secondary_regexes.append(secondary_regex)
 
 
-            regexes.append(cur_regex)
+                #Creating regex
+                cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
+                                  secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
+
+
+                regexes.append(cur_regex)
+
+    except Exception:
+        raise SpecialException("An error occurred while trying to read and parse the rules")
 
     return classifier_type, classifier_args, class_name, regexes
 
