@@ -210,13 +210,15 @@ def run_variable(variable, settings):
 
             if prediction_mode:
                 predictions_dict, _ = get_failures(classifier_runner, cur_dataset, gen_path)
+                classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
                 generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
                                       template_directory, "{}".format(rule_name),
                                       classifier_runner.classifier.regexes.keys(), predictions_dict, effects,
                                       custom_effect_colours=effect_colours,
                                       addition_json_params={"Prediction Mode": True,
                                       "Negative Label": classifier_runner.classifier.negative_label,
-                                      "Classifier Type": classifier_runner.classifier_type.__name__},
+                                      "Classifier Type": classifier_runner.classifier_type.__name__,
+                                      "Ordered Labels": classifier_classes},
                                       custom_class_colours=custom_class_colours)
 
             else:
