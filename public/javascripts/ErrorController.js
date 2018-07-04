@@ -142,6 +142,40 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
         errorController.getSelectedMatches();
     }
 
+    errorController.downloadData = function() {
+        var patients = errorController.data.patient_cases
+
+        var csv_string = '';
+        if (errorController.predictionMode === undefined || errorController.predictionMode === null || errorController.predictionMode === false) {
+            csv_string += '"ID","Prediction","Actual"\n';
+        } else {
+            csv_string += '"ID","Prediction"\n';
+        }
+        angular.forEach(patients, function(val, key) {
+            if (errorController.predictionMode === undefined || errorController.predictionMode === null || errorController.predictionMode === false) {
+                csv_string += '"' + key + '","' + val.pred + '","' + val.actual + '"\n'
+            } else {
+                csv_string += '"' + key + '","' + val.pred + '"\n'
+            }
+        })
+
+        var encodedUri = encodeURIComponent(csv_string);
+        var link = document.createElement("a");
+        link.setAttribute("href", 'data:text/csv;charset=utf-8,' + encodedUri)
+        link.setAttribute("download", "predictions_" + errorController.data.var_name + ".csv")
+
+        if (document.createEvent) {
+            var event = document.createEvent('MouseEvents');
+            event.initEvent('click', true, true)
+            link.dispatchEvent(event);
+        }
+        else
+        {
+            link.click();
+        }
+
+    }
+
     errorController.markMatch = function(id, match) {
         $("mark").unmark();
 
@@ -277,7 +311,7 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
 
             if (sentences_with_matches.has(i)) {
 
-                  var cleansed_sentence = sentences[i]
+                var cleansed_sentence = sentences[i]
 //                var cleansed_sentence = sentences[i].replace(new RegExp("\n+", "i"), " ");
 //                console.log(sentences[i])
 //                console.log(cleansed_sentence)
