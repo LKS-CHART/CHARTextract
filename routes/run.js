@@ -1,11 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var pyshell_connector = require("..\\python_connector\\connector.js");
-var settings_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\project_settings_tb.json";
 var path = require('path');
+var prog_status = null;
 settings_path = path.join(__dirname,"..","public","data","project_settings.json");
 
 console.log(settings_path);
+
+router.get('/get_response_status', function(req, res, next) {
+    res.send(JSON.stringify(prog_status, null, 4))
+})
 
 router.get('/:variable', function(req, res, next) {
     console.time("dbsave");
@@ -17,9 +21,8 @@ router.get('/:variable', function(req, res, next) {
         pyshell_connector.on('message', function(message) {resolve(message)});
     });
     Promise.all([curPromise]).then(function (result) {
-        var redirect_url = "http://localhost:8080/NgramRegexNLP/generated_data/" + req.params.variable +  "/train/index.html";
-        var redirect_url = "/"
-        res.redirect(redirect_url);
+        prog_status = result;
+        res.redirect("/")
     });
 });
 

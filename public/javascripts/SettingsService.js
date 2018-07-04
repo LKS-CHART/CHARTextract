@@ -24,6 +24,15 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
     console.log("CALLED")
     var myDataPromise = DataService.getData();
 
+    $http.get("http://localhost:3000/run/get_response_status").then(function(response) {
+        var status = response.data[0];
+
+        if (status["status"] === 404) {
+            alert(status["message"])
+        }
+
+    })
+
     myDataPromise.then(function(result) {
         prevVariable = result.var_name;
     })
