@@ -19,8 +19,9 @@ def calculate_accuracy(preds, labels):
 
     wrong_indices = np.nonzero(~(preds == labels))[0]
     accuracy = np.sum(preds == labels)/len(labels)
+    num_correct = len(preds) - len(wrong_indices)
 
-    return accuracy, wrong_indices
+    return accuracy, wrong_indices, num_correct
 
 def get_classification_stats(cnf, labels):
     positive_cases = {label: 0 for label in labels}

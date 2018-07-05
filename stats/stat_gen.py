@@ -14,7 +14,7 @@ def get_failures(classifier_runner, cur_dataset, conf_path, print_output=True):
         except TypeError:
             raise SpecialException("Error occurred when generating stats. Check label file to make sure all ids are unique.")
         accuracy, \
-            incorrect_indices = calculate_accuracy(classifier_runner.classifier.dataset[cur_dataset]["preds"],
+            incorrect_indices, num_correct = calculate_accuracy(classifier_runner.classifier.dataset[cur_dataset]["preds"],
                                                    classifier_runner.classifier.dataset[cur_dataset]["labels"])
 
         if print_output:
@@ -82,7 +82,10 @@ def get_failures(classifier_runner, cur_dataset, conf_path, print_output=True):
                       "Confusion Matrix": cnf_matrix.tolist() if cnf_matrix is not None else [],
                       "OVA PPV and Accuracy": ppv_and_accuracy, "Ordered Labels": cur_labels_list,
                       "Negative Label": classifier_runner.classifier.negative_label,
-                      "Classifier Type": classifier_type}
+                      "Classifier Type": classifier_type,
+                      "Accuracy": accuracy,
+                      "Num Correct": num_correct,
+                      "Total Cases": num_correct + len(incorrect_indices)}
 
         if cnf_matrix is not None:
             plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
