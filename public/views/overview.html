@@ -4,7 +4,7 @@
 <h3>Stats</h3>
 
 <p ng-repeat="(class, colour) in errorCtrl.data.classes">
-    <b>{{class}}:</b> </br>
+    <b>{{class}}:</b> <br/>
     {{errorCtrl.data["Predicted Positive"][class]}} Predicted Positive Cases of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br>
     {{errorCtrl.data["Predicted Negative"][class]}} Predicted Negative Cases of {{errorCtrl.data["Negative Cases"][class]}}  Negative Cases</br></br>
     {{errorCtrl.data["False Positives"][class]}} False Positives of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br>
@@ -15,4 +15,10 @@
     Sensitivity: {{errorCtrl.data["OVA PPV and Accuracy"][class]["sensitivity"]*100}}% </br>
     One vs All Accuracy: {{errorCtrl.data["OVA PPV and Accuracy"][class]["accuracy"]*100}}% </br>
     One vs All Accuracy: {{errorCtrl.data["OVA PPV and Accuracy"][class]["num_correct"]}} correct out of {{errorCtrl.data["Positive Cases"][class] + errorCtrl.data["Negative Cases"][class]}} </br>
+</p>
+
+<p>
+    <b>Overall:</b><br/>
+    {{errorCtrl.data["Num Correct"]}} Correct of {{errorCtrl.data["Total Cases"]}} Cases <br/><br/>
+    Accuracy: {{errorCtrl.data["Accuracy"]*100}}%
 </p>
