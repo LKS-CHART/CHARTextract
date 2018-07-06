@@ -372,6 +372,7 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
         with open(filename, 'r', encoding='utf8') as f:
             lines = csv.reader(f, delimiter=',', quotechar='"')
             for i, line in enumerate(lines):
+                line = [token.strip().strip("\"") for token in line]
                 if i == 0:
                     if not line[0].startswith("!"):
                         raise Exception("Rule file requires label name at start of file. Specify as !label_name")
