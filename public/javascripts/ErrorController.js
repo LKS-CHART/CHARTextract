@@ -27,8 +27,61 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
         return result
     }
 
+    function markMatchHelper(match, id, options) {
+          var match_start = match["match_start"]
+          var match_end = match["match_end"]
 
+          var new_match_start = match_start
+          var new_match_end = match_end
 
+          var actual_match_start = 0
+          var actual_match_end = match_end - match_start
+
+          var sentence = $("#" + id).text()
+          sentence = " " + sentence + " "
+
+//          console.log(sentence)
+//          console.log("Match Start: " + match_start)
+//          console.log("Match End: " + match_end)
+
+          var tracker = 0;
+          for (var i = 0; i < sentence.length-1; i++) {
+            var t = sentence[i]
+            var t1 = sentence[i+1]
+            if (actual_match_start === match_start && actual_match_end === match_end)
+              break;
+
+            if ((sentence[i]==="\n" && sentence[i+1] ==="\n") || (sentence[i]==="\n" && sentence[i+1] ===" " && i !== 0)
+            || (sentence[i]===" " && sentence[i+1] ==="\n" & i !== 0) || (sentence[i] === " " && sentence[i+1] === " " && i !== 0)
+             || (sentence[i]==="\r" && sentence[i+1]===" ") || (sentence[i]===" " && sentence[i+1]==="\r")) {
+              tracker++;
+
+              var start_matched = false;
+              if (actual_match_start < match_start) {
+                new_match_start++;
+                new_match_end++;
+                start_matched = true;
+              }
+
+              if (!start_matched && actual_match_end < match_end) {
+                new_match_end++;
+              }
+
+            } else {
+
+              actual_match_start++;
+              actual_match_end++;
+            }
+
+          }
+          new_match_start  = new_match_start - 1;
+          new_match_end = new_match_end - 1
+
+          $("#" + id).markRanges([{"start": new_match_start, "length": new_match_end - new_match_start}], options)
+
+//          console.log(tracker)
+
+    }
     function reloadData() {
         myDataPromise.then(function(result) {
             errorController.data = fix_data(result)
@@ -179,27 +232,23 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
     errorController.markMatch = function(id, match) {
         $("mark").unmark();
 
-        var matched_string_r = new RegExp(match.matched_string,"im")
-
         if (match["effect"].startsWith("r")) {
-            $("#" + id).markRegExp(matched_string_r, {
-            "className": "highlight-effect-replace",
-            "element": "span", "acrossElements": true})
+            var options = {"className": "highlight-effect-replace", "element": "span"}
+            markMatchHelper(match, id, options)
         }
         else if (match["effect"].startsWith("i")) {
-            $("#" + id).markRegExp(matched_string_r, {
-            "className": "highlight-effect-ignore",
-            "element": "span", "acrossElements": true})
+            var options = {"className": "highlight-effect-ignore", "element": "span"}
+            markMatchHelper(match, id, options)
         }
         else if (match["effect"].startsWith("a")) {
-            $("#" + id).markRegExp(matched_string_r, {
-            "className": "highlight-effect-add",
-            "element": "span", "acrossElements": true})
+            var options = {"className": "highlight-effect-add", "element": "span"}
+            markMatchHelper(match, id, options)
         }
         else
         {
-            $("#" + id).markRegExp(matched_string_r, {"className": "highlight",
-            "element": "span", "acrossElements": true})
+            console.log("HERE")
+            var options = {"className": "highlight", "element": "span"}
+            markMatchHelper(match, id, options)
         }
     }
 
@@ -229,15 +278,14 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
 
                     var matched_string = match_obj["matches"][0]["matched_string"]
 
+                    var match_obj_py = match_obj["matches"][0]
+
                     var primary_match = {"name": match_obj.name, "pattern": match_obj.pattern, "score": match_obj.score,
                      "effect": match_obj.effect, "aggregate_score": match_obj.aggregate_score,
-                      "matched_string": matched_string, "id": str_id}
+                      "matched_string": matched_string, "id": str_id, "match_start": match_obj_py.match_start, "match_end": match_obj_py.match_end}
 
-                    var matched_string_r = new RegExp(primary_match.matched_string, "im")
-
-                    $("#" + str_id).markRegExp(matched_string_r, {"className": "highlight",
-                    "acrossElements": true,
-                    "element": "span"})
+                    var options = {"className": "highlight", "element": "span"}
+                    markMatchHelper(match_obj_py, sentence_id, options)
 
                     all_sentence_matches.push(primary_match)
 
@@ -246,26 +294,23 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
                     for (var j = 0; j < secondary_matches.length; j++) {
 
                         var match_obj2 = secondary_matches[j];
+                        var match_obj2_py = match_obj2.matches[0]
                         var secondary_match = {"name": match_obj2.name, "pattern": match_obj2.pattern, "score": match_obj2.score,
                         "effect": match_obj2.effect, "matched_string": match_obj2.matches[0].matched_string,
-                        "id": str_id}
+                        "id": str_id, "match_start": match_obj2_py.match_start, "match_end": match_obj2_py.match_end}
 
-                        var matched_string_r_2 = new RegExp(secondary_match.matched_string, "im")
 
                         if (secondary_match["effect"].startsWith("r")) {
-                            $("#" + str_id).markRegExp(matched_string_r_2, {
-                            "className": "highlight-effect-replace",
-                            "element": "span", "acrossElements": true})
+                            var options = {"className": "highlight-effect-replace", "element": "span"}
+                            markMatchHelper(match_obj2_py, sentence_id, options)
                         }
                         else if (secondary_match["effect"].startsWith("i")) {
-                            $("#" + str_id).markRegExp(matched_string_r_2, {
-                            "className": "highlight-effect-ignore",
-                            "element": "span", "acrossElements": true})
+                            var options = {"className": "highlight-effect-ignore", "element": "span"}
+                            markMatchHelper(match_obj2_py, sentence_id, options)
                         }
                         else if (secondary_match["effect"].startsWith("a")) {
-                            $("#" + str_id).markRegExp(matched_string_r_2, {
-                            "className": "highlight-effect-add",
-                            "element": "span", "acrossElements": true})
+                            var options = {"className": "highlight-effect-add", "element": "span"}
+                            markMatchHelper(match_obj2_py, sentence_id, options)
                         }
                         all_sentence_matches.push(secondary_match)
 
@@ -312,7 +357,7 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
             if (sentences_with_matches.has(i)) {
 
                 var cleansed_sentence = sentences[i]
-//                var cleansed_sentence = sentences[i].replace(new RegExp("\n+", "i"), " ");
+//                var cleansed_sentence = sentences[i].replace(new RegExp("\n+", "i"), "<br/>");
 //                console.log(sentences[i])
 //                console.log(cleansed_sentence)
 //                console.log("CLEANY CLEANY")
