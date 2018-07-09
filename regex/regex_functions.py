@@ -40,12 +40,11 @@ def match_secondary(secondary_regex, text, primary_regex_matches, pwds=None):
             # If secondary match appears before any of the primary matches
             if effect_modifier == "b" and any(map(lambda tup: tup[0].start() <= tup[1].start(),
                                                   product(secondary_matches, primary_regex_matches))):
-                secondary_matches = secondary_matches
+                pass
             # If it appears after any of the primary matches
             elif effect_modifier == "a" and any(map(lambda tup: tup[0].start() >= tup[1].end(),
                                                     product(secondary_matches, primary_regex_matches))):
-                secondary_matches = secondary_matches
-
+                pass
             # If the above two were not satisfied, the secondary regex failed to satisfy its after effect
             else:
                 secondary_matches = []

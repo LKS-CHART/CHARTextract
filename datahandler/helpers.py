@@ -3,6 +3,8 @@ from datahandler import data_import as di
 import json
 from util.pwd_preprocessors import PwdPreprocessor2
 from properties2 import *
+from util.ASTOps import construct_ast
+
 
 def import_regex(regex_file):
     """Import a single regex rule file
@@ -18,7 +20,7 @@ def import_regex(regex_file):
 
     regexes = {}
 
-    #TODO: Check if tuple unpacking like this is an issue
+    # TODO: Check if tuple unpacking like this is an issue
 
     if regex_file.endswith(".txt"):
         classifier_type, classifier_args, class_name, regexes[class_name] = \
@@ -32,6 +34,7 @@ def import_regex(regex_file):
     classifier_type = "RegexClassifier" if not classifier_type else classifier_type
 
     return classifier_type, classifier_args, regexes
+
 
 def import_regexes(regex_directory):
     """Import multiple regex rule files which will be used in multiclass classification
@@ -87,6 +90,7 @@ def import_regexes2(regexes_directory):
 
     return classifier_type, classifier_args, regexes
 
+
 def get_rule_properties(rule_path, rule_name, pwds=None):
     file_name = os.path.join(rule_path, "rule_properties.json")
 
@@ -107,10 +111,11 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
         use_preprocessor = False if ("Use Preprocessor" not in data or not data["Use Preprocessor"]) else True
         preprocessor = PwdPreprocessor2(pwds, required_pwds, to_lower=True) if use_preprocessor else None
 
-        classifier_runtime_args = {"pwds": cur_pwds, "preprocess_func": preprocessor.preprocess if preprocessor else None}
+        classifier_runtime_args = {"pwds": cur_pwds,
+                                   "preprocess_func": preprocessor.preprocess if preprocessor else None}
         classifier_initialization_args = None
 
-        use_python = False if ("Specify Function with Python" not in data or not data["Specify Function with Python"])\
+        use_python = False if ("Specify Function with Python" not in data or not data["Specify Function with Python"]) \
             else True
 
         label_func = None
@@ -126,8 +131,12 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
                     label_func = file_to_args[rule_name]["Runner Initialization Params"]["label_func"] \
                         if "label_func" in file_to_args[rule_name]["Runner Initialization Params"] else None
 
-                    classifier_initialization_args = {key : file_to_args[rule_name]["Runner Initialization Params"][key]
-                                                     for key in file_to_args[rule_name]["Runner Initialization Params"]
-                                                     if key != "label_func"}
+                    classifier_initialization_args = {key: file_to_args[rule_name]["Runner Initialization Params"][key]
+                                                      for key in file_to_args[rule_name]["Runner Initialization Params"]
+                                                      if key != "label_func"}
 
     return label_col, label_func, classifier_runtime_args, classifier_initialization_args
+
+def compile_tags_to_regex(tags):
+    return str(construct_ast(tags))
+
