@@ -33,6 +33,23 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).conf
     })
 }])
 
+app.config(['$provide', function($provide) {
+    $provide.decorator("$controller", ["$delegate", function($delegate) {
+        $delegate.exists = function(controllerName) {
+            if(typeof window[controllerName] == 'function') {
+                return true;
+            }
+            try {
+                $controller(controllerName);
+                return true;
+            } catch (error) {
+                return !(error instanceof TypeError);
+            }
+        }
+
+        return $delegate
+    }])
+}])
 app.directive('ngHtmlCompile', function($compile) {
     return {
 	    restrict: 'A',

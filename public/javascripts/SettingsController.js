@@ -1,4 +1,6 @@
-app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", "$location", "$window", function($uibModal, $uibModalInstance, SettingsService, $http, $location, $window) {
+app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", "$location", "$window", "$rootScope", "$controller", "$scope",
+    function($uibModal, $uibModalInstance, SettingsService, $http, $location, $window, $rootScope, $controller, $scope) {
+
     var settingsController = this;
     settingsController.dataFile = SettingsService.dataSettings.selected;
     settingsController.labelFile = SettingsService.labelSettings.selected;
@@ -13,6 +15,8 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.labelFirstRow = SettingsService.labelFirstRow
     settingsController.createTrainAndValid = SettingsService.createTrainAndValid
     settingsController.predictionMode = SettingsService.predictionMode
+
+    var ruleCtrl_exists = false;
 
     var url = "http://localhost:3000/get_project_settings"
 
@@ -110,8 +114,21 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         var p = SettingsService.getCurrentVariable() + "/" + "train" + "/" + "error_report.json";
         localStorage.setItem('errorJsonPath', p);
 
+        $rootScope.$broadcast("run_variable")
+        //console.log($controller.exists('ruleCtrl') ? 'Exists' : 'Does not exist');
+
+        console.log(ruleCtrl_exists ? 'Exists' : 'Does not exist')
+
         window.location.href = url
+
     }
+    $scope.$on("ruleCtrl_spawn", function() {
+        ruleCtrl_exists = true;
+    })
+
+    $scope.$on("ruleCtrl_despawn", function() {
+        ruleCtrl_exists = false;
+    })
 
     settingsController.getDataset = function() {
         return sessionStorage.getItem("dataset")

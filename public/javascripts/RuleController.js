@@ -1,4 +1,4 @@
-app.controller("RuleController", ["DataService", "$http", "SettingsService", "MainRuleService", "RuleService", "$scope", function(DataService, $http, SettingsService, MainRuleService, RuleService, $scope) {
+app.controller("RuleController", ["DataService", "$http", "SettingsService", "MainRuleService", "RuleService", "$scope", "$rootScope", function(DataService, $http, SettingsService, MainRuleService, RuleService, $scope, $rootScope) {
 
     var ruleController = this;
 
@@ -10,6 +10,14 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
 
     ruleController.availableClasses = [];
     ruleController.advancedMode = true;
+
+    $scope.$on("run_variable", function() {
+        console.log("RUN VAR EVENT")
+    })
+
+    $scope.$on("$destroy", function() {
+        $rootScope.$broadcast("ruleCtrl_despawn")
+    })
 
     function loadText() {
         var url = "http://localhost:3000/load/" + ruleController.currentVar;
@@ -163,4 +171,6 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
 
         MainRuleService.setRulesetParam(ruleController.currentTab, "new_name", $(this).text());
     });
+
+    $rootScope.$broadcast("ruleCtrl_spawn")
 }])
