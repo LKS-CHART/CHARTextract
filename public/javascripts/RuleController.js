@@ -124,6 +124,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
                 "filename": MainRuleService.getRulesetParam(class_name, "filename"),
                 "regexes": MainRuleService.getRulesetParam(class_name, "regexesText"),
                 "new_name": new_class_name,
+                "Dirty": false,
                 "regexesSimple": MainRuleService.getRulesetParam(class_name, "regexesSimple")
             }
             $http.post(url, params).then(function(data) {

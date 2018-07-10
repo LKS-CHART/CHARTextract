@@ -98,12 +98,14 @@ router.post('/:variable/:class', function(req, res, next) {
     });
 
 
-    var new_json = {"Name": req.params.class, "Rules": req.body.regexesSimple}
-    fs.writeFile(jsonFilePath, JSON.stringify(new_json, null, 4), function(err) {
-        if(err) {
-            return err
-        }
-    })
+    if (req.body.regexesSimple.length > 0) {
+        var new_json = {"Name": req.params.class, "Dirty": false, "Rules": req.body.regexesSimple}
+        fs.writeFile(jsonFilePath, JSON.stringify(new_json, null, 4), function(err) {
+            if(err) {
+                return err
+            }
+        })
+    }
 
 //    fs.writeFile(jsonFilePath, JSON.stringify(req.body.reg))
     console.log("Received save");
