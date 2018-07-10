@@ -129,7 +129,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         labelFirstRow: labelFirstRow,
         createTrainAndValid: createTrainAndValid,
         requestVars: requestVars,
-        predictionMode, predictionMode,
+        predictionMode: predictionMode,
         getCurrentVariable: getCurrentVariable,
         setCurrentVariable: setCurrentVariable,
         getCurrentNegativeLabel: getCurrentNegativeLabel,

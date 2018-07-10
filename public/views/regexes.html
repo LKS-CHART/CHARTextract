@@ -11,8 +11,8 @@
     <br/>
     <br/>
     <div style="display: inline-block">
-        <span ng-repeat="class_name in ruleCtrl.availableClasses">
-            <button ng-click="ruleCtrl.loadFile(class_name)"ng-if="class_name !== ruleCtrl.getNegativeLabel()" class="btn btn-default" ng-class="{'active': ruleCtrl.currentTab === class_name}">
+        <span ng-repeat="(tab_name,class_name) in ruleCtrl.availableClasses">
+            <button ng-click="ruleCtrl.loadFile(tab_name)"ng-if="class_name !== ruleCtrl.getNegativeLabel()" class="btn btn-default" ng-class="{'active': ruleCtrl.availableClasses[ruleCtrl.currentTab] === class_name}">
                 <div class="cspan" value="{{class_name}}" style="cursor: text; min-width: 20px; display: inline-block;" contenteditable="true" id="class{{$index}}">{{class_name}}</div>
                 <!--<input style="cursor: text" contenteditable="true" ng-model="class">{{class}}</input>-->
             </button>
