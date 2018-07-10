@@ -90,6 +90,43 @@ def import_regexes2(regexes_directory):
 
     return classifier_type, classifier_args, regexes
 
+def import_regexes3(regexes_directory):
+    file_names = os.listdir(regexes_directory)
+    regex_filenames = [fname for fname in file_names if fname.endswith(".txt")]
+    valid_files = set(regex_filenames)
+
+    settings_files = ["rule_settings.json", "rule_properties.json"]
+
+    json_files = [fname for fname in file_names if (fname.endswith(".json") and fname not in settings_files)]
+
+    for file in json_files:
+        path = os.path.join(regexes_directory, file)
+        with open(path) as f:
+            json_f = json.load(f)
+
+        dirty = json_f["Dirty"] if "Dirty" in json_f else False
+        if not dirty:
+            text_file = ".".join(file.split(".")[0:-1]) + ".txt"
+            valid_files.discard(text_file)
+            valid_files.add(file)
+
+    regex_filenames = [os.path.join(regexes_directory, fname) for fname in file_names if fname in valid_files]
+
+    regexes = {}
+
+    for file in regex_filenames:
+        _class_name, regexes[_class_name] = di.regexes_from_csv(file, use_custom_score=True) if file.endswith(".txt")\
+            else di.regexes_from_json(file, use_custom_score=True)
+
+    if "rule_settings.json" not in file_names:
+        classifier_args = {}
+        classifier_type = "RegexClassifier"
+    else:
+        classifier_type, classifier_args = di.read_classifier_settings(os.path.join(regexes_directory,
+                                                                                    "rule_settings.json"))
+
+    return classifier_type, classifier_args, regexes
+
 
 def get_rule_properties(rule_path, rule_name, pwds=None):
     file_name = os.path.join(rule_path, "rule_properties.json")

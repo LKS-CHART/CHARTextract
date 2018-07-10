@@ -5,7 +5,7 @@ import numpy as np
 from web.report_generator import generate_error_report
 import os
 import sys
-from datahandler.helpers import import_regexes2, get_rule_properties
+from datahandler.helpers import import_regexes3, get_rule_properties
 from stats.stat_gen import get_failures
 from datahandler.preprocessors import convert_repeated_data_to_sublist
 import random
@@ -44,7 +44,7 @@ def respond(message):
 
 # MAIN RUNNING CODE
 def create_regex_based_classifier(rule_path=None, additional_args=None):
-    classifier_type, classifier_args, regexes_dict = import_regexes2(rule_path) if os.path.isdir(rule_path) else None
+    classifier_type, classifier_args, regexes_dict = import_regexes3(rule_path) if os.path.isdir(rule_path) else None
     classifier_args.update({"regexes": regexes_dict})
     if additional_args:
         classifier_args.update(additional_args)
@@ -234,8 +234,8 @@ def run_variable(variable, settings):
     except SpecialException as e:
         respond({'status': 404, 'message': str(e)})
 
-    except Exception:
-        respond({'status': 404, 'message': "An Unknown Error Occurred"})
+    except Exception as e1:
+        respond({'status': 404, 'message': str(e1)})
 
 def run(**kwargs):
     respond({'function': 'run', 'params': kwargs})
