@@ -79,14 +79,12 @@ def _find_first_or_group(tags, start_index=1):
         return None
 
 def _simple_or_merge(or_tags):
-    return "(" + "".join(map(lambda item: "|" if item == "OR" else (item if item[0] == "("
-                                                                    and item[-1] == ")"
-                                                                    else "?:" + item), or_tags)) + ")"
-
+    return "(?:" + "".join(map(lambda item: "|" if item == "OR" else (item if item[0] == "(" and item[-1] == ")"
+                                                                      else "(?:" + item + ")"), or_tags)) + ")"
 def _simple_tag_substitution(tags):
     return "".join(map(lambda item: ".*?" if item == "..." else (item if item[0] == "("
-                                                               and ASTNode._text_replace(item)[-1] == ")"
-                                                               else "(?:" + ASTNode._text_replace(item) + ")"), tags))
+                                                            and ASTNode._text_replace(item)[-1] == ")"
+                                                                else "(?:" + ASTNode._text_replace(item) + ")"), tags))
 
 def _merge_ors(tags):
     or_group, first_index, end_index = _find_first_or_group(tags)
