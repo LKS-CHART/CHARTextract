@@ -88,15 +88,24 @@ router.post('/:variable/:class', function(req, res, next) {
 
     var filePath = path.join(module.exports.rules_path, req.params['variable'], req.body.filename);
 
-    console.log("HERE")
-
+    var index = filePath.indexOf(".txt")
+    var jsonFilePath = filePath.substring(0,index) + ".json";
     fs.writeFile(filePath, req.body.regexes, function(err) {
         if(err) {
-            return console.log(err)
+            return err;
         }
 
-        console.log("Saved")
     });
+
+
+    var new_json = {"Name": req.params.class, "Rules": req.body.regexesSimple}
+    fs.writeFile(jsonFilePath, JSON.stringify(new_json, null, 4), function(err) {
+        if(err) {
+            return err
+        }
+    })
+
+//    fs.writeFile(jsonFilePath, JSON.stringify(req.body.reg))
     console.log("Received save");
     console.log(req.params);
     console.log(req.body);

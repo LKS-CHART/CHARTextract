@@ -6,6 +6,8 @@ let router = express.Router();
 let fs = require('fs');
 let path = require('path');
 
+let special_jsons = new Set(["rule_properties.json", "rule_settings.json"])
+
 function promisify(fn) {
     /**
      * @param {...Any} params The params to pass into *fn*
@@ -102,13 +104,34 @@ router.get('/:variable', function(req, res, next) {
 
     console.log(filePath);
 
+
+
     function appendData(fileName, resolve, reject){
         if (path.extname(fileName) === ".txt") {
             console.log(fileName);
             fs.readFile(path.join(filePath,fileName), {encoding: 'utf-8'}, function(err, data){
                 if (!err) {
-                    dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"filename": fileName, "regexesText": data, "regexesSimple": []};
-                    resolve([fileName, data]);
+                    var index = fileName.indexOf(".txt")
+                    var jsonFileName = fileName.substring(0,index) + ".json";
+                    var jsonFilePath = path.join(filePath, jsonFileName);
+                    var json_exists = fs.existsSync(jsonFilePath)
+
+                    if (!json_exists) {
+                        dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"filename": fileName, "regexesText": data, "regexesSimple": []};
+                        resolve([fileName, data]);
+                    } else
+                    {
+                        fs.readFile(jsonFilePath, {encoding: 'utf-8'}, function(err, json_data) {
+                            if(!err) {
+                                var rules = JSON.parse(json_data)["Rules"]
+                                dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"filename": fileName, "regexesText": data, "regexesSimple": rules};
+                                resolve([fileName, json_data]);
+                            } else {
+                                reject(err);
+                                res.sendStatus(404);
+                            }
+                        })
+                    }
                 } else {
                     reject(err);
                     res.sendStatus(404);

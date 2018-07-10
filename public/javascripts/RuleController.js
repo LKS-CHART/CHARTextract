@@ -20,14 +20,6 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     })
 
 
-    function saveTextJson() {
-
-    }
-
-    function saveTextFile() {
-
-    }
-
     function generateId() {
 
         return Math.random().toString(36).substring(7);
