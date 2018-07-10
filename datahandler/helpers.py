@@ -3,7 +3,7 @@ from datahandler import data_import as di
 import json
 from util.pwd_preprocessors import PwdPreprocessor2
 from properties2 import *
-from util.ASTOps import construct_ast
+from util.ASTOps import construct_ast, create_regex
 
 
 def import_regex(regex_file):
@@ -138,5 +138,5 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
     return label_col, label_func, classifier_runtime_args, classifier_initialization_args
 
 def compile_tags_to_regex(tags):
-    return str(construct_ast(tags))
+    return create_regex(tags)
 

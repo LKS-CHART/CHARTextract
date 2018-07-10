@@ -78,6 +78,15 @@ def _find_first_or_group(tags, start_index=1):
     else:
         return None
 
+def _simple_or_merge(or_tags):
+    return "(" + "".join(map(lambda item: "|" if item == "OR" else (item if item[0] == "("
+                                                                    and item[-1] == ")"
+                                                                    else "?:" + item), or_tags)) + ")"
+
+def _simple_tag_substitution(tags):
+    return "".join(map(lambda item: ".*?" if item == "..." else (item if item[0] == "("
+                                                               and ASTNode._text_replace(item)[-1] == ")"
+                                                               else "(?:" + ASTNode._text_replace(item) + ")"), tags))
 
 def _merge_ors(tags):
     or_group, first_index, end_index = _find_first_or_group(tags)
@@ -92,9 +101,9 @@ def _merge_ors(tags):
                 appended = False
         if or_group and not appended and (first_index is not None) and (end_index is not None) and \
                 (first_index <= i < end_index):
-            ast = _ast_helper(or_group)
-            new_tags.append(str(ast))
+            new_tags.append(_simple_or_merge(or_group))
             appended = True
+
     return new_tags
 
 def construct_ast(tags):
@@ -102,5 +111,11 @@ def construct_ast(tags):
     tags_with_ops = _insertOperators(cleansed_tags)
 
     merged_ors = _merge_ors(tags_with_ops)
-    return _ast_helper(merged_ors)
+    return str(_ast_helper(merged_ors))
 
+def create_regex(tags):
+    cleansed_tags = _removeRedundantOps(tags)
+    tags_with_ops = _insertOperators(cleansed_tags)
+
+    merged_ors = _merge_ors(tags_with_ops)
+    return _simple_tag_substitution(merged_ors)
