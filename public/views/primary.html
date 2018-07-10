@@ -2,7 +2,7 @@
     <table>
         <tbody>
             <tr ng-class="{primarySelected: ruleInfo.Primary.Selected}" class="primary">
-                <td style="padding: 0px; white-space: nowrap; max-width: 100; margin: 0%" class="col-md-8">
+                <td style="padding: 0px; white-space: nowrap; margin: 0%" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                     <span style="margin-right: 15px;">If</span>
                     <tag-editor ng-attr-id="{{ruleInfo.Primary.u_id}}" rule-container="ruleInfo.Primary.Rule"></tag-editor>
                     <!--<js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ruleInfo.Primary.Rule,-->
@@ -21,12 +21,12 @@
                         <!-- </div>
                     </div> -->
                 </td>
-                <td class="col-md-2">
+                <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
                     <span style="white-space:nowrap;">appears, then score</span>
-                <td class="col-md-1">
+                <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                     <input style="width: 100px;" type="number" class="form-control" ng-model="ruleInfo.Primary.Score">
                 </td>
-                <td class="col-md-1" class="dropdown">
+                <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1" class="dropdown">
                         <span style="color: green;" class="close dropdown" data-toggle="dropdown">
                             +
                         </span>
@@ -42,7 +42,7 @@
                         </div> -->
                 </td>
 
-                <td class="col-md-1">
+                <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                     <span ng-click="primaryCtrl.deletePrimary(ruleInfo)" style="color: red;" class="close" aria-hidden="true">&times;</span>
                 </td>
             </tr>
