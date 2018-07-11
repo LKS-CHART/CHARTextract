@@ -286,7 +286,7 @@ app.directive('tagEditor', function(RuleService) {
                                 found_tag.addClass('green-tag');
                                 found_delete.addClass('green-tag');
                             }
-                            else if (li.find('.tag-editor-tag').html() !== undefined && li.find('.tag-editor-tag').html().match("\{[a-zA-Z0-9_\s]+\}")) {
+                            else if (li.find('.tag-editor-tag').html() !== undefined && li.find('.tag-editor-tag').html().match("^\{[a-zA-Z0-9_\s]+\}$")) {
                                 found_tag.addClass('red-tag');
                                 found_delete.addClass('red-tag');
                             }
@@ -314,7 +314,6 @@ app.directive('tagEditor', function(RuleService) {
                 source: scope.availableTags,
                 minLength: 0
             }});
-
 
             scope.$on("reloadTags", function(event, data) {
                 if(attrs.id === data.rule.u_id) {

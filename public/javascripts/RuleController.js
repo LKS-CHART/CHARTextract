@@ -1,4 +1,4 @@
-app.controller("RuleController", ["DataService", "$http", "SettingsService", "MainRuleService", "RuleService", "$scope", "$rootScope", function(DataService, $http, SettingsService, MainRuleService, RuleService, $scope, $rootScope) {
+app.controller("RuleController", ["DataService", "$http", "SettingsService", "MainRuleService", "RuleService", "$scope", "$rootScope", "$q", function(DataService, $http, SettingsService, MainRuleService, RuleService, $scope, $rootScope, $q) {
 
     var ruleController = this;
 
@@ -12,11 +12,17 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     ruleController.advancedMode = true;
 
     $scope.$on("run_variable", function() {
-        console.log("RUN VAR EVENT")
+        console.log("EVENT RUN VAR - RULECONTROLLER")
+        ruleController.saveFile(ruleController.currentTab)
+
     })
 
     $scope.$on("$destroy", function() {
         $rootScope.$broadcast("ruleCtrl_despawn")
+
+        if (ruleController.currentTab) {
+            ruleController.saveFile(ruleController.currentTab)
+        }
     })
 
 
@@ -60,15 +66,19 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     loadText();
 
     ruleController.loadFile = function(tab_name) {
-        ruleController.previousTab = angular.copy(ruleController.currentTab);
+        var prev_tab = angular.copy(ruleController.currentTab);
+        console.log(prev_tab)
+        ruleController.previousTab = prev_tab
         ruleController.currentTab = tab_name;
 
-        MainRuleService.setRulesetParam(ruleController.availableClasses[ruleController.previousTab], "regexesText", editor.session.getValue());
-        MainRuleService.setRulesetParam(ruleController.availableClasses[ruleController.previousTab], "regexesSimple", RuleService.getRuleset());
+        var promise = ruleController.saveFile(prev_tab)
 
-        editor.session.setValue(MainRuleService.getRulesetParam(ruleController.availableClasses[tab_name], "regexesText"));
-        RuleService.setRuleset(MainRuleService.getRulesetParam(ruleController.availableClasses[tab_name], "regexesSimple"));
-        $scope.$broadcast("ruleSetUpdate",null)
+        promise.then(function() {
+            editor.session.setValue(MainRuleService.getRulesetParam(ruleController.availableClasses[tab_name], "regexesText"));
+            RuleService.setRuleset(MainRuleService.getRulesetParam(ruleController.availableClasses[tab_name], "regexesSimple"));
+            $scope.$broadcast("ruleSetUpdate",null)
+            console.log("LOADED class")
+        })
     }
 
     ruleController.getNegativeLabel = function() {
@@ -107,11 +117,15 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
                 RuleService.setRuleset(MainRuleService.getRulesetParam(new_class, "regexesSimple"));
                 $scope.$broadcast("ruleSetUpdate",null)
                 ruleController.currentTab = new_tab
+            } else {
+                ruleController.currentTab = null;
             }
         })
     }
     ruleController.saveFile = function(tab_name) {
 
+        $rootScope.$broadcast("saving")
+        var deferred = $q.defer();
         var class_name = ruleController.availableClasses[tab_name]
         var new_class_name = MainRuleService.getRulesetParam(class_name, "new_name") || class_name
 
@@ -128,10 +142,14 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
                 "regexesSimple": MainRuleService.getRulesetParam(class_name, "regexesSimple")
             }
             $http.post(url, params).then(function(data) {
-                console.log("Sent Post Request")
+                console.log("SAVED")
+                $rootScope.$broadcast("save_finished")
             })
+
+            deferred.resolve();
         }
 
+        return deferred.promise;
 //        loadText();
     }
 
@@ -140,7 +158,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
         var new_tab_id = generateId()
         ruleController.availableClasses[new_tab_id] = temp_class_name;
 
-        if (ruleController.previousTab !== null) {
+        if (ruleController.currentTab !== null) {
             ruleController.previousTab = angular.copy(ruleController.currentTab);
         }
         ruleController.currentTab = new_tab_id
@@ -153,23 +171,29 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
         }
         MainRuleService.addToRulesets(temp_class_name, dummyRuleset)
 
-        if (ruleController.previousTab !== null) {
-            var prev_class = ruleController.availableClasses[ruleController.previousTab]
-            MainRuleService.setRulesetParam(prev_class, "regexesText", editor.session.getValue());
-            MainRuleService.setRulesetParam(prev_class, "regexesSimple", RuleService.getRuleset());
+        console.log(ruleController.previousTab)
+        if (ruleController.previousTab === null) {
+            editor.session.setValue(MainRuleService.getRulesetParam(temp_class_name, "regexesText"))
+            RuleService.setRuleset(MainRuleService.getRulesetParam(temp_class_name, "regexesSimple"));
+            $scope.$broadcast("ruleSetUpdate",null)
+        } else {
+            console.log("ASDDASD")
+            var promise = ruleController.saveFile(ruleController.previousTab)
+            promise.then(function() {
+                editor.session.setValue(MainRuleService.getRulesetParam(temp_class_name, "regexesText"))
+                RuleService.setRuleset(MainRuleService.getRulesetParam(temp_class_name, "regexesSimple"));
+                $scope.$broadcast("ruleSetUpdate",null)
+                console.log("SAVED PREVIOUS ON CREATION")
+            })
         }
-
-        editor.session.setValue(MainRuleService.getRulesetParam(temp_class_name, "regexesText"))
-        RuleService.setRuleset(MainRuleService.getRulesetParam(temp_class_name, "regexesSimple"));
-        $scope.$broadcast("ruleSetUpdate",null)
 
         var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + temp_class_name;
 
         var params = {
-            "filename": MainRuleService.getRulesetParam(temp_class_name, "filename"),
-            "regexes": MainRuleService.getRulesetParam(temp_class_name, "regexesText"),
+            "filename": temp_class_name + ".txt",
+            "regexes": "!" + temp_class_name + "\n#Don't forget to save the file to preserve the new name.",
             "new_name": null,
-            "regexesSimple": MainRuleService.getRulesetParam(temp_class_name, "regexesSimple")
+            "regexesSimple": []
         }
 
         $http.post(url, params).then(function(data) {

@@ -17,6 +17,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     settingsController.predictionMode = SettingsService.predictionMode
 
     var ruleCtrl_exists = false;
+    var save_finished = false;
 
     var url = "http://localhost:3000/get_project_settings"
 
@@ -122,6 +123,13 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         window.location.href = url
 
     }
+    $scope.$on("save_finished", function() {
+        save_finished = true;
+    })
+
+    $scope.$on("saving", function() {
+        save_finished = false;
+    })
     $scope.$on("ruleCtrl_spawn", function() {
         ruleCtrl_exists = true;
     })
