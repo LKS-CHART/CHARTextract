@@ -338,8 +338,8 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
     except SpecialException as e:
         raise SpecialException(str(e))
 
-    except Exception:
-        raise SpecialException("An error occurred when reading the data")
+    except Exception as e1:
+        raise SpecialException(str(e1))
     return data, labels, ids
 
 #TODO: Probably shouldn't have default mutable args. Change later

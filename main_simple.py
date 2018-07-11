@@ -1,7 +1,7 @@
 from variable_classifiers.base_runner import Runner
 import numpy as np
 from web.report_generator import generate_error_report
-from datahandler.helpers import import_regexes2, get_rule_properties
+from datahandler.helpers import import_regexes3, get_rule_properties
 import os
 import json
 from datahandler import data_import as di
@@ -11,6 +11,7 @@ from stats.stat_gen import get_failures
 from datahandler.preprocessors import convert_repeated_data_to_sublist
 import random
 import string
+from util.SpecialException import SpecialException
 
 """
 Project has project settings json. Specifies a single data file.
@@ -26,7 +27,7 @@ minus the positive label which will be specified within the regex file.
 """
 
 def create_regex_based_classifier(rule_path=None, additional_args=None):
-    classifier_type, classifier_args, regexes_dict = import_regexes2(rule_path) if os.path.isdir(rule_path) else None
+    classifier_type, classifier_args, regexes_dict = import_regexes3(rule_path) if os.path.isdir(rule_path) else None
     classifier_args.update({"regexes": regexes_dict})
 
     if additional_args:
@@ -179,7 +180,7 @@ if __name__ == "__main__":
                         valid_ids, valid_data, valid_labels = di.get_labeled_data(ids, data, valid_label_file, label_id_col, label_col, label_first_row,
                                                                                   label_func)
 
-                if create_train_and_valid:
+                if create_train_and_valid and not valid_file_exists:
                     classifier_runner = load_classifier_data(classifier_runner, train_data, train_labels, train_ids,
                                                              create_train_valid=True, train_percent=.6, random_seed=0)
                     available_datasets = ["train", "valid"]
@@ -241,5 +242,9 @@ if __name__ == "__main__":
                                           classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                           custom_effect_colours=effect_colours, addition_json_params=error_data,
                                           custom_class_colours=custom_class_colours)
-    except Exception as e:
-        print(e)
+    except SpecialException as e:
+        respond({'status': 404, 'message': str(e)})
+
+    except Exception as e1:
+        respond({'status': 404, 'message': str(e1)})
+
