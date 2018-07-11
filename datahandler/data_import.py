@@ -7,7 +7,10 @@ import ast
 import os
 import json
 from util.SpecialException import SpecialException
-from datahandler.helpers import create_regex
+from util.ASTOps import create_regex
+
+def _compile_tags_to_regex(tags):
+    return create_regex(tags)
 
 def preprocess_data(data):
     """Preprocesses data
@@ -522,14 +525,14 @@ def regexes_from_json(filename, use_custom_score=False, all_matches=False, flags
         if "Rules" in data:
             for rule in data["Rules"]:
                 score = None if not use_custom_score else rule["Primary"]["Score"]
-                primary_pattern = create_regex(rule["Primary"]["Rule"])
+                primary_pattern = _compile_tags_to_regex(rule["Primary"]["Rule"])
 
                 secondary_regexes = []
 
                 for rule_type in rule_types:
                     for secondary_rule in rule["Secondary"][rule_type]:
                         secondary_score = None if not use_custom_score else secondary_rule["Score"]
-                        secondary_pattern = create_regex(secondary_rule["Rule"])
+                        secondary_pattern = _compile_tags_to_regex(secondary_rule["Rule"])
 
                         effect = rule_types[rule_type]
 
