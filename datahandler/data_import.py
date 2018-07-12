@@ -543,13 +543,13 @@ def regexes_from_json(filename, use_custom_score=False, all_matches=False, flags
                         # effect = secondary_rule["Type"] + secondary_rule["Modifier"] \
                         #     if "Modifier" in secondary_rule else ""
 
-                        secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes),
+                        secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes) + 1,len(secondary_regexes) + 1,
                                                 class_name), regex=secondary_pattern, effect=effect, score=secondary_score,
                                                 all_matches=all_matches, flags=flags, secondary_regexes=[])
 
                         secondary_regexes.append(secondary_regex)
 
-                primary_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=primary_pattern,
+                primary_regex = Regex(name="reg{}-{}".format(len(regexes) + 1, class_name), regex=primary_pattern,
                                        score=score, effect='p', secondary_regexes=secondary_regexes,
                                        all_matches=all_matches, flags=flags)
 
