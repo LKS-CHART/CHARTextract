@@ -235,50 +235,20 @@ app.directive('tagEditor', function(RuleService) {
         },
         link: function(scope, element, attrs) {
 
-
             scope.availableTags = ["OR", "{test1}", "{test2}"]
-            scope.requiredTags = ["OR", "{test1}", "{test2}"]
+            scope.states = []
+            console.log("called")
+            scope.replay = false;
 
-            function tagSave(field, editor, tags, tag, val) {
-                if (!scope.availableTags.includes(val)) {
-                    scope.availableTags.push(val)
-                }
-            }
-
-            function tagDelete(field, editor, tags, val) {
-//                if(!scope.requiredTags.includes(val)) {
-//                    scope.availableTags.splice(scope.availableTags.indexOf(val),1);
-//                }
-
-            }
-
-            function tagCallback(field, editor, tags) {
-                scope.ruleContainer = tags
-
-                var curRule = RuleService.getRuleById(attrs.id)
-
-                if (curRule !== null && curRule !== undefined) {
-                    if (scope.ruleContainer !== undefined) {
-                        RuleService.setCurrentRuleVals(scope.ruleContainer);
-                    } else {
-
-                        console.log("DESYNC0")
-                    }
-                } else {
-                    console.log("DESYNC")
-                    console.log(curRule)
-                    RuleService.setCurrentRuleVals(scope.ruleContainer);
-                }
-
+            function colorize(editor) {
                 var i = 0;
-                $('li', editor).each(function(){
 
+                $('li', editor).each(function(){
                     if (i !== 0) {
 
                         var li = $(this);
 
                         if(li.find('.tag-editor-tag')) {
-
                             var found_tag = $(li.find('.tag-editor-tag'))
                             var found_delete = $(li.find('.tag-editor-delete'))
 
@@ -302,11 +272,35 @@ app.directive('tagEditor', function(RuleService) {
                     i++;
 
                 });
+            }
 
+            function tagCallback(field, editor, tags) {
+                if (!scope.replay) {
+                    scope.states.push([angular.copy(scope.ruleContainer)])
+                    synchronizeRuleControllerModel(tags)
+                }
+                colorize(editor)
             }
 
 
-            element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "beforeTagSave": tagSave, "beforeTagDelete": tagDelete, "delimiter": ";",
+            function synchronizeRuleControllerModel(tags) {
+                scope.ruleContainer = tags
+                var curRule = RuleService.getRuleById(attrs.id)
+
+                if (curRule !== null && curRule !== undefined) {
+                    if (scope.ruleContainer !== undefined) {
+                        RuleService.setCurrentRuleVals(scope.ruleContainer);
+                    } else {
+                        console.log("DESYNC0")
+                    }
+                } else {
+                    console.log("DESYNC")
+                    console.log(curRule)
+                    RuleService.setCurrentRuleVals(scope.ruleContainer);
+                }
+            }
+
+            element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "delimiter": ";", "maxLength": 100,
             "placeholder": "Enter a word", "forceLowercase": false, "removeDuplicates": false, "animateDelete": 30,
             "autocomplete": {
                 delay: 0,
@@ -314,6 +308,39 @@ app.directive('tagEditor', function(RuleService) {
                 source: scope.availableTags,
                 minLength: 0
             }});
+
+            function removeTags() {
+                var tags = element.tagEditor("getTags")[0].tags
+                for(var i = 0; i < tags.length; i++) {
+                    element.tagEditor('removeTag', tags[i]);
+                }
+            }
+
+            var tag_editor = element.tagEditor("getTags")[0].editor
+            $(tag_editor).keyup(function(e) {
+                if (e.ctrlKey && (e.which === 66) && scope.states.length > 0) {
+                    var previous_state = scope.states.pop()[0]
+                    console.log(scope.states)
+
+                    synchronizeRuleControllerModel(previous_state)
+
+                    console.log(scope.ruleContainer)
+
+                    scope.replay=true
+                    removeTags()
+                    for (var i=0; i < previous_state.length; i++) {
+                        element.tagEditor("addTag", previous_state[i])
+                    }
+
+                    scope.replay=false
+
+                 }
+
+                 e.stopPropagation();
+
+            })
+
+            colorize(element.tagEditor("getTags")[0].editor)
 
             scope.$on("reloadTags", function(event, data) {
                 if(attrs.id === data.rule.u_id) {

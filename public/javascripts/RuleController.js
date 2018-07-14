@@ -9,7 +9,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     ruleController.currentVar = SettingsService.getCurrentVariable();
 
     ruleController.availableClasses = {};
-    ruleController.advancedMode = true;
+    ruleController.advancedMode = false;
 
     $scope.$on("run_variable", function() {
         console.log("EVENT RUN VAR - RULECONTROLLER")
