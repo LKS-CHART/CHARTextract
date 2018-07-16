@@ -58,7 +58,6 @@ app.service('RuleService', [function() {
 
     var setCurrentRule = function(curRule) {
         CurrentRule = curRule;
-        console.log(CurrentRule)
 
         return CurrentRule;
     }
@@ -68,34 +67,33 @@ app.service('RuleService', [function() {
     }
 
     var getRuleById = function(id) {
+
+        var secondary_types = ["Replace", "Ignore", "Add"]
         if (CurrentRule === null || CurrentRule.u_id !== id) {
 
             for(var rule_index = 0; rule_index < URules.length; rule_index++) {
+                console.log("Rule Index Primary: " + rule_index)
                 var primary_rule = URules[rule_index]["Primary"]
 
                 if (primary_rule.u_id === id) {
-                    CurrentRule = primary_rule
-                    console.log("1")
-                    console.log(CurrentRule)
-                    return CurrentRule
+                    setCurrentRule(primary_rule)
+                    return getCurrentRule()
                 }
 
-                Object.keys(URules[rule_index]["Secondary"]).forEach(function(secType) {
-
+                for (var k = 0; k < secondary_types.length; k++) {
+                    var secType = secondary_types[k]
                     for (var sec_rule_index = 0; sec_rule_index < URules[rule_index]["Secondary"][secType].length; sec_rule_index++) {
+                        console.log("Rule Index Secondary: " + rule_index)
                         var secondary_rule = URules[rule_index]["Secondary"][secType][sec_rule_index]
 
                         if (secondary_rule.u_id === id) {
-                            CurrentRule = secondary_rule;
-                            console.log("2")
-                            console.log(CurrentRule)
-                            return CurrentRule
+                            setCurrentRule(secondary_rule)
+                            console.log(getCurrentRule())
+                            return getCurrentRule()
                         }
 
                     }
-
-                })
-
+                }
 
             }
 

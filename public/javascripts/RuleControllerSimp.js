@@ -26,6 +26,10 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
         rc.rules = RuleService.getRuleset();
     })
 
+    $scope.$on("tagEditorClick", function(event, data){
+        rc.selectRuleById(data.rule_id)
+    })
+
     rc.getCurrentRule = function() {
         return RuleService.getCurrentRule();
     }
@@ -54,6 +58,14 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
         })
     }
 
+    rc.selectRuleById = function(rule_id) {
+        var cur_rule = RuleService.getRuleById(rule_id)
+        cur_rule.Selected = true;
+        rc.selectedRule = RuleService.setCurrentRule(cur_rule)
+
+
+    }
+
     rc.deleteSecondary = function(rule, secondary_rule, rule_type) {
         var index_rule = rc.rules.indexOf(rule);
         var index_secondary = rule["Secondary"][rule_type].indexOf(secondary_rule);
@@ -61,11 +73,10 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
     }
 
     rc.selectRule = function(rule) {
-        rc.selectedRule = RuleService.setCurrentRule(rule);
+        console.log(rule)
         rc.clearSelected();
-
-        rc.selectedRule.Selected = true;
-        console.log(rc.selectedRule)
+        rule.Selected = true;
+        rc.selectedRule = RuleService.setCurrentRule(rule);
     }
 
 }])

@@ -32,24 +32,24 @@ app = angular.module('app', ['ngRoute', 'RecursionHelper', 'ui.bootstrap']).conf
         controllerAs: "classifierCtrl"
     })
 }])
-
-app.config(['$provide', function($provide) {
-    $provide.decorator("$controller", ["$delegate", function($delegate) {
-        $delegate.exists = function(controllerName) {
-            if(typeof window[controllerName] == 'function') {
-                return true;
-            }
-            try {
-                $controller(controllerName);
-                return true;
-            } catch (error) {
-                return !(error instanceof TypeError);
-            }
-        }
-
-        return $delegate
-    }])
-}])
+//
+//app.config(['$provide', function($provide) {
+//    $provide.decorator("$controller", ["$delegate", function($delegate) {
+//        $delegate.exists = function(controllerName) {
+//            if(typeof window[controllerName] == 'function') {
+//                return true;
+//            }
+//            try {
+//                $controller(controllerName);
+//                return true;
+//            } catch (error) {
+//                return !(error instanceof TypeError);
+//            }
+//        }
+//
+//        return $delegate
+//    }])
+//}])
 app.directive('ngHtmlCompile', function($compile) {
     return {
 	    restrict: 'A',
@@ -203,26 +203,33 @@ app.directive('ruleObject', function() {
 app.directive('primary', function() {
     return {
         restrict: 'E',
-        name: 'ctrl',
-        controller: '@',
         scope: {
             ruleInfo: '=rule',
         },
-        controllerAs: 'primaryCtrl',
-        templateUrl: 'views/primary.html'
+        templateUrl: 'views/primary.html',
+        link: function(scope, element, attrs) {
+            scope.clickFunc = function(val, fn) {
+                op = scope.$parent.ruleCtrlSimp[fn]
+                op(...val)
+            }
+        }
     };
 })
 
 app.directive('secondary', function() {
     return {
         restrict: 'E',
-        name: 'ctrl',
-        controller: '@',
-        controllerAs: 'secondaryCtrl',
         scope: {
-            ruleInfo: '=rule'
+            ruleInfo: '=rule',
         },
-        templateUrl: 'views/secondary.html'
+        templateUrl: 'views/secondary.html',
+        link: function(scope, element, attrs) {
+            scope.clickFunc = function(val,fn) {
+                op = scope.$parent.ruleCtrlSimp[fn]
+                op(...val)
+            }
+
+        }
     }
 })
 
@@ -231,7 +238,8 @@ app.directive('tagEditor', function(RuleService) {
         restrict: 'E',
         template: '<input type="text" class="form-control">',
         scope: {
-            ruleContainer: '='
+            ruleContainer: '=',
+            rulePointer: '='
         },
         link: function(scope, element, attrs) {
 
@@ -286,6 +294,7 @@ app.directive('tagEditor', function(RuleService) {
             function synchronizeRuleControllerModel(tags) {
                 scope.ruleContainer = tags
                 var curRule = RuleService.getRuleById(attrs.id)
+                console.log(curRule)
 
                 if (curRule !== null && curRule !== undefined) {
                     if (scope.ruleContainer !== undefined) {
@@ -309,6 +318,7 @@ app.directive('tagEditor', function(RuleService) {
                 minLength: 0
             }});
 
+
             function removeTags() {
                 var tags = element.tagEditor("getTags")[0].tags
                 for(var i = 0; i < tags.length; i++) {
@@ -317,30 +327,38 @@ app.directive('tagEditor', function(RuleService) {
             }
 
             var tag_editor = element.tagEditor("getTags")[0].editor
-            $(tag_editor).keyup(function(e) {
-                if (e.ctrlKey && (e.which === 66) && scope.states.length > 0) {
-                    var previous_state = scope.states.pop()[0]
-                    console.log(scope.states)
 
-                    synchronizeRuleControllerModel(previous_state)
-
-                    console.log(scope.ruleContainer)
-
-                    scope.replay=true
-                    removeTags()
-                    for (var i=0; i < previous_state.length; i++) {
-                        element.tagEditor("addTag", previous_state[i])
-                    }
-
-                    scope.replay=false
-
-                 }
-
-                 e.stopPropagation();
-
+            $(tag_editor).on('click', '*', function(e) {
+                scope.$emit("tagEditorClick", {
+                    "rule_id": attrs.id,
+                    "rule": scope.rulePointer
+                })
             })
 
-            colorize(element.tagEditor("getTags")[0].editor)
+//            $(tag_editor).keyup(function(e) {
+//                if (e.ctrlKey && (e.which === 66) && scope.states.length > 0) {
+//                    var previous_state = scope.states.pop()[0]
+//                    console.log(scope.states)
+//
+//                    synchronizeRuleControllerModel(previous_state)
+//
+//                    console.log(scope.ruleContainer)
+//
+//                    scope.replay=true
+//                    removeTags()
+//                    for (var i=0; i < previous_state.length; i++) {
+//                        element.tagEditor("addTag", previous_state[i])
+//                    }
+//
+//                    scope.replay=false
+//
+//                 }
+//
+//                 e.stopPropagation();
+//
+//            })
+
+            colorize(tag_editor)
 
             scope.$on("reloadTags", function(event, data) {
                 if(attrs.id === data.rule.u_id) {

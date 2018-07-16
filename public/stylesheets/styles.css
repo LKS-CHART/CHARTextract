@@ -65,19 +65,19 @@
 }
 
 .page-item.recurring > a{
-    border: 2px solid green
+    border: 3px solid green
 }
 
 .page-item.recurring > a:hover{
-    border: 2px solid green
+    border: 3px solid green
 }
 
 .page-item.not-recurring > a{
-    border: 2px solid #cc0000
+    border: 3px solid #cc0000
 }
 
 .page-item.not-recurring > a:hover{
-    border: 2px solid #cc0000
+    border: 3px solid #cc0000
 }
 
 

@@ -1,25 +1,13 @@
-<li ng-click="primaryCtrl.selectRule(ruleInfo.Primary)">
+<!--<li ng-click="ruleCtrlSimp.selectRule(ruleInfo.Primary)">-->
+<li ng-click="clickFunc([ruleInfo.Primary], 'selectRule' )">
+    {{ruleInfo.Primary}}
     <table>
         <tbody>
+            {{$parent.ruleCtrlSimp.selectedRule}}
             <tr ng-class="{primarySelected: ruleInfo.Primary.Selected}" class="primary">
-                <td style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
+                <td  style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                     <span style="margin-right: 15px;">If</span>
-                    <tag-editor ng-attr-id="{{ruleInfo.Primary.u_id}}" rule-container="ruleInfo.Primary.Rule"></tag-editor>
-                    <!--<js-tag js-tag-options="{texts: {inputPlaceHolder: 'Enter a word'}, tags: ruleInfo.Primary.Rule,-->
-                    <!--breakCodes: [13],  splitter: ';'}"></js-tag>-->
-                    <!--<span ng-repeat="rulePart in ruleInfo.Primary.Rule">-->
-                        <!--<rule-object obj="rulePart">-->
-                        <!--</rule-object>-->
-                        <!--<input class="hidden-input" type="text" ng-keydown="">-->
-                    <!--</span>-->
-                    <!-- <div style="">
-                        <span style="margin-right: 15px;">If</span>
-                        <div ng-repeat="rulePart in ruleInfo.Primary.Rule" style="display: inline-block; padding: 10px;">
-                            <rule-object obj="rulePart">
-                            </rule-object> -->
-                            <!-- <input class="hidden-input" style="max-width: 10px;" type="text"> -->
-                        <!-- </div>
-                    </div> -->
+                    <tag-editor ng-attr-id="{{ruleInfo.Primary.u_id}}" rule-pointer="ruleInfo.Primary" rule-container="ruleInfo.Primary.Rule"></tag-editor>
                 </td>
                 <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
                     <span style="white-space:nowrap;">appears, then score</span>
@@ -31,19 +19,14 @@
                             +
                         </span>
                         <ul class="dropdown-menu drop-override" style="">
-                            <li><a ng-click="primaryCtrl.addSecondaryRule(ruleInfo, 'Ignore', $event)">Ignore Rule</a></li>
-                            <li><a ng-click="primaryCtrl.addSecondaryRule(ruleInfo, 'Replace', $event)">Replace Rule</a></li>
-                            <li><a ng-click="primaryCtrl.addSecondaryRule(ruleInfo, 'Add', $event)">Add Rule</a></li>
+                            <li><a ng-click="clickFunc([ruleInfo, 'Ignore', $event], 'addSecondaryRule')">Ignore Rule</a></li>
+                            <li><a ng-click="clickFunc([ruleInfo, 'Replace', $event], 'addSecondaryRule')">Replace Rule</a></li>
+                            <li><a ng-click="clickFunc([ruleInfo, 'Add', $event], 'addSecondaryRule')">Add Rule</a></li>
                         </ul>
-                        <!-- <div style="margin-top: 10px" class="dropdown-menu">
-                            <button ng-click="primaryCtrl.addSecondaryRule(ruleInfo, 'Ignore', $event)" class="dropdown-item">Ignore Rule</a>
-                            <button ng-click="primaryCtrl.addSecondaryRule(ruleInfo, 'Replace', $event)" class="dropdown-item">Replace Rule</a>
-                            <button ng-click="primaryCtrl.addSecondaryRule(ruleInfo, 'Add', $event)" class="dropdown-item">Add Rule</a>
-                        </div> -->
                 </td>
 
                 <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
-                    <span ng-click="primaryCtrl.deletePrimary(ruleInfo)" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                    <span ng-click="clickFunc([ruleInfo], 'deletePrimary')" style="color: red;" class="close" aria-hidden="true">&times;</span>
                 </td>
             </tr>
             <!-- <tr ng-show="ruleInfo.Primary.Selected"class="no-row-style">

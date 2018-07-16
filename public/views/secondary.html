@@ -1,11 +1,11 @@
 <ol class="inner-ol" style>
-    <li ng-click="secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(replace)" ng-repeat="replace in ruleInfo.Secondary.Replace" style="margin-bottom: 0px;">
+    <li ng-click="clickFunc([replace], 'selectRule')" ng-repeat="replace in ruleInfo.Secondary.Replace" style="margin-bottom: 0px;">
         <table>
             <tbody style="width:100%">
                 <tr ng-class="{replaceSelected: replace.Selected}" class="replace">
                     <td style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                         <span style="margin-right: 15px;">and</span>
-                        <tag-editor ng-attr-id="{{replace.u_id}}" rule-container="replace.Rule"></tag-editor>
+                        <tag-editor ng-attr-id="{{replace.u_id}}" rule-container="replace.Rule" rule-pointer="replace"></tag-editor>
                         <!--<span ng-repeat="rulePart in replace.Rule">-->
                             <!--<rule-object obj="rulePart">-->
                             <!--</rule-object>-->
@@ -21,20 +21,20 @@
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                     </td>
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
-                        <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, replace, 'Replace')" style="color: red; left: 0" class="close" aria-hidden="true">&times;</span>
+                        <span ng-click="clickFunc([ruleInfo, replace, 'Replace'], 'deleteSecondary')" style="color: red; left: 0" class="close" aria-hidden="true">&times;</span>
                     </td>
                 </tr>
             </tbody>
         </table>
     </li>
     <ol ng-if="ruleInfo.Secondary.Replace.length > 0" class="inner-inner-ol">
-        <li ng-click= "secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(add)" ng-repeat="add in ruleInfo.Secondary.Add" style="margin-bottom: 0px;">
+        <li ng-click= "clickFunc([add], 'selectRule')" ng-repeat="add in ruleInfo.Secondary.Add" style="margin-bottom: 0px;">
             <table>
                 <tbody>
                     <tr ng-class="{addSelected: add.Selected}" class="add">
                         <td style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                             <span style="margin-right: 15px;">if</span>
-                            <tag-editor ng-attr-id="{{add.u_id}}" rule-container="add.Rule"></tag-editor>
+                            <tag-editor ng-attr-id="{{add.u_id}}" rule-pointer="add" rule-container="add.Rule"></tag-editor>
                             <!--<span ng-repeat="rulePart in add.Rule">-->
                                 <!--<rule-object obj="rulePart">-->
                                 <!--</rule-object>-->
@@ -50,7 +50,7 @@
                         <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                         </td>
                         <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
-                            <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, add, 'Add')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                            <span ng-click="clickFunc([ruleInfo, add, 'Add'], 'deleteSecondary')" style="color: red;" class="close" aria-hidden="true">&times;</span>
                         </td>
                     </tr>
                 </tbody>
@@ -59,13 +59,13 @@
     </ol>
 </ol>
 <ol ng-if="ruleInfo.Secondary.Replace.length === 0" class="inner-ol">
-    <li ng-click= "secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(add)" ng-repeat="add in ruleInfo.Secondary.Add">
+    <li ng-click= "clickFunc([add], 'selectRule')" ng-repeat="add in ruleInfo.Secondary.Add">
         <table>
             <tbody>
                 <tr ng-class="{addSelected: add.Selected}" class="add">
                     <td style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                         <span style="margin-right: 15px;">if</span>
-                        <tag-editor ng-attr-id="{{add.u_id}}" rule-container="add.Rule"></tag-editor>
+                        <tag-editor ng-attr-id="{{add.u_id}}" rule-pointer="add" rule-container="add.Rule"></tag-editor>
                         <!--<span ng-repeat="rulePart in add.Rule">-->
                             <!--<rule-object obj="rulePart">-->
                             <!--</rule-object>-->
@@ -81,7 +81,7 @@
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                     </td>
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
-                        <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, add, 'Add')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                        <span ng-click="clickFunc([ruleInfo, add, 'Add'], 'deleteSecondary')" style="color: red;" class="close" aria-hidden="true">&times;</span>
                     </td>
                 </tr>
             </tbody>
@@ -89,13 +89,13 @@
     </li>
 </ol>
 <ol class="inner-ol">
-    <li ng-click="secondaryCtrl.selectRuleContainer(ruleInfo); secondaryCtrl.selectRule(ignore)" ng-repeat="ignore in ruleInfo.Secondary.Ignore">
+    <li ng-click="clickFunc([ignore], 'selectRule')" ng-repeat="ignore in ruleInfo.Secondary.Ignore">
         <table>
             <tbody>
                 <tr ng-class="{ignoreSelected: ignore.Selected}" class="ignore">
                     <td style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                         <span style="margin-right: 15px;">unless</span>
-                        <tag-editor ng-attr-id="{{ignore.u_id}}" rule-container="ignore.Rule"></tag-editor>
+                        <tag-editor ng-attr-id="{{ignore.u_id}}" rule-pointer="ignore" rule-container="ignore.Rule"></tag-editor>
                         <!--<span ng-repeat="rulePart in ignore.Rule">-->
                             <!--<rule-object obj="rulePart">-->
                             <!--</rule-object>-->
@@ -108,7 +108,7 @@
                     <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
                     </td>
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
-                        <span ng-click="secondaryCtrl.deleteSecondary(ruleInfo, ignore, 'Ignore')" style="color: red;" class="close" aria-hidden="true">&times;</span>
+                        <span ng-click="clickFunc([ruleInfo, ignore, 'Ignore'], 'deleteSecondary')" style="color: red;" class="close" aria-hidden="true">&times;</span>
                     </td>
                 </tr>
             </tbody>
