@@ -294,7 +294,6 @@ app.directive('tagEditor', function(RuleService) {
             function synchronizeRuleControllerModel(tags) {
                 scope.ruleContainer = tags
                 var curRule = RuleService.getRuleById(attrs.id)
-                console.log(curRule)
 
                 if (curRule !== null && curRule !== undefined) {
                     if (scope.ruleContainer !== undefined) {
@@ -302,10 +301,6 @@ app.directive('tagEditor', function(RuleService) {
                     } else {
                         console.log("DESYNC0")
                     }
-                } else {
-                    console.log("DESYNC")
-                    console.log(curRule)
-                    RuleService.setCurrentRuleVals(scope.ruleContainer);
                 }
             }
 
