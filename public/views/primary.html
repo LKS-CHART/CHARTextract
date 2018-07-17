@@ -1,9 +1,7 @@
 <!--<li ng-click="ruleCtrlSimp.selectRule(ruleInfo.Primary)">-->
 <li ng-click="clickFunc([ruleInfo.Primary], 'selectRule' )">
-    {{ruleInfo.Primary}}
     <table>
         <tbody>
-            {{$parent.ruleCtrlSimp.selectedRule}}
             <tr ng-class="{primarySelected: ruleInfo.Primary.Selected}" class="primary">
                 <td  style="padding: 0px; white-space: nowrap; margin: 0%; max-width: 600px" class="col-xl-8 col-lg-8 col-md-8 col-sm-8">
                     <span style="margin-right: 15px;">If</span>

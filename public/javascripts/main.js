@@ -245,7 +245,6 @@ app.directive('tagEditor', function(RuleService) {
 
             scope.availableTags = ["OR", "{test1}", "{test2}"]
             scope.states = []
-            console.log("called")
             scope.replay = false;
 
             function colorize(editor) {
@@ -284,7 +283,7 @@ app.directive('tagEditor', function(RuleService) {
 
             function tagCallback(field, editor, tags) {
                 if (!scope.replay) {
-                    scope.states.push([angular.copy(scope.ruleContainer)])
+                    scope.states.push([scope.ruleContainer])
                     synchronizeRuleControllerModel(tags)
                 }
                 colorize(editor)
@@ -324,34 +323,40 @@ app.directive('tagEditor', function(RuleService) {
             var tag_editor = element.tagEditor("getTags")[0].editor
 
             $(tag_editor).on('click', '*', function(e) {
-                scope.$emit("tagEditorClick", {
-                    "rule_id": attrs.id,
-                    "rule": scope.rulePointer
-                })
+
+                if (!scope.replay) {
+                    scope.$emit("tagEditorClick", {
+                        "rule_id": attrs.id,
+                        "rule": scope.rulePointer
+                    })
+                }
             })
 
-//            $(tag_editor).keyup(function(e) {
-//                if (e.ctrlKey && (e.which === 66) && scope.states.length > 0) {
-//                    var previous_state = scope.states.pop()[0]
-//                    console.log(scope.states)
-//
-//                    synchronizeRuleControllerModel(previous_state)
-//
-//                    console.log(scope.ruleContainer)
-//
-//                    scope.replay=true
-//                    removeTags()
-//                    for (var i=0; i < previous_state.length; i++) {
-//                        element.tagEditor("addTag", previous_state[i])
-//                    }
-//
-//                    scope.replay=false
-//
-//                 }
-//
-//                 e.stopPropagation();
-//
-//            })
+            //TODO: Replay actions instead of storing state. e.g action = <add, tag_val, index> or <remove, tag_val, index>
+
+            function undo() {
+                var previous_state = scope.states.pop()[0]
+                synchronizeRuleControllerModel(previous_state)
+                scope.replay=true
+                removeTags()
+                for (var i=0; i < previous_state.length; i++) {
+                    element.tagEditor("addTag", previous_state[i])
+                }
+                scope.replay=false
+            }
+
+            $(tag_editor).keydown(function(e) {
+                if (e.ctrlKey && (e.which === 66) && scope.states.length > 0) {
+                    undo()
+                }
+            })
+
+            $(document).keydown(function(e) {
+                if (e.ctrlKey && (e.which === 66) && scope.rulePointer.Selected && scope.states.length > 0 && e.target.nodeName !== "INPUT") {
+                    undo()
+                }
+
+            })
 
             colorize(tag_editor)
 

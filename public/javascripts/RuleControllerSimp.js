@@ -60,15 +60,6 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
         })
     }
 
-
-    rc.selectRuleById = function(rule_id) {
-        var cur_rule = RuleService.getRuleById(rule_id)
-        cur_rule.Selected = true;
-        rc.selectedRule = RuleService.setCurrentRule(cur_rule)
-
-
-    }
-
     rc.deleteSecondary = function(rule, secondary_rule, rule_type) {
         var index_rule = rc.rules.indexOf(rule);
         var index_secondary = rule["Secondary"][rule_type].indexOf(secondary_rule);
