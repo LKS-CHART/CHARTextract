@@ -14,9 +14,6 @@ class TextCaptureHandler(object):
 
 
 class CaptureHandler(object):
-    # TODO: Only works with primary regexes not secondary. Add this functionality later... Should pretty much be identical
-    # TODO: Add generic score_and_capture_text and have score_and_capture_sentence call that
-
     """Used for capturing and scoring sentences. Can be used by CaptureClassifier
     """
 
@@ -197,7 +194,7 @@ class CaptureHandler(object):
                             add_primary_match = self.return_ignores
                             break
 
-                        # If replace, replace score and stop eval of remaining secondary regexes
+                        # If replace, replace score
                         elif secondary_regex.effect.startswith("r"):
                             score = secondary_regex.score
 
@@ -205,6 +202,7 @@ class CaptureHandler(object):
                         elif secondary_regex.effect.startswith("a"):
                             score += secondary_regex.score
 
+                    #If replace did not match, break
                     else:
                         if secondary_regex.effect.startswith("r"):
                             break

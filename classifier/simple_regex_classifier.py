@@ -27,9 +27,6 @@ class RegexClassifier(BaseClassifier):
         self.negative_label = negative_label
         self.handler = handler
 
-
-        #TODO: Think about this... I don't think we need a separate regex key or bias for None. Negative label bias idea is encapsulated by threshold anyway
-
         self.biases.update({negative_label: 0})
         self.regexes.update({negative_label: []})
 

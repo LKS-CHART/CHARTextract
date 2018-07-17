@@ -28,6 +28,7 @@ class PwdPreprocessor2:
             self.pwds = pwds
             self.categories = categories_of_interest
             self.to_lower = to_lower
+            self._max_len = 4
 
             if self.to_lower:
                 self.pwds = {category: {term.lower() for term in self.pwds[category]}
@@ -63,7 +64,7 @@ class PwdPreprocessor2:
             for j, category in enumerate(required_categories):
                 output_dictionary["dictionaries"][category] = []
 
-                ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,4,1)}
+                ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,self._max_len, 1)}
 
                 for ngram in ngrams:
                     for term in ngrams[ngram]:
