@@ -28,7 +28,8 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
 
     $scope.$on("tagEditorClick", function(event, data){
         console.log("tagEditorClick event")
-        rc.selectRuleById(data.rule_id)
+        rc.selectRule(data.rule)
+        $scope.$digest();
     })
 
     rc.getCurrentRule = function() {
@@ -59,10 +60,9 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
         })
     }
 
+
     rc.selectRuleById = function(rule_id) {
         var cur_rule = RuleService.getRuleById(rule_id)
-        rc.rules[0].Primary.Selected = true
-        console.log(rc.rules[0])
         cur_rule.Selected = true;
         rc.selectedRule = RuleService.setCurrentRule(cur_rule)
 
@@ -76,8 +76,6 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
     }
 
     rc.selectRule = function(rule) {
-        console.log(rule)
-        console.log(rc.rules[0])
         rc.clearSelected();
         rule.Selected = true;
         rc.selectedRule = RuleService.setCurrentRule(rule);
