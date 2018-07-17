@@ -358,6 +358,15 @@ app.directive('tagEditor', function(RuleService) {
 
             })
 
+            $(document).keydown(function(e) {
+                if (e.ctrlKey && (e.which === 67) && scope.rulePointer.Selected && e.target.nodeName !== "INPUT") {
+                    console.log(attrs.id)
+                    scope.$emit("ruleCopy", {
+                        "rule": attrs.id
+                    })
+                }
+            })
+
             colorize(tag_editor)
 
             scope.$on("reloadTags", function(event, data) {

@@ -26,6 +26,10 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
         rc.rules = RuleService.getRuleset();
     })
 
+    $scope.$on("ruleCopy", function(event, data) {
+        console.log("ruleCopy Event")
+    })
+
     $scope.$on("tagEditorClick", function(event, data){
         console.log("tagEditorClick event")
         rc.selectRule(data.rule)
