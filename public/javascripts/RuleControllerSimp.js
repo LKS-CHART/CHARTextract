@@ -16,6 +16,9 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
     rc.rules = RuleService.getRuleset();
     rc.selectedRuleObject = "alskdjalskdjaslkdj";
     rc.selectedRule = RuleService.getCurrentRule();
+    rc.copied_container = null;
+    rc.copied_rule = null;
+    rc.copied_index = null;
 
     //Adds a dummy rule to the Ruleset 
     rc.addRule = function() {
@@ -28,6 +31,32 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
 
     $scope.$on("ruleCopy", function(event, data) {
         console.log("ruleCopy Event")
+        var rule = RuleService.getRuleById(data.rule_id)
+        var rule_container = rule.Container || null
+        console.log(rule)
+        if (rule_container) {
+            rc.copied_container = rule_container
+            rc.copied_rule = rule.Rule
+            rc.copied_index = rule.index
+        }
+
+    })
+
+    $scope.$on("rulePaste", function(event, data) {
+        console.log("rulePaste Event")
+        console.log(rc.copied_rule)
+        if (rc.copied_rule && rc.copied_rule.type === "Primary") {
+            $scope.$apply(function() {
+                RuleService.addPrimaryRule(rc.copied_container)
+            })
+        }
+        else if (rc.copied_rule && rc.copied_rule.type !== "Primary") {
+            console.log("PASTING SECONDARY RULE")
+            $scope.$apply(function() {
+                var return_vals = RuleService.getRuleById(rc.selectedRule.u_id)
+                RuleService.addSecondaryRule(return_vals.index, rc.copied_rule.type, rc.copied_rule)
+            })
+        }
     })
 
     $scope.$on("tagEditorClick", function(event, data){

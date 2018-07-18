@@ -1,6 +1,8 @@
 app.service('RuleService', [function() {
     //List of uncompiled rules (called a Ruleset)
-    var URules = []; 
+    var URules = [];
+
+    let secondary_types = ["Replace", "Ignore", "Add"]
 
     //Uncompiled dummy rule format
     var Udummy_rule = {"Primary": {"Rule": [], "Score": 0, "Selected": false, "type": "Primary"}, "Secondary": {"Replace": [], "Ignore": [], "Add": []}}
@@ -8,11 +10,41 @@ app.service('RuleService', [function() {
 
     var CurrentRule = null;
 
+    var QueriedRule = null;
+    var QueriedContainer = null;
+    var CachedJson = null;
+
     var cached_id = null;
 
     function generateId() {
 
         return Math.random().toString(36).substring(7);
+    }
+
+    var addPrimaryRule = function(rule) {
+        var rule_copy = angular.copy(rule)
+        rule_copy.Primary.Selected = false
+        rule_copy.Primary["u_id"] = generateId()
+
+        for (var k = 0; k < secondary_types.length; k++) {
+            var secType = secondary_types[k]
+            for (var sec_rule_index = 0; sec_rule_index < rule_copy["Secondary"][secType].length; sec_rule_index++) {
+                var secondary_rule = rule_copy["Secondary"][secType][sec_rule_index]
+                secondary_rule["u_id"] = generateId()
+            }
+        }
+
+        URules.push(rule_copy)
+    }
+
+    var addSecondaryRule = function(index, rule_type, rule) {
+
+        var rule_copy = angular.copy(rule)
+        rule_copy.Selected = false
+        rule_copy["u_id"] = generateId()
+
+        URules[index]["Secondary"][rule_type].push(rule_copy)
+
     }
 
     var addDummyRule = function() {
@@ -31,7 +63,6 @@ app.service('RuleService', [function() {
 
         return dummySecondaryRule
     }
-
 
     var getRuleset = function() {
         return URules;
@@ -69,15 +100,16 @@ app.service('RuleService', [function() {
 
     var getRuleById = function(id) {
 
-        var secondary_types = ["Replace", "Ignore", "Add"]
-        if (CurrentRule === null || CurrentRule.u_id !== id) {
+        if (QueriedRule === null || QueriedRule.u_id !== id) {
 
             for(var rule_index = 0; rule_index < URules.length; rule_index++) {
                 var primary_rule = URules[rule_index]["Primary"]
+                QueriedContainer = URules[rule_index]
 
                 if (primary_rule.u_id === id) {
-                    setCurrentRule(primary_rule)
-                    return getCurrentRule()
+                    QueriedRule = primary_rule
+                    CachedJson = {"Rule": QueriedRule, "Container": QueriedContainer, "index": rule_index}
+                    return CachedJson
                 }
 
                 for (var k = 0; k < secondary_types.length; k++) {
@@ -86,8 +118,10 @@ app.service('RuleService', [function() {
                         var secondary_rule = URules[rule_index]["Secondary"][secType][sec_rule_index]
 
                         if (secondary_rule.u_id === id) {
-                            setCurrentRule(secondary_rule)
-                            return getCurrentRule()
+                            QueriedRule = secondary_rule
+                            QueriedContainer = secondary_rule
+                            CachedJson = {"Rule": QueriedRule, "Container": QueriedContainer, "index": rule_index}
+                            return CachedJson
                         }
 
                     }
@@ -98,7 +132,7 @@ app.service('RuleService', [function() {
         }
 
         else {
-            return CurrentRule;
+            return CachedJson
 
         }
     }
@@ -114,7 +148,9 @@ app.service('RuleService', [function() {
         setCurrentRule: setCurrentRule,
         setRuleset: setRuleset,
         getRuleById: getRuleById,
-        setCurrentRuleVals: setCurrentRuleVals
+        setCurrentRuleVals: setCurrentRuleVals,
+        addPrimaryRule: addPrimaryRule,
+        addSecondaryRule: addSecondaryRule
     };
 
 }])

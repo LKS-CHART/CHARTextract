@@ -399,8 +399,14 @@ app.directive('tagEditor', function(RuleService) {
                 if (e.ctrlKey && (e.which === 67) && scope.rulePointer.Selected && e.target.nodeName !== "INPUT") {
                     console.log(attrs.id)
                     scope.$emit("ruleCopy", {
-                        "rule": attrs.id
+                        "rule_id": attrs.id
                     })
+                }
+            })
+
+            $(document).keydown(function(e) {
+                if (e.ctrlKey && (e.which === 86) && scope.rulePointer.Selected && e.target.nodeName !== "INPUT") {
+                    scope.$emit("rulePaste")
                 }
             })
 
