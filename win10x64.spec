@@ -4,6 +4,9 @@ block_cipher = None
 
 import os
 import scipy
+import sys
+sys.setrecursionlimit(5000)
+
 a = Analysis(['__main_simple__.py'],
              pathex=['build_requirements\\ucrt\\DLLs\\x64', os.path.join(os.path.dirname(scipy.__file__), 'extra-dll'),
                 os.getcwd()],
