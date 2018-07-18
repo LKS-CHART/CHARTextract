@@ -321,7 +321,9 @@ app.directive('tagEditor', function(RuleService) {
 
                 scope.$apply(function() {
 
-                    scope.ruleContainer = tags
+                    if (scope.ruleContainer !== undefined) {
+                        scope.ruleContainer = tags
+                    }
 
                 })
 //                var curRule = RuleService.getRuleById(attrs.id)
@@ -347,8 +349,11 @@ app.directive('tagEditor', function(RuleService) {
 
             function removeTags() {
                 var tags = element.tagEditor("getTags")[0].tags
-                for(var i = 0; i < tags.length; i++) {
-                    element.tagEditor('removeTag', tags[i]);
+
+                if (tags) {
+                    for(var i = 0; i < tags.length; i++) {
+                        element.tagEditor('removeTag', tags[i]);
+                    }
                 }
             }
 
