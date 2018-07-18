@@ -4,7 +4,7 @@
         <button ng-click="ruleCtrlSimp.addRule()"type="button" class="btn btn-default add-primary">Add Primary Rule</button>
         <ol class="rectangle-list">
             <!--Primary+Secondary container rule div-->
-            {{ruleCtrlSimp.rules}}
+            <!--{{ruleCtrlSimp.rules}}-->
             <rule ng-repeat="x in ruleCtrlSimp.rules">
                 <!--Primary Rule-->
                 <primary rule="x" ng-transclude></primary>
