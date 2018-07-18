@@ -318,16 +318,21 @@ app.directive('tagEditor', function(RuleService) {
 
 
             function synchronizeRuleControllerModel(tags) {
-                scope.ruleContainer = tags
-                var curRule = RuleService.getRuleById(attrs.id)
 
-                if (curRule !== null && curRule !== undefined) {
-                    if (scope.ruleContainer !== undefined) {
-                        RuleService.setCurrentRuleVals(scope.ruleContainer);
-                    } else {
-                        console.log("DESYNC0")
-                    }
-                }
+                scope.$apply(function() {
+
+                    scope.ruleContainer = tags
+
+                })
+//                var curRule = RuleService.getRuleById(attrs.id)
+//
+//                if (curRule !== null && curRule !== undefined) {
+//                    if (scope.ruleContainer !== undefined) {
+//                        RuleService.setCurrentRuleVals(scope.ruleContainer);
+//                    } else {
+//                        console.log("DESYNC0")
+//                    }
+//                }
             }
 
             element.tagEditor({"initialTags": scope.ruleContainer, "onChange": tagCallback, "delimiter": ";", "maxLength": 100,
