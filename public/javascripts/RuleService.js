@@ -4,7 +4,7 @@ app.service('RuleService', [function() {
 
     //Uncompiled dummy rule format
     var Udummy_rule = {"Primary": {"Rule": [], "Score": 0, "Selected": false, "type": "Primary"}, "Secondary": {"Replace": [], "Ignore": [], "Add": []}}
-    var Udummy_secondary_rule = {"Rule": [],  "Score": 0, "Modifier": "None", "Selected": false}
+    var Udummy_secondary_rule = {"Rule": [],  "Score": 0, "Modifier": "None", "Selected": false, "type": "None"}
 
     var CurrentRule = null;
 
@@ -26,6 +26,7 @@ app.service('RuleService', [function() {
     var addDummySecondary = function(index, rule_type) {
         var dummySecondaryRule = angular.copy(Udummy_secondary_rule)
         dummySecondaryRule["u_id"] = generateId();
+        dummySecondaryRule["type"] = rule_type;
         URules[index]["Secondary"][rule_type].push(dummySecondaryRule);
 
         return dummySecondaryRule

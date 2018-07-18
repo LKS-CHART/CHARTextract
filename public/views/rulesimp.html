@@ -1,32 +1,16 @@
 <div style="position: relative" ng-controller="RuleControllerSimp as ruleCtrlSimp">
-    <!-- <span class="fa fa-address-book fa-2x"></span> -->
-    <!--<div style="float: left; position: absolute; top: 100; width: 10%"ng-controller="ObjectController as objectController">-->
-        <!--<ul ng-if="ruleCtrlSimp.getCurrentRule() !== null" class="nav flex-column">-->
-            <!--<li class="">-->
-                <!--&lt;!&ndash; <span class="fa fa-address-book"></span> &ndash;&gt;-->
-                <!--<a ng-click="objectController.addObject('WildcardObject');" href=""><span>...</span></a>-->
-            <!--</li>-->
-            <!--<li class="">-->
-                <!--&lt;!&ndash; <span class="fa fa-address-book"></span> &ndash;&gt;-->
-                <!--<a ng-click="objectController.addObject('OrObject');" href=""><span>Or</span></a>-->
-            <!--</li>-->
-            <!--<li class="">-->
-                <!--&lt;!&ndash; <span class="fa fa-address-book"></span> &ndash;&gt;-->
-                <!--<a ng-click="objectController.addObject('DictionaryObject');" href=""><span>Dictionary</span></a>-->
-            <!--</li>-->
-        <!--</ul>-->
-    <!--</div>-->
     <div style="position: absolute; width: 100%">
         <br/>
         <button ng-click="ruleCtrlSimp.addRule()"type="button" class="btn btn-default add-primary">Add Primary Rule</button>
         <ol class="rectangle-list">
             <!--Primary+Secondary container rule div-->
-            <div ng-repeat="x in ruleCtrlSimp.rules">
+            {{ruleCtrlSimp.rules}}
+            <rule ng-repeat="x in ruleCtrlSimp.rules">
                 <!--Primary Rule-->
-                <primary rule="x">List item</primary>
+                <primary rule="x" ng-transclude></primary>
                 <!--Secondary Rules-->
-                <secondary rule="x"></secondary>
-            </div>
+                <secondary rule="x" ng-transclude></secondary>
+            </rule>
         </ol>
     </div>
 </div>

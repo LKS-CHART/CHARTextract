@@ -200,15 +200,40 @@ app.directive('ruleObject', function() {
 
 })
 
+app.directive('rule', function() {
+    //Note controller here and controllerAs can just be any function and the effect remains the same.
+    //Primary and secondary directives not responding to ruleCtrlSimp.<some_func> calls for some reason
+    //so resorting to a hacky way of accessing parent scope.
+    return {
+        restrict: 'E',
+        scope: {
+            ctrl: '='
+        },
+//        controller: ['$controller', '$scope', function($controller, $scope) {
+//          var controller = $controller("RuleControllerSimp", {$scope: $scope});
+//          return controller;
+//        }],
+//        controllerAs: "ruleCtrlSimp",
+        controller: function($scope) {
+        },
+        replace: true,
+        transclude: true,
+        template: '<div ng-transclude></div>',
+    }
+})
+
 app.directive('primary', function() {
     return {
+        require: '^^rule',
         restrict: 'E',
         scope: {
             ruleInfo: '=rule',
         },
+        transclude: true,
+        replace: true,
         templateUrl: 'views/primary.html',
         link: function(scope, element, attrs) {
-            scope.clickFunc = function(val, fn) {
+            scope.clickFunc = function(val,fn) {
                 op = scope.$parent.ruleCtrlSimp[fn]
                 op(...val)
             }
@@ -218,10 +243,12 @@ app.directive('primary', function() {
 
 app.directive('secondary', function() {
     return {
+        require: '^^rule',
         restrict: 'E',
         scope: {
             ruleInfo: '=rule',
         },
+        transclude: true,
         templateUrl: 'views/secondary.html',
         link: function(scope, element, attrs) {
             scope.clickFunc = function(val,fn) {
