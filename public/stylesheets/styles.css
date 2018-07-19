@@ -41,21 +41,24 @@
     background-color: #2ecc71;
 }
 .highlight-effect-ignore {
-    //text-decoration: underline;
-    border-bottom: 1px solid red;
-    z-index: 1;
-}
+  background-image: linear-gradient(to right, red, red);
+  background-position: 0 1.0em;
+  background-repeat: repeat-x;
+  background-size: 1em 1em;
+ }
 
 .highlight-effect-replace {
-    //text-decoration: underline;
-    border-bottom: 1px solid #f58231;
-    z-index: 1;
+  background-image: linear-gradient(to right, #f39c12, #f39c12);
+  background-position: 0 1.0em;
+  background-repeat: repeat-x;
+  background-size: 1em 1em;
 }
 
 .highlight-effect-add {
-    //text-decoration: underline;
-    border-bottom: 1px solid #3498db;
-    z-index: 1;
+  background-image: linear-gradient(to right, #3498db, #3498db);
+  background-position: 0 1.0em;
+  background-repeat: repeat-x;
+  background-size: 1em 1em;
 }
 
 .page-item {
