@@ -386,7 +386,6 @@ app.controller('ErrorController', ["$sce", "DataService", "$route", function($sc
     errorController.getSelectedData = function() {
 
         errorController.marked_data = markData(errorController.selected.data, errorController.selected.matches)
-        console.log(errorController.marked_data)
 
     }
 

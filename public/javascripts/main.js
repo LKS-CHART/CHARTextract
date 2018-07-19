@@ -237,6 +237,12 @@ app.directive('primary', function() {
                 op = scope.$parent.ruleCtrlSimp[fn]
                 op(...val)
             }
+
+            scope.executeFunc = function(val, fn) {
+                op = scope.$parent.ruleCtrlSimp[fn]
+                var return_val = op(...val)
+                return return_val
+            }
         }
     };
 })
@@ -254,6 +260,12 @@ app.directive('secondary', function() {
             scope.clickFunc = function(val,fn) {
                 op = scope.$parent.ruleCtrlSimp[fn]
                 op(...val)
+            }
+
+            scope.executeFunc = function(val, fn) {
+                op = scope.$parent.ruleCtrlSimp[fn]
+                var return_val = op(...val)
+                return return_val
             }
 
         }

@@ -5,7 +5,7 @@
         <ol class="rectangle-list">
             <!--Primary+Secondary container rule div-->
             <!--{{ruleCtrlSimp.rules}}-->
-            <rule ng-repeat="x in ruleCtrlSimp.rules">
+            <rule ng-repeat="(num, x) in ruleCtrlSimp.rules">
                 <!--Primary Rule-->
                 <primary rule="x" ng-transclude></primary>
                 <!--Secondary Rules-->

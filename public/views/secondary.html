@@ -13,7 +13,17 @@
                         <!--</span>-->
                     </td>
                     <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
-                        <span style="white-space:nowrap;">appears, then score</span>
+                        <span style="float: left; white-space:nowrap; vertical-align: middle">{{executeFunc([replace, $parent.$parent.num + 1], 'textFactory')}}
+
+                            <span style="margin-left: 10px; top: 0; font-size: 15px; line-height: 20px" class="glyphicon glyphicon-menu-down close dropdown" data-toggle="dropdown">
+
+                            </span>
+                            <ul class="dropdown-menu drop-override2" style="cursor: pointer">
+                                <li><a ng-click="clickFunc([replace, 'b'], 'changeModifier')">Appears Before {{$parent.$parent.num + 1}}</a></li>
+                                <li><a ng-click="clickFunc([replace, 'a'], 'changeModifier')">Appears After {{$parent.$parent.num + 1}}</a></li>
+                                <li><a ng-click="clickFunc([replace, 'None'], 'changeModifier')">Appears</a></li>
+                            </ul>
+                        </span>
                     </td>
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                         <input style="width: 100px;" type="number" class="form-control" ng-model="replace.Score">
@@ -42,7 +52,17 @@
                             <!--</span>-->
                         </td>
                         <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
-                            <span style="white-space:nowrap;">appears, then to score add</span>
+                            <span style="float: left; white-space:nowrap; vertical-align: middle">{{executeFunc([add, $parent.$parent.num + 1], 'textFactory')}}
+
+                                <span style="margin-left: 10px; top: 0; font-size: 15px; line-height: 20px" class="glyphicon glyphicon-menu-down close dropdown" data-toggle="dropdown">
+
+                                </span>
+                                <ul class="dropdown-menu drop-override2" style="cursor: pointer">
+                                    <li><a ng-click="clickFunc([add, 'b'], 'changeModifier')">Appears Before {{$parent.$parent.num + 1}}</a></li>
+                                    <li><a ng-click="clickFunc([add, 'a'], 'changeModifier')">Appears After {{$parent.$parent.num + 1}}</a></li>
+                                    <li><a ng-click="clickFunc([add, 'None'], 'changeModifier')">Appears</a></li>
+                                </ul>
+                            </span>
                         </td>
                         <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                             <input style="width: 100px;" type="number" class="form-control" ng-model="add.Score">
@@ -73,7 +93,17 @@
                         <!--</span>-->
                     </td>
                     <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
-                        <span style="white-space:nowrap;">appears, then to score add</span>
+                        <span style="float: left; white-space:nowrap; vertical-align: middle">{{executeFunc([add, $parent.$parent.num + 1], 'textFactory')}}
+
+                            <span style="margin-left: 10px; top: 0; font-size: 15px; line-height: 20px" class="glyphicon glyphicon-menu-down close dropdown" data-toggle="dropdown">
+
+                            </span>
+                            <ul class="dropdown-menu drop-override2" style="cursor: pointer">
+                                <li><a ng-click="clickFunc([add, 'b'], 'changeModifier')">Appears Before {{$parent.$parent.num + 1}}</a></li>
+                                <li><a ng-click="clickFunc([add, 'a'], 'changeModifier')">Appears After {{$parent.$parent.num + 1}}</a></li>
+                                <li><a ng-click="clickFunc([add, 'None'], 'changeModifier')">Appears</a></li>
+                            </ul>
+                        </span>
                     </td>
                     <td class="col-xl-1 col-lg-1 col-md-1 col-sm-1">
                         <input style="width: 100px;" type="number" class="form-control" ng-model="add.Score">
@@ -103,7 +133,17 @@
                         <!--</span>-->
                     </td>
                     <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
-                        <span style="white-space:nowrap;">appears, then ignore sentence</span>
+                        <span style="float: left; white-space:nowrap; vertical-align: middle">{{executeFunc([ignore, $parent.$parent.num + 1], 'textFactory')}}
+
+                            <span style="margin-left: 10px; top: 0; font-size: 15px; line-height: 20px" class="glyphicon glyphicon-menu-down close dropdown" data-toggle="dropdown">
+
+                            </span>
+                            <ul class="dropdown-menu drop-override2" style="cursor: pointer">
+                                <li><a ng-click="clickFunc([ignore, 'b'], 'changeModifier')">Appears Before {{$parent.$parent.num + 1}}</a></li>
+                                <li><a ng-click="clickFunc([ignore, 'a'], 'changeModifier')">Appears After {{$parent.$parent.num + 1}}</a></li>
+                                <li><a ng-click="clickFunc([ignore, 'None'], 'changeModifier')">Appears</a></li>
+                            </ul>
+                        </span>
                     </td>
                     <td class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
                     </td>

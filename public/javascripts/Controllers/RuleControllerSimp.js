@@ -20,9 +20,24 @@ app.controller("RuleControllerSimp", ["RuleService", "$scope", function(RuleServ
     rc.copied_rule = null;
     rc.copied_index = null;
 
-    //Adds a dummy rule to the Ruleset 
+    rc.type_to_text = {
+        "b": " before ",
+        "a": " after "
+    }
+    //Adds a dummy rule to the Ruleset
     rc.addRule = function() {
        rc.selectRule(RuleService.addDummyRule().Primary);
+    }
+
+    rc.textFactory = function(rule, index) {
+        var modifier = rule.Modifier
+        return rule.Modifier === "None" ? "appears, then score" : "appears" + rc.type_to_text[modifier] +  index + ", then score"
+    }
+
+    rc.changeModifier = function(rule, modifier) {
+        var index = rc.rules.indexOf(rule);
+        rc.selectedRule.Modifier = modifier
+        event.stopPropagation()
     }
 
     $scope.$on("ruleSetUpdate", function(event, data) {
