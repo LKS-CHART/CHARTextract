@@ -38,7 +38,7 @@
 }
 
 .highlight {
-    background-color: #d9b3ff;
+    background-color: #2ecc71;
 }
 .highlight-effect-ignore {
     //text-decoration: underline;
@@ -48,13 +48,13 @@
 
 .highlight-effect-replace {
     //text-decoration: underline;
-    border-bottom: 1px solid blue;
+    border-bottom: 1px solid #f58231;
     z-index: 1;
 }
 
 .highlight-effect-add {
     //text-decoration: underline;
-    border-bottom: 1px solid green;
+    border-bottom: 1px solid #3498db;
     z-index: 1;
 }
 
