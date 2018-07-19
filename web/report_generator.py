@@ -100,7 +100,7 @@ def _generate_hsl_colour_dictionary(keys, lightness=85):
 
     return colour_dict
 
-def generate_error_report(output_directory, template_directory, variable_name, class_names, failures_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):
+def generate_error_report(output_directory, template_directory, variable_name, class_names, failures_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None, generate_html_files=False):
     """Generates an error report html file and corresponding json file
     
     Arguments:
@@ -121,12 +121,15 @@ def generate_error_report(output_directory, template_directory, variable_name, c
     #generating report
     json_filename = 'error_report.json'
 
-    js_files = ["javascripts/" + js_file for js_file in os.listdir("web/templates") if js_file.endswith(".js")]
-    css_files = ["stylesheets/" + css_file for css_file in os.listdir("web/templates") if css_file.endswith(".css")]
-    html_files = ["views/" + html_file for html_file in os.listdir("web/templates") if html_file.endswith(".html") and html_file != "index.html"]
 
-    all_files = js_files + css_files + html_files + ["index.html"]
-    generate_generic_report(output_directory, template_directory, all_files)
+    if generate_html_files:
+        js_files = ["javascripts/" + js_file for js_file in os.listdir("web/templates") if js_file.endswith(".js")]
+        css_files = ["stylesheets/" + css_file for css_file in os.listdir("web/templates") if css_file.endswith(".css")]
+        html_files = ["views/" + html_file for html_file in os.listdir("web/templates") if html_file.endswith(".html") and html_file != "index.html"]
+
+        all_files = js_files + css_files + html_files + ["index.html"]
+        generate_generic_report(output_directory, template_directory, all_files)
+
     generate_json(output_directory, json_filename, variable_name, class_names, failures_dict, effects, custom_class_colours, custom_effect_colours, addition_json_params=addition_json_params)
 
 def generate_json(output_directory, json_filename, variable_name, class_names, patients_dict, effects, custom_class_colours=None, custom_effect_colours=None, addition_json_params=None):
