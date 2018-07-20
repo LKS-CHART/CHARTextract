@@ -13,9 +13,6 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
         var path_len = path_obj.filepath.length
         path_obj.selected=true
 
-        console.log(path_obj.filepath)
-        console.log("INJECT BEING CALLED")
-
 //        var path_constructor = {"filename": "Computer", "Root": [], "Type": "Folder", "Children": []}
         var path_constructor = angular.copy(path_obj);
         for (var i = path_len-2; i >= 0; i--) {
@@ -24,7 +21,6 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
             path_constructor = new_obj;
         }
 
-        console.log(path_constructor)
         return path_constructor;
 
     }
@@ -34,7 +30,6 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
         deferred.resolve(response.data)
     })
     var getInitialPath = function() {
-        console.log("get Initial Path")
         return deferred.promise
     }
 

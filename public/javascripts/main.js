@@ -162,6 +162,10 @@ app.filter("arrayNormalize", function(){
         if (arr === null) {
             return [];
         }
+
+        if (typeof arr === "string") {
+            return arr;
+        }
         if(typeof arr === "object") {
             var arr_copy = []
             for(var i = 0; i < arr.length; i++) {
@@ -179,6 +183,10 @@ app.filter("arrayNormalize", function(){
 app.filter("pathify", function(){
     return function(arr) {
         var path = "";
+
+        if (typeof arr === "string") {
+            return arr;
+        }
 
         if (arr !== null) {
             path = arr.join("/")

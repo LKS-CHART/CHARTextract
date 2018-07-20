@@ -96,7 +96,6 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     }
 
     settingsController.getCurrentVariable = function() {
-        console.log("IN SETTINGS CONTROLLER CALLING GET CURRENT VARIABLE");
         return SettingsService.getCurrentVariable();
     }
 
@@ -107,7 +106,6 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     }
 
     settingsController.run = function() {
-        console.log("BEFORE CURRENT VARIABLE");
         var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
 
         sessionStorage.setItem("dataset", "train")
@@ -117,8 +115,6 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
 
         $rootScope.$broadcast("run_variable")
         //console.log($controller.exists('ruleCtrl') ? 'Exists' : 'Does not exist');
-
-        console.log(ruleCtrl_exists ? 'Exists' : 'Does not exist')
 
         window.location.href = url
 
@@ -164,13 +160,35 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         var url = "http://localhost:3000/save/save_project_settings"
 
         console.log(settingsController.dataFile)
+        console.log(settingsController.validLabelFile)
         console.log(settingsController.labelFile)
         console.log(settingsController.ruleFolder)
 
-        dataFileNorm = settingsController.dataFile.slice(1,settingsController.dataFile.length);
-        labelFileNorm = settingsController.labelFile.slice(1,settingsController.labelFile.length);
-        ruleFolderNorm = settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length);
-        validLabelFileNorm = settingsController.validLabelFile.slice(1,settingsController.validLabelFile.length);
+
+        if (typeof(settingsController.dataFile) === "string") {
+            dataFileNorm = settingsController.dataFile
+        } else {
+            dataFileNorm = settingsController.dataFile.slice(1,settingsController.dataFile.length);
+        }
+
+        if (typeof(settingsController.labelFile) === "string") {
+            labelFileNorm = settingsController.labelFile
+        } else {
+            labelFileNorm = settingsController.labelFile.slice(1,settingsController.labelFile.length);
+        }
+
+        if (typeof(settingsController.ruleFolder) === "string") {
+            ruleFolderNorm = settingsController.ruleFolder
+        } else {
+            ruleFolderNorm = settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length);
+        }
+
+        if (typeof(settingsController.validLabelFile) === "string") {
+            validLabelFileNorm = settingsController.validLabelFile
+        } else {
+            validLabelFileNorm = settingsController.validLabelFile.slice(1,settingsController.validLabelFile.length);
+        }
+
 
         var params = {
             "Project Settings Data": {
@@ -202,18 +220,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
 
             sessionStorage.setItem("dataset", "train")
 
-            console.log(data)
-            console.log("Sent Save Settings Request")
-            console.log(settingsController.dataFile)
-            console.log(settingsController.labelFile)
-            console.log(settingsController.ruleFolder)
-            console.log(SettingsService.createTrainAndValid)
-        }).then(function() {
-            console.log(settingsController.dataFile)
-            console.log(settingsController.labelFile)
-            console.log(settingsController.ruleFolder)
-            console.log(settingsController.validLabelFile)
-        });
+        })
     }
 
 }])

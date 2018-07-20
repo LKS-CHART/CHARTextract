@@ -16,7 +16,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.dataFile | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm"  ng-value="settingsCtrl.dataFile | arrayNormalize | pathify" ng-model="settingsCtrl.dataFile" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getDataObj());settingsCtrl.openFileDialog()" id="open-data-file" class="btn input-group-addon">
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
@@ -87,7 +87,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.labelFile | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm" ng-value="settingsCtrl.labelFile | arrayNormalize | pathify" ng-model="settingsCtrl.labelFile" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getLabelObj()); settingsCtrl.openFileDialog()" id="open-labels-file" class="btn input-group-addon">
                     <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
@@ -102,7 +102,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.validLabelFile | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm" ng-value="settingsCtrl.validLabelFile | arrayNormalize | pathify" ng-model="settingsCtrl.validLabelFile" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getValidLabelObj()); settingsCtrl.openFileDialog()" id="open-valid-labels-file" class="btn input-group-addon">
                         <span class="glyphicon glyphicon-folder-open"></span>
                 </span>
@@ -132,7 +132,7 @@
         </div>
         <div class="col-xs-4">
             <div class="input-group">
-                <input type="text" class="form-control input-sm" readonly ng-value="settingsCtrl.ruleFolder | arrayNormalize | pathify" placeholder="Text input">
+                <input type="text" class="form-control input-sm" ng-value="settingsCtrl.ruleFolder | arrayNormalize | pathify" ng-model="settingsCtrl.ruleFolder" placeholder="Text input">
                 <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getRuleObj()); settingsCtrl.openFolderDialog()" id="open-rules-folder" class="btn input-group-addon">
                         <span class="glyphicon glyphicon-folder-open"></span>
                     </span>

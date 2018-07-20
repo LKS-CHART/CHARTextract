@@ -2,7 +2,7 @@ app.service('DataService', function($http, $q) {
 
     var deferred = $q.defer()
 
-
+    console.log("DATASERVICE LOADED")
     if(localStorage.getItem("errorJsonPath") === null || localStorage.getItem("errorJsonPath") === undefined) {
         var url = "/data/error_report.json"
     }
@@ -26,8 +26,6 @@ app.service('DataService', function($http, $q) {
 
         var url = "/" + localStorage.getItem("errorJsonPath");
         var deferred = $q.defer()
-
-        console.log(url)
 
         $http.get(url).then(function (response) {
             deferred.resolve(response.data)

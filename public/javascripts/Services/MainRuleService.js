@@ -1,5 +1,6 @@
 app.service("MainRuleService", ["RuleService", function(RuleService) {
 
+    console.log("MAIN RULE SERVICE LOADED")
     var allRulesets = {};
 
     var getRulesets = function() {

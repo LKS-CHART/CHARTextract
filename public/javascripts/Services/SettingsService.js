@@ -21,7 +21,6 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
 
     var negativeLabel = "None";
 
-    console.log("CALLED")
     var myDataPromise = DataService.getData();
 
     $http.get("http://localhost:3000/run/get_response_status").then(function(response) {
@@ -37,23 +36,19 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         prevVariable = result.var_name;
     })
 
-    console.log("SETTIGNS SERVICE INITIALIZED")
+    console.log("SETTIGNS SERVICE LOADED")
 
     var curWorkingObj = null;
 
     var setCurWorkingObj = function(obj) {
-        console.log("I HAVE BEEN CALLED")
         curWorkingObj = obj
     }
 
     var getCurWorkingObj = function() {
-        console.log("I HAVE BEEN CALLED 2")
         return curWorkingObj;
     }
 
     var saveSelected = function(filepath) {
-        console.log("I HAVE BEEN CALLED 3")
-        console.log(filepath)
         curWorkingObj["selected"] = filepath
     }
 
@@ -71,12 +66,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
     }
 
     var getCurrentVariable = function() {
-        console.log("GET CUR VAR CALLED")
-        console.log(currentVariable)
-        console.log(prevVariable)
         if (currentVariable === null) {
-            console.log("PREV VARIABLE")
-            console.log(prevVariable)
 
             if(localStorage.getItem("currentVariable") === null) {
 
@@ -86,8 +76,6 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
             return localStorage.getItem("currentVariable");
         }
         else {
-            console.log("CURR VARIABLE")
-            console.log(currentVariable)
             return currentVariable;
         }
 
@@ -108,7 +96,6 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         currentVariable = variable;
 
         if (currentVariable === null) {
-            console.log("YOU SET A NULL VARIABLE");
         }
     }
 

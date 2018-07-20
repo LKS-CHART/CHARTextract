@@ -1,7 +1,7 @@
 app.service('RuleService', [function() {
     //List of uncompiled rules (called a Ruleset)
+    console.log("RULESERVICE LOADED")
     var URules = [];
-
     let secondary_types = ["Replace", "Ignore", "Add"]
 
     //Uncompiled dummy rule format
