@@ -160,31 +160,31 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         var url = "http://localhost:3000/save/save_project_settings"
 
         console.log(settingsController.dataFile)
-        console.log(settingsController.validLabelFile)
         console.log(settingsController.labelFile)
+        console.log(settingsController.validLabelFile)
         console.log(settingsController.ruleFolder)
 
 
         if (typeof(settingsController.dataFile) === "string") {
-            dataFileNorm = settingsController.dataFile
+            dataFileNorm = settingsController.dataFile.split(/[\/\\]+/)
         } else {
             dataFileNorm = settingsController.dataFile.slice(1,settingsController.dataFile.length);
         }
 
         if (typeof(settingsController.labelFile) === "string") {
-            labelFileNorm = settingsController.labelFile
+            labelFileNorm = settingsController.labelFile.split(/[\/\\]+/)
         } else {
             labelFileNorm = settingsController.labelFile.slice(1,settingsController.labelFile.length);
         }
 
         if (typeof(settingsController.ruleFolder) === "string") {
-            ruleFolderNorm = settingsController.ruleFolder
+            ruleFolderNorm = settingsController.ruleFolder.split(/[\/\\]+/)
         } else {
             ruleFolderNorm = settingsController.ruleFolder.slice(1,settingsController.ruleFolder.length);
         }
 
         if (typeof(settingsController.validLabelFile) === "string") {
-            validLabelFileNorm = settingsController.validLabelFile
+            validLabelFileNorm = settingsController.validLabelFile.split(/[\/\\]+/)
         } else {
             validLabelFileNorm = settingsController.validLabelFile.slice(1,settingsController.validLabelFile.length);
         }
