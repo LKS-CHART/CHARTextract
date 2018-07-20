@@ -3,6 +3,45 @@ from datahandler import data_import as di
 import json
 from util.pwd_preprocessors import PwdPreprocessor2
 from properties2 import *
+import importlib.util
+
+def settings_factory(settings_path):
+    """
+    PREPROCESS_DATA_FUNC = f_data
+    PREPROCESS_LABEL_FUNC = f_label
+    PREPROCESS_SENTENCE = f
+    HANDLER = handler()
+    CLASSIFY_FUNC = f_classification
+    """
+    settings_mappings = {
+      "Runner Initialization Params": {
+        "HANDLER": "handler",
+        "PREPROCESS_LABEL_FUNC": "label_func",
+        "PREPROCESS_DATA_FUNC": "data_func"
+      },
+      "Runtime Params": {
+          "CLASSIFY_FUNC": "classify_func",
+          "PREPROCESS_SENTENCE": "preprocess_func"
+    }}
+
+    spec = importlib.util.spec_from_file_location("python.settings", settings_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    settings_dictionary = {}
+    settings_globals = module.__dict__
+
+    for param_type in settings_mappings:
+        if param_type not in settings_dictionary:
+            settings_dictionary[param_type] = {}
+
+        for setting in settings_mappings[param_type]:
+            mapped_setting = settings_mappings[param_type][setting]
+
+            if setting in settings_globals:
+                settings_dictionary[param_type][mapped_setting] = settings_globals[setting]
+
+    return settings_dictionary
 
 def import_regex(regex_file):
     """Import a single regex rule file
@@ -156,19 +195,25 @@ def get_rule_properties(rule_path, rule_name, pwds=None):
         label_func = None
 
         if use_python:
-            if rule_name not in file_to_args:
-                print("Rule not found in custom python function")
+            settings_dict = {}
+            if "python_settings.py" in os.listdir(rule_path):
+                settings_dict = settings_factory(os.path.join(rule_path, "python_settings.py"))
             else:
-                if "Runtime Params" in file_to_args[rule_name]:
-                    classifier_runtime_args.update(file_to_args[rule_name]["Runtime Params"])
+                if rule_name not in file_to_args:
+                    print("Rule not found in custom python function")
+                else:
+                    settings_dict = file_to_args[rule_name]
 
-                if "Runner Initialization Params" in file_to_args[rule_name]:
-                    label_func = file_to_args[rule_name]["Runner Initialization Params"]["label_func"] \
-                        if "label_func" in file_to_args[rule_name]["Runner Initialization Params"] else None
+            if "Runtime Params" in settings_dict:
+                classifier_runtime_args.update(settings_dict["Runtime Params"])
 
-                    classifier_initialization_args = {key: file_to_args[rule_name]["Runner Initialization Params"][key]
-                                                      for key in file_to_args[rule_name]["Runner Initialization Params"]
-                                                      if key != "label_func"}
+            if "Runner Initialization Params" in settings_dict:
+                label_func = settings_dict["Runner Initialization Params"]["label_func"] \
+                    if "label_func" in settings_dict["Runner Initialization Params"] else None
+
+                classifier_initialization_args = {key: settings_dict["Runner Initialization Params"][key]
+                                                  for key in settings_dict["Runner Initialization Params"]
+                                                  if key != "label_func"}
 
     return label_col, label_func, classifier_runtime_args, classifier_initialization_args
 
