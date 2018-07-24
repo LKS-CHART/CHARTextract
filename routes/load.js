@@ -51,7 +51,7 @@ function get_directory(rules_path){
 
 router.get('/variable_settings/:variable', function(req, res, next) {
 
-    var variable_filePath = path.join(save.rules_path,req.params.variable)
+    var variable_filePath = path.join(save.rules_path, req.params.variable)
 
     var variable_properties = path.join(variable_filePath, "rule_properties.json")
 

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var fs = require("fs");
 var path = require("path");
-var filePath = "./public/data/project_settings.json";
+var filePath = path.resolve(__dirname, "..", "public", "data", "project_settings.json");
 
 //let out_rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\tb_rules";
 //let rules_path = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set\\Regexes";
