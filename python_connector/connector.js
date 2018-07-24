@@ -9,5 +9,10 @@ pyshell = new pyshell("", {
 }, function (err, results){
     console.log(results);
 });
+pyshell.on('message', function(message) {
+    if (message['debug'] !== undefined) {
+        console.log(message['debug']);
+    }
+});
 
 module.exports = pyshell;

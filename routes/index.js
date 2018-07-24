@@ -16,7 +16,7 @@ router.get("/get_project_settings", function(req, res, next) {
     console.log("IN GET PROJECT SETTINGS")
     if (json.hasOwnProperty("Rules Folder")) {
         save.rules_path = path.join(...json["Rules Folder"]);
-        console.log("Settings Rules Path in index")
+        console.log("Settings Rules Path in index to " + save.rules_path)
     }
     else {
         save.rules_path = null;
