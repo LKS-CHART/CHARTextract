@@ -36,10 +36,15 @@ Expose certain functions that allow the following:
 # simple JSON echo script
 
 
-def respond(message):
-    if not type(message) == dict:
+def respond(message, debug=False):
+    if debug:
+        debug = {'debug': message}
+        print(json.dumps(debug), file=orig_stdout)
+    elif not type(message) == dict:
         message = {'message': message}
-    print(json.dumps(message), file=orig_stdout)
+        print(json.dumps(message), file=orig_stdout)
+    else:
+        print(json.dumps(message), file=orig_stdout)
     orig_stdout.flush()
 
 
@@ -244,6 +249,13 @@ def run(**kwargs):
 
 def save(**kwargs):
     respond({'function': 'save', 'params': kwargs})
+
+
+if getattr(sys, 'frozen', False):
+    respond({"file_path": os.path.dirname(sys.executable)})
+else:
+    respond({"file_path": os.path.dirname(__file__)})
+
 
 # respond({'status': 'Ready'})
 for line in sys.stdin:
