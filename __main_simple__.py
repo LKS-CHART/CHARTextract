@@ -21,8 +21,9 @@ os.chdir(dname)
 # Define after imports and globals
 available_funcs = {}
 
+
 def exposed_function(func):
-    available_funcs[getattr(func,'__name__')] = func
+    available_funcs[getattr(func, '__name__')] = func
 
 '''
 ####
@@ -99,7 +100,8 @@ def run_variable(variable, settings):
         project_settings = get_project_settings(settings)
         rules_folder = os.path.join(*project_settings["Rules Folder"]) if type(project_settings["Rules Folder"]) == list \
             else project_settings["Rules Folder"]
-        pwds_folder = project_settings["Dictionaries Folder"] if "Dictionaries Folder" in project_settings else None
+        pwds_folder = os.path.join(*project_settings["Dictionaries Folder"]) if type(project_settings["Dictionaries Folder"]) == list \
+            else project_settings["Dictionaries Folder"]
         pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)]) if pwds_folder else None
 
         create_train_and_valid = False if ("Create Train and Valid" not in project_settings or not
@@ -213,7 +215,7 @@ def run_variable(variable, settings):
                 if prediction_mode:
                     predictions_dict, _ = get_failures(classifier_runner, cur_dataset, gen_path)
                     classifier_classes = sorted(list(classifier_runner.classifier_parameters["regexes"]))
-                    generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
+                    generate_error_report(gen_path,
                                           template_directory, "{}".format(rule_name),
                                           classifier_runner.classifier.regexes.keys(), predictions_dict, effects,
                                           custom_effect_colours=effect_colours,
@@ -225,7 +227,7 @@ def run_variable(variable, settings):
 
                 else:
                     failures_dict, error_data = get_failures(classifier_runner, cur_dataset, gen_path)
-                    generate_error_report(os.path.join("generated_data", rule_name, cur_dataset),
+                    generate_error_report(gen_path,
                                           template_directory, "{}".format(rule_name),
                                           classifier_runner.classifier.regexes.keys(), failures_dict, effects,
                                           custom_effect_colours=effect_colours, addition_json_params=error_data,
