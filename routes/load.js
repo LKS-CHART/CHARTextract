@@ -6,7 +6,7 @@ let router = express.Router();
 let fs = require('fs');
 let path = require('path');
 
-let special_jsons = new Set(["rule_properties.json", "rule_settings.json"])
+let special_jsons = new Set(["rule_properties.json", "rule_settings.json"]);
 
 function promisify(fn) {
     /**
@@ -51,36 +51,36 @@ function get_directory(rules_path){
 
 router.get('/variable_settings/:variable', function(req, res, next) {
 
-    var variable_filePath = path.join(save.rules_path, req.params.variable)
+    var variable_filePath = path.join(save.rules_path, req.params['variable']);
 
-    var variable_properties = path.join(variable_filePath, "rule_properties.json")
+    var variable_properties = path.join(variable_filePath, "rule_properties.json");
 
-    var fR = promisify(fs.readFile)
+    var fR = promisify(fs.readFile);
 
     fR(variable_properties).then(data => {
         var res_json = JSON.parse(data);
-        console.log(res_json)
-        res.send(JSON.stringify(res_json))
+        console.log(res_json);
+        res.send(JSON.stringify(res_json));
 
     })
 
-})
+});
 
 router.get('/classifier_settings/:variable', function(req, res, next) {
-    var variable_filePath = path.join(save.rules_path, req.params.variable)
-    var classifier_settings = path.join(variable_filePath, "rule_settings.json")
+    var variable_filePath = path.join(save.rules_path, req.params.variable);
+    var classifier_settings = path.join(variable_filePath, "rule_settings.json");
 
-    var fR = promisify(fs.readFile)
+    var fR = promisify(fs.readFile);
 
     fR(classifier_settings).then(data => {
         var res_json = JSON.parse(data);
         res.send(JSON.stringify(res_json))
-    })
+    });
 
-})
+});
 
 router.get('/variable_list', function(req, res, next) {
-    let res_json = {}
+    let res_json = {};
 
     if (save.rules_path === null) {
         console.log("Empty Rules Path");
@@ -89,32 +89,29 @@ router.get('/variable_list', function(req, res, next) {
     }
 
     let cur_promise = new Promise(function (resolve, reject) {
-        console.log(save.rules_path)
-        resolve(get_directory(save.rules_path))});
+        console.log(save.rules_path);
+        resolve(get_directory(save.rules_path))
+    });
 
     cur_promise.then(function(result){
         res_json["Variable List"] = result;
         res.send(JSON.stringify(res_json));
     });
-})
+});
+
 router.get('/:variable', function(req, res, next) {
-    console.log("Received load");
-    filePath = path.join(save.rules_path, req.params['variable']);
-    dataJSON = {};
-
-    console.log(filePath);
-
-
+    console.log("Received load " + req.params['variable']);
+    let filePath = path.join(save.rules_path, req.params['variable']);
+    let dataJSON = {};
 
     function appendData(fileName, resolve, reject){
         if (path.extname(fileName) === ".txt") {
-            console.log(fileName);
             fs.readFile(path.join(filePath,fileName), {encoding: 'utf-8'}, function(err, data){
                 if (!err) {
-                    var index = fileName.indexOf(".txt")
+                    var index = fileName.indexOf(".txt");
                     var jsonFileName = fileName.substring(0,index) + ".json";
                     var jsonFilePath = path.join(filePath, jsonFileName);
-                    var json_exists = fs.existsSync(jsonFilePath)
+                    var json_exists = fs.existsSync(jsonFilePath);
 
                     if (!json_exists) {
                         dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"filename": fileName, "regexesText": data, "regexesSimple": []};
@@ -123,7 +120,7 @@ router.get('/:variable', function(req, res, next) {
                     {
                         fs.readFile(jsonFilePath, {encoding: 'utf-8'}, function(err, json_data) {
                             if(!err) {
-                                var rules = JSON.parse(json_data)["Rules"]
+                                var rules = JSON.parse(json_data)["Rules"];
                                 dataJSON[data.split(/[,\n\r]+/,2)[0].substring(1)] = {"filename": fileName, "regexesText": data, "regexesSimple": rules};
                                 resolve([fileName, json_data]);
                             } else {
@@ -138,7 +135,7 @@ router.get('/:variable', function(req, res, next) {
                 }
             });
         } else {
-            reject("Not a file");
+            reject("Not a rules file");
         }
         return dataJSON;
     }
@@ -158,8 +155,7 @@ router.get('/:variable', function(req, res, next) {
                     console.log(error);
                 })
             });
-            //
-            console.log(getFiles);
+
             // console.log(final_promises);
             Promise.all(getFiles).then(result => sendData(result));
 

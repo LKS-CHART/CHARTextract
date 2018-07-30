@@ -1,7 +1,7 @@
+
 let createError = require('http-errors');
 let express = require('express');
 let app = express();
-app.use(express.static('public'));
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let logger = require('morgan');
@@ -11,10 +11,10 @@ let runRouter = require('./routes/run');
 let loadRouter = require('./routes/load');
 let pathRouter = require('./routes/path');
 let deleteRouter = require('./routes/delete');
-
 var cors = require('cors');
 
 // view engine setup
+app.use(express.static('public'));
 app.use(cors());
 
 app.set('views', path.join(__dirname, 'views'));

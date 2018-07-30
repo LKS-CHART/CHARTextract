@@ -18,13 +18,13 @@ function promisify(fn) {
 
 /* GET home page. */
 function get_directory(tokenized_path){
-    console.log("I AM SENDING A PATH HMMM")
-    cur_path = path.normalize(path.join(...tokenized_path.slice(1)));
+    //console.log("I AM SENDING A PATH HMMM")
+    let cur_path = path.normalize(path.join(...tokenized_path.slice(1)));
     console.log(tokenized_path.slice(1));
     if (tokenized_path.length === 1){
         if (process.platform === "win32")  {
             let childDirs = winDrives.usedLetters();
-            console.log(childDirs)
+            console.log(childDirs);
             return childDirs.then(function (result){
                 let arr = [];
                 result.forEach(file_name => {
@@ -45,9 +45,9 @@ function get_directory(tokenized_path){
         } else {
 
             let homeDirPromise = new Promise((resolve, reject) => {
-                const homeList = fs.readdirSync(homedir)
+                const homeList = fs.readdirSync(homedir);
                 resolve(homeList);
-            })
+            });
 
             return homeDirPromise.then(function(result) {
                 let arr = [];
@@ -104,7 +104,7 @@ function get_directory(tokenized_path){
 // x.then(function (result){ console.log(result)});
 //get_directory(["Computer","Z:","GEMINI-SYNCOPE"]);
 router.post('/', function(req, res, next) {
-    console.log("I AM SENDING A PATH HMMM")
+    console.log("Post Path");
     console.log(req.body["path"]);
     if (req.body["path"].length === 1){
         let res_json = {
@@ -120,7 +120,7 @@ router.post('/', function(req, res, next) {
             res.send(JSON.stringify(res_json));
         });
     } else {
-        cur_path = path.normalize(path.join(...req.body["path"].slice(1)));
+        let cur_path = path.normalize(path.join(...req.body["path"].slice(1)));
         console.log(cur_path);
         let res_json = {
             "filename": req.body["path"][req.body["path"].length - 1],
@@ -147,7 +147,7 @@ router.get('/', function(req, res, next) {
         "Type": "Folder"
     };
 
-    console.log("I AM SENDING A PATH HMMM")
+    console.log("Get Path");
     let cur_promise = new Promise(function (resolve, reject) {
         resolve(get_directory(["Computer"]));
     });

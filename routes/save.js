@@ -15,8 +15,8 @@ router.post('/save_project_settings', function(req, res, next) {
             return console.log(err)
         }
 
-        console.log("Save Settings")
-        console.log(req.body)
+        console.log("Save Settings");
+        console.log(req.body);
         module.exports.rules_path = path.join(...req.body["Project Settings Data"]["Rules Folder"]);
         res.sendStatus(200);
     })
@@ -24,8 +24,8 @@ router.post('/save_project_settings', function(req, res, next) {
 });
 
 router.post('/save_variable_settings/:variable', function(req, res, next) {
-    var variable = req.params.variable;
-    var save_var_path = path.join(module.exports.rules_path, variable);
+    var cur_variable = req.params['variable'];
+    var save_var_path = path.join(module.exports.rules_path, cur_variable);
     if(fs.existsSync(save_var_path)) {
         fs.writeFile(path.join(save_var_path, "rule_properties.json"), JSON.stringify(req.body["Variable Settings"], null, 4), function(err) {
             if(err) {
@@ -61,11 +61,11 @@ router.post('/save_variable_settings/:variable', function(req, res, next) {
         })
     }
 
-})
+});
 
 router.post('/save_classifier_settings/:variable', function(req, res, next) {
-    var variable = req.params.variable;
-    var save_var_path = path.join(module.exports.rules_path, variable);
+    var cur_variable = req.params['variable'];
+    var save_var_path = path.join(module.exports.rules_path, cur_variable);
     if(fs.existsSync(save_var_path)) {
         fs.writeFile(path.join(save_var_path, "rule_settings.json"), JSON.stringify(req.body["Classifier Settings"], null, 4), function(err) {
             if(err) {
@@ -77,7 +77,7 @@ router.post('/save_classifier_settings/:variable', function(req, res, next) {
 
         })
     }
-})
+});
 
 router.post('/:variable/:class', function(req, res, next) {
 
@@ -88,18 +88,17 @@ router.post('/:variable/:class', function(req, res, next) {
 
     var filePath = path.join(module.exports.rules_path, req.params['variable'], req.body.filename);
 
-    var index = filePath.indexOf(".txt")
+    var index = filePath.indexOf(".txt");
     var jsonFilePath = filePath.substring(0,index) + ".json";
     fs.writeFile(filePath, req.body.regexes, function(err) {
         if(err) {
             return err;
         }
-
     });
 
 
     if (req.body.regexesSimple.length > 0) {
-        var new_json = {"Name": req.params.class, "Dirty": false, "Rules": req.body.regexesSimple}
+        var new_json = {"Name": req.params.class, "Dirty": false, "Rules": req.body.regexesSimple};
         fs.writeFile(jsonFilePath, JSON.stringify(new_json, null, 4), function(err) {
             if(err) {
                 return err
