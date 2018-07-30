@@ -73,7 +73,7 @@ app.directive("tree", function(RecursionHelper, LoaderService, $http, SettingsSe
         compile: function(element) {
             return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {
                 scope.navigateToItem = function(node) {
-                    var url = "http://localhost:3000/path/"
+                    var url = "/path/"
                     var params = {"path": node.filepath}
                     $http.post(url, params).then(function(data) {
                         console.log("SENT PATH REQUEST");
@@ -104,7 +104,7 @@ app.directive("treeF", function(RecursionHelper, LoaderService, $http, SettingsS
         compile: function(element) {
             return RecursionHelper.compile(element, function(scope, iElement, iAttrs, controller, transcludeFn) {
                 scope.navigateToItem = function(node) {
-                    var url = "http://localhost:3000/path/"
+                    var url = "/path/"
                     var params = {"path": node.filepath}
                     $http.post(url, params).then(function(data) {
                         console.log("SENT PATH REQUEST");
@@ -129,7 +129,7 @@ app.controller('PollingCtrl', function($scope, $http, $timeout) {
     loadPromise; //Pointer to the promise created by the Angular $timeout service
 
   var getData = function() {
-    $http.get('http://127.0.0.1/keepalive/' + Date.now())
+    $http.get('/keepalive/' + Date.now())
 
     .then(function(res) {
       nextLoad();

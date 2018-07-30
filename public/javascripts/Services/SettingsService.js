@@ -17,13 +17,13 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
 
     var deferred = $q.defer()
 
-    var url2 = "http://localhost:3000/load/variable_list"
+    var url2 = "/load/variable_list"
 
     var negativeLabel = "None";
 
     var myDataPromise = DataService.getData();
 
-    $http.get("http://localhost:3000/run/get_response_status").then(function(response) {
+    $http.get("/run/get_response_status").then(function(response) {
         var status = response.data[0];
 
         if (status["status"] === 404) {

@@ -11,7 +11,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
     variableController.editMode = false;
 
-    var url = "http://localhost:3000/load/variable_settings"
+    var url = "/load/variable_settings"
 
     if (variableController.currentVariable === null) {
         variableController.currentVariable = SettingsService.getCurrentVariable();
@@ -19,7 +19,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
 
     function getVariableSettings() {
-        var url = "http://localhost:3000/load/variable_settings/" + variableController.currentVariable;
+        var url = "/load/variable_settings/" + variableController.currentVariable;
 
         $http.get(url).then(function(result) {
             var data = result.data;
@@ -59,7 +59,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
     })
 
     variableController.saveSettings = function() {
-        var url2 = "http://localhost:3000/save/save_variable_settings/" + variableController.currentVariable;
+        var url2 = "/save/save_variable_settings/" + variableController.currentVariable;
 
         SettingsService.setCurrentVariable(variableController.currentVariable);
 
@@ -92,7 +92,7 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
         $http.post(url2, params).then(function(data) {
             console.log("Sent Save Variable Settings Request")
 
-            var url3 = "http://localhost:3000/load/classifier_settings/" + SettingsService.getCurrentVariable();
+            var url3 = "/load/classifier_settings/" + SettingsService.getCurrentVariable();
 
             $http.get(url3).then(function(result) {
                 var data = result.data;

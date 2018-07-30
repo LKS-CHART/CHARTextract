@@ -19,7 +19,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     var ruleCtrl_exists = false;
     var save_finished = false;
 
-    var url = "http://localhost:3000/get_project_settings"
+    var url = "/get_project_settings"
 
     $http.get(url).then(function (response) {
         var result = response.data;
@@ -106,7 +106,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     }
 
     settingsController.run = function() {
-        var url = "http://localhost:3000/run/" + SettingsService.getCurrentVariable();
+        var url = "/run/" + SettingsService.getCurrentVariable();
 
         sessionStorage.setItem("dataset", "train")
 
@@ -157,7 +157,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
         SettingsService.labelFirstRow = settingsController.labelFirstRow
         SettingsService.createTrainAndValid = settingsController.createTrainAndValid
         SettingsService.predictionMode = settingsController.predictionMode
-        var url = "http://localhost:3000/save/save_project_settings"
+        var url = "/save/save_project_settings"
 
         console.log(settingsController.dataFile)
         console.log(settingsController.labelFile)

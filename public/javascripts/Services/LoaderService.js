@@ -1,7 +1,7 @@
 app.service("LoaderService", ["$http", "$q", function($http, $q) {
 
     var deferred = $q.defer()
-    var url = "http://localhost:3000/path/"
+    var url = "/path/"
     var cur_path_obj = null;
     var saved_path_obj = null;
 

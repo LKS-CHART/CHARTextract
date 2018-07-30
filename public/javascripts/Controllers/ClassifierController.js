@@ -11,7 +11,7 @@ app.controller("ClassifierController", ["SettingsService", "$http", function(Set
 
     function getClassifierSettings() {
 
-        var url = "http://localhost:3000/load/classifier_settings/" + SettingsService.getCurrentVariable();
+        var url = "/load/classifier_settings/" + SettingsService.getCurrentVariable();
 
         $http.get(url).then(function(result) {
             var data = result.data;
@@ -55,7 +55,7 @@ app.controller("ClassifierController", ["SettingsService", "$http", function(Set
 
     classifierController.saveSettings = function() {
 
-        var url = "http://localhost:3000/save/save_classifier_settings/" + SettingsService.getCurrentVariable();
+        var url = "/save/save_classifier_settings/" + SettingsService.getCurrentVariable();
 
         var params = {"Classifier Type": classifierController.currentClassifier, "Classifier Args": {}}
         var neg_label = "None"

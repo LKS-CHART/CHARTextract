@@ -32,7 +32,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     }
 
     function loadText() {
-        var url = "http://localhost:3000/load/" + ruleController.currentVar;
+        var url = "/load/" + ruleController.currentVar;
         $http.get(url).then(function(response) {
 
             var data = response.data
@@ -88,7 +88,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     ruleController.deleteFile = function(tab_name) {
 
         var class_name = ruleController.availableClasses[tab_name]
-        var url = "http://localhost:3000/delete/" + ruleController.currentVar + "/" + class_name;
+        var url = "/delete/" + ruleController.currentVar + "/" + class_name;
 
         var params = {
             "filename": MainRuleService.getRulesetParam(class_name, "filename")
@@ -133,7 +133,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
 
             MainRuleService.setRulesetParam(class_name, "regexesText", editor.session.getValue());
             MainRuleService.setRulesetParam(class_name, "regexesSimple", RuleService.getRuleset());
-            var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + new_class_name
+            var url = "/save/" + ruleController.currentVar + "/" + new_class_name
             var params = {
                 "filename": MainRuleService.getRulesetParam(class_name, "filename"),
                 "regexes": MainRuleService.getRulesetParam(class_name, "regexesText"),
@@ -187,7 +187,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
             })
         }
 
-        var url = "http://localhost:3000/save/" + ruleController.currentVar + "/" + temp_class_name;
+        var url = "/save/" + ruleController.currentVar + "/" + temp_class_name;
 
         var params = {
             "filename": temp_class_name + ".txt",
