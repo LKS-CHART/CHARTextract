@@ -107,10 +107,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 function onElectronReady() {
-    const ses = electron.session.defaultSession;
-    ses.clearCache(function(){
-        ses.clearStorageData();
-    });
+
     console.log("Electron ready");
     // Create a new window
     window = new BrowserWindow({
@@ -125,7 +122,8 @@ function onElectronReady() {
         show: false,
         title: 'RegexNLP'
     });
-
+    window.webContents.session.clearCache(function(){
+    });
     window.loadURL("http://localhost:" + port);
 
 

@@ -16,8 +16,9 @@ router.post('/save_project_settings', function(req, res, next) {
         }
 
         console.log("Save Settings");
-        console.log(req.body);
+        //console.log(req.body);
         module.exports.rules_path = path.join(...req.body["Project Settings Data"]["Rules Folder"]);
+        console.log("Settings Rules Path in index to " + module.exports.rules_path);
         res.sendStatus(200);
     })
 
@@ -84,6 +85,7 @@ router.post('/:variable/:class', function(req, res, next) {
     if (module.exports.rules_path === null) {
         console.log("No Rules Path Specified");
         res.sendStatus(404);
+        return;
     }
 
     var filePath = path.join(module.exports.rules_path, req.params['variable'], req.body.filename);

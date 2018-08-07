@@ -19,7 +19,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     var ruleCtrl_exists = false;
     var save_finished = false;
 
-    var url = "/get_project_settings"
+    var url = "/data/project_settings.json"
 
     $http.get(url).then(function (response) {
         var result = response.data;

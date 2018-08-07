@@ -1,14 +1,13 @@
 app.service('DataService', function($http, $q) {
 
-    var deferred = $q.defer()
+    var deferred = $q.defer();
 
-    console.log("DATASERVICE LOADED")
+    console.log("DATASERVICE LOADED");
     if(localStorage.getItem("errorJsonPath") === null || localStorage.getItem("errorJsonPath") === undefined) {
         var url = "/data/error_report.json"
     }
     else
     {
-
         var url = "/" + localStorage.getItem("errorJsonPath");
     }
 

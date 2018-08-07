@@ -11,21 +11,6 @@ router.get('/get_response_status', function(req, res, next) {
     res.send(JSON.stringify(prog_status, null, 4))
 });
 
-/*
-router.get('/get_paths', function(req, res, next) {
-    console.time("dbsave");
-
-    pyshell_connector.send({'function': 'paths'});
-    var curPromise = new Promise(function (resolve, reject) {
-        pyshell_connector.on('message', function(message) {resolve(message)});
-    });
-    curPromise.then(function (result) {
-        console.log(result);
-        res.send(result)
-    });
-});
-*/
-
 router.get('/get_cwd', function(req, res, next){
     pyshell_connector.send({'function': 'get_cwd'});
     var curPromise = new Promise(function (resolve, reject){
@@ -43,7 +28,7 @@ router.get('/:variable', function(req, res, next) {
     req.params["settings"] = settings_path;
 
     pyshell_connector.send({'function': 'run_variable', 'params': req.params});
-    var curPromise = new Promise(function (resolve, reject) {
+    let curPromise = new Promise(function (resolve, reject) {
         pyshell_connector.on('response', function(message) {resolve(message)});
     });
     curPromise.then(function (result) {

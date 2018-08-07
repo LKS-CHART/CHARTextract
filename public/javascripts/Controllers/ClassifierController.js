@@ -10,7 +10,7 @@ app.controller("ClassifierController", ["SettingsService", "$http", function(Set
     classifierController.biases = [];
 
     function getClassifierSettings() {
-
+        console.log(SettingsService.getCurrentVariable());
         var url = "/load/classifier_settings/" + SettingsService.getCurrentVariable();
 
         $http.get(url).then(function(result) {

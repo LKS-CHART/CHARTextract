@@ -19,8 +19,11 @@ app.controller("VariableController", ["SettingsService", "$http", function(Setti
 
 
     function getVariableSettings() {
-        var url = "/load/variable_settings/" + variableController.currentVariable;
-
+        if (variableController.currentVariable === null) {
+            url = "/data/default_variable_settings";
+        } else {
+            url = "/load/variable_settings/" + variableController.currentVariable;
+        }
         $http.get(url).then(function(result) {
             var data = result.data;
 

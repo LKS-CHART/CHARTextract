@@ -442,5 +442,4 @@ app.directive('tagEditor', function(RuleService) {
         }
 
     }
-
-})
+});

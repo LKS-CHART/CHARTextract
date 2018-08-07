@@ -1,5 +1,5 @@
 {
-  "var_name": "default",
+  "var_name": null,
   "classes": {
     "None": "hsl(15,71.4%,89%)",
     "Default": "hsl(97,81%,91.8%)"
