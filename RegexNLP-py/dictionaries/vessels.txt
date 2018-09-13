@@ -1,0 +1,1 @@
+"subclavian","axillary","brachiocephalic","jugular","\bSVC","\bIVC","vena cava","basillic","cephalic","brachial","iliac"

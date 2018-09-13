@@ -1,0 +1,51 @@
+<html>
+
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <style>
+            .line-break-and-tab {
+                white-space: pre-line;
+                word-break: break-all;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" style="text-align: right">
+                    <div style="margin-top: 20px">
+                        {% if prev %}
+                        <a href="{{ prev + '.html' }}">Previous</a>
+                        {% endif %}
+                        {% if next %}
+                        <a href="{{ next + '.html' }}" style="padding: 10">Next</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div>
+                        <h1 align="center">{{ patient_id }}</h1>
+                    </div>
+                    <div>
+                        {% for rule in rules %}
+                        <p><b>Variable - {{ rules[rule]["Variable Name"] }}</b> was abstracted to be {{ rules[rule]["label"] }}. NLP said {{ rules[rule]["prediction"] }}</p>
+                        {% endfor %}
+                    </div>
+                    <h3>Letter Text</h3>
+                    <p ng-cloak id="text" class="line-break-and-tab">
+                        {{ data }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </body>
+
+</html>
