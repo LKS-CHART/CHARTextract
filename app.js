@@ -11,12 +11,10 @@ let runRouter = require('./routes/run');
 let loadRouter = require('./routes/load');
 let pathRouter = require('./routes/path');
 let deleteRouter = require('./routes/delete');
-let dataRouter = require('./routes/data');
 var cors = require('cors');
 
 // view engine setup
-app.use('/data', dataRouter);
-//app.use(express.static('public'));
+app.use(express.static('public'));
 app.use(cors());
 
 app.set('views', path.join(__dirname, 'views'));

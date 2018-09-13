@@ -1,9 +1,0 @@
-{
-    "Classifier Type": "RegexClassifier",
-    "Classifier Args": {
-        "negative_label": "None",
-        "biases": {
-            "Yes": 0
-        }
-    }
-}
