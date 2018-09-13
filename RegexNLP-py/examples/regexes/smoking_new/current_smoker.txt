@@ -1,0 +1,9 @@
+!RegexClassifier,biases,{"None":1}
+"currently smok",10
+"is a smoker",20
+"smokes[^\,]*frequently",20
+"occasional(ly)?[^\,]smokes",20
+"current smoker",10
+"a smoker",5,"not","rb",-10
+"smokes[^\,]*((cigarettes?)+|(packs?))",30
+"smokes",10,"marijuana","i",0

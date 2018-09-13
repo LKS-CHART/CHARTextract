@@ -1,0 +1,7 @@
+"currently smok",10
+"is a smoker",20
+"smokes[^\,]*frequently",20
+"occasional(ly)?[^\,]smokes",20
+"current smoker",10
+"(?<!(not))\sa smoker",10
+"smokes[^\,]*((cigarettes?)+|(packs?))",30

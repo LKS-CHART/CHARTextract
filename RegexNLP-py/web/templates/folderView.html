@@ -1,0 +1,10 @@
+{% raw %}
+<li ng-if="!(node.Type === 'File' && display_folder)"class="treeNode {{(node.selected===true && node.Type === 'Folder')? 'selectedNode' : ''}} " ng-click="navigateToItem(node)">
+  <span ng-if="node.Type === 'Folder'" class="item1 glyphicon glyphicon-folder-open"></span>
+  <span ng-if="node.Type === 'File'" class="item2 glyphicon glyphicon-file"> </span>
+  <span>{{node.filename}}</span>
+</li>
+<ul>
+  <tree-f ng-repeat="child in node.Children" node="child" display-only-folder="true"></tree-f>
+</ul>
+{% endraw %}

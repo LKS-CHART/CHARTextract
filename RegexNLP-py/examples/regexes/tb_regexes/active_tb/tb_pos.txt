@@ -1,0 +1,4 @@
+#active_tb:
+"has active",50
+"active pleural",12
+"fully-sensitive",12

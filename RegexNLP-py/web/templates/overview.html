@@ -1,0 +1,20 @@
+{% raw %}
+<div>
+    <h1 align="center">Study: {{errorCtrl.data.var_name}}</h1>
+</div>
+<h3>Stats</h3>
+
+<p ng-repeat="(class, colour) in errorCtrl.data.classes">
+    <b>{{class}}:</b> </br>
+    {{errorCtrl.data["Predicted Positive"][class]}} Predicted Positive Cases of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br>
+    {{errorCtrl.data["Predicted Negative"][class]}} Predicted Negative Cases of {{errorCtrl.data["Negative Cases"][class]}}  Negative Cases</br></br>
+    {{errorCtrl.data["False Positives"][class]}} False Positives of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br>
+    {{errorCtrl.data["False Negatives"][class]}} False Negatives of {{errorCtrl.data["Negative Cases"][class]}} Negative Cases</br></br>
+    {{errorCtrl.data["OVA PPV and Accuracy"][class]["true_positives"]}} True Positives of {{errorCtrl.data["Positive Cases"][class]}} Positive Cases</br></br>
+    One vs All PPV: {{errorCtrl.data["OVA PPV and Accuracy"][class]["ppv"]*100}}% </br>
+    One vs All NPV: {{errorCtrl.data["OVA PPV and Accuracy"][class]["npv"]*100}}% </br>
+    Sensitivity: {{errorCtrl.data["OVA PPV and Accuracy"][class]["sensitivity"]*100}}% </br>
+    One vs All Accuracy: {{errorCtrl.data["OVA PPV and Accuracy"][class]["accuracy"]*100}}% </br>
+    One vs All Accuracy: {{errorCtrl.data["OVA PPV and Accuracy"][class]["num_correct"]}} correct out of {{errorCtrl.data["Positive Cases"][class] + errorCtrl.data["Negative Cases"][class]}} </br>
+</p>
+{% endraw %}

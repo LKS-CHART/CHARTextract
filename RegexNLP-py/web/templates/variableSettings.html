@@ -1,0 +1,70 @@
+{% raw %}
+<div>
+    <h1 align="center">RegexNLP</h1>
+</div>
+<h3>Variable Settings</h3>
+    <a href="#!/settings" class="btn btn-default">Project Settings</a>
+    <a href="#!/variable_settings" class="btn btn-default">Variable Settings</a>
+    <br/>
+    <br/>
+
+   <div style="display: inline-block">
+       <b>Variable:</b>
+       <span>{{variableCtrl.currentVariable}}</span>
+       <span class="close" style="color: green; margin-left: 10px; float: none" ng-click="variableCtrl.addVariable()">+</span>
+   </div>
+ <br/><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Current Variable:</span>
+    </div>
+    <div ng-if="!variableCtrl.editMode" class="col-xs-4">
+        <select class="form-control input-sm" name="curvar" ng-model="variableCtrl.currentVariable" ng-change="variableCtrl.getCurVarSettings()">
+            <option ng-repeat="option in variableCtrl.availableVariables" value="{{option.filename}}">{{option.filename}}</option>
+        </select>
+    </div>
+    <div ng-if="variableCtrl.editMode" class="col-xs-4">
+        <input type="text" class="form-control input-sm" ng-model="variableCtrl.currentVariable" placeholder="Text input">
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Label Column:</span>
+    </div>
+    <div class="col-xs-4">
+        <input type="text" class="form-control input-sm" ng-model="variableCtrl.curVarLabelCol" placeholder="Text input">
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Required Dictionaries:</span>
+    </div>
+    <div class="col-xs-4">
+        <input type="text" class="form-control input-sm" ng-model="variableCtrl.curVarDictionaries" placeholder="Text input">
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Use Dictionary Preprocessor:</span>
+    </div>
+    <div class="col-xs-4">
+        <select class="form-control input-sm" name="preprocessor" ng-model="variableCtrl.usePreprocessor">
+            <option ng-value=true>True</option>
+            <option ng-value=false>False</option>
+        </select>
+    </div>
+</div><br/>
+<div class="row vertical-align-flex">
+    <div class="col-xs-1">
+        <span>Specify Function with Python:</span>
+    </div>
+    <div class="col-xs-4">
+        <select class="form-control input-sm" name="python" ng-model="variableCtrl.python">
+            <option ng-value=true>True</option>
+            <option ng-value=false>False</option>
+        </select>
+    </div>
+</div><br/>
+
+<button type="button" ng-click="variableCtrl.saveSettings()" class="btn btn-primary">Save Variable Settings</button>
+{% endraw %}
