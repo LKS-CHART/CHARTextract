@@ -1,1 +1,0 @@
-pyinstaller win10x64.spec --dist=C:\WSProjects\RegexNLP-node
