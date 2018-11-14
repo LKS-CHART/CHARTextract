@@ -1,1 +1,1 @@
-pyinstaller RegexNLP-py\win10x64.spec --dist=RegexNLP-node --noconfirm && RegexNLP-node\node_modules\.bin\electron-packager RegexNLP-node\ --overwrite --out=Release
+pyinstaller RegexNLP-py\win10x64.spec --dist=RegexNLP-node --noconfirm && cd RegexNLP-node && npm run dist && cd ..
