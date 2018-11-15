@@ -168,11 +168,16 @@ RUN set -ex; \
 		\) -exec rm -rf '{}' +; \
 	rm -f get-pip.py
 
-COPY 0_requirements_py37.txt 0_requirements_py37.txt
-COPY 1_requirements_py37.txt 1_requirements_py37.txt
-COPY RegexNLP-node/package.json RegexNLP-node/package.json
+COPY 0_requirements_py37.txt .
+COPY 1_requirements_py37.txt .
 
-CMD pip install -r 0_requirements_py37.txt
+RUN pip install -r 0_requirements_py37.txt
+RUN pip install -r 1_requirements_py37.txt
+
+WORKDIR RegexNLP-node
+COPY RegexNLP-node/package.json .
+
+RUN npm install
 
 CMD [ "node", "python3" ]
 
