@@ -30,3 +30,46 @@ You can access the app from the executable file or from the browser (localhost:3
   - Label First Row: 1
   - Rules Folder: `fake_data\rules` make sure you have write permissions for this folder
 - On the `Variable Settings` page
+  - Click on the `default` button and select the `smoking_status` variable
+  - Label Column (column where labels are stored in the train and valid file): 1
+  - Required Dictionaries (if dictionaries are used, type in the name - all dictionaries can be found in `Release\win-unpacked\dictionaries\`): leave this blank
+  - Use Dictionary Preprocessor (set to True if we want to only keep sentences that have words from the dictionary): False
+  - Specify Function with Python (deprecated): False
+- Classifier Settings
+  - Classifier type: RegexClassifier
+    - RegexClassifier: regular expression match at a sentence-level
+    - CaptureClassifier: regular expression match + extracts captured group (e.g., will retrieve number of years smoked)
+    - TemporalRegexClassifier (deprecated)
+  - Negative Label (from the labels files, this is the label used for any example that is not positive) : "Not dictated"
+    - If score is 0: the data point will be assigned the negative label
+  - Class name and bias (each label can be assigned a bias)
+- From the `Rules` view, toggle the `Advanced Mode` to directly edit the regular expressions.
+
+## Rules format
+- Example:
+```
+!Current smoker
+#Don't forget to save the file to preserve the new name.
+"smok",3,"former","i",0,"quit","r",1,"does not","i",0
+```
+- The first line has the variable name prefixed by an exclamation mark.
+- All comments are denoted by `#`
+- Each line has the following format:
+`"primary_rule",primary_score,"Secondary Rule","rule_type",secondary_score,"Secondary Rule 2","rule_type",secondary_score`.
+- The classifier goes through each rule one sentence at a time.
+- The classifier first tries to the primary rule. If no match is found, it moves on to the next sentence.
+- If the primary rule matches, that sentence is given the `primary_score`.
+- The classifier then checks for `ignore` secondary rules (i.e., rule_type = "i"). If any of them match, the sentence is ignored (i.e., no score is assigned)
+- The classifier then checks for `replace` and `add` secondary rules (i.e., rule_type = "r", "a"). 
+  - If a replace rule matches, the sentence's score is replaced with `secondary_score`. The first replace rule that doesn't match stops the loop.
+  - If an add rule matches, the `secondary_score` is added to the cumulative sentence score.
+- rule_types can also have modifiers: "b","a". These are specified by appending to rule_type. E.g "ra","ib","aa"
+  - The sentence is split into three: everything before the primary rule, the primary rule match, everything after the primary rule match.
+  - "b" indicates a match before the primary rule.
+  - "a" indicates a match after the primary rule.
+  - e.g. `"smok",0,"not","rb",0`
+  - e.g. `she smokes but not on weekends` is labeled `smoker`
+    - `"smok",0,"not","rb",1` This sentence would get a score of 0 with this rule
+    - `"smok",0,"not","a",2` This sentence would get a score of 2 with this rule
+
+
