@@ -1,0 +1,5 @@
+!Current smoker,RegexClassifier,negative_label,'Not dictated'
+"smok",0,"(frequently|occasional(ly)?|sometimes)","r",1
+"smok",0,"(\bnot\b|\bwas\b|\bnever\b)","rb",-5
+"smok.*((cigarettes?)|(packs?))",3,"(\bnot\b|\bnever\b),"rb",-5
+"currently smok",3,"(\bnot\b)","rb",-2

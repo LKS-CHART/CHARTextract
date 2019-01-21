@@ -1,0 +1,2 @@
+!Never smoked
+"smok",0,"(\bnever\b|\bnot\b)","rb",5

@@ -17,15 +17,15 @@ You can access the app from the executable file or from the browser (localhost:3
 
 ## Using the tool
 - On the `Settings` page, upload the following files:
-  - Data file (this should have a column for the text data, the ID): `fake_data\TB_FakeNotes_2018.xlsx`
+  - Data file (this should have a column for the text data, the ID): `fake_data\fake_notes.csv`
   - Data ID column (column where ID is stored in the data file) : 0
   - Data column (column where text is stored in the data file): 1
   - Data first row: 1
-  - Concatenate Data (set this to True if same ID has multiple text data): False
+  - Concatenate Data (set this to True if same ID has multiple text data): True
   - Create Train and Validation Set (set to True if no train file and no valid label file provided): False 
   - Prediction Mode (set to True if we are not evaluating on the Validation set): False
-  - Train file (this should have a column for the ID and the labels): `fake_data\TB_FakeNotes_train.xlsx`
-  - Valid file (this should have a column for the ID and the labels): `fake_data\TB_FakeNotes_valid.xlsx`
+  - Train file (this should have a column for the ID and the labels): `fake_data\fake_notes_train.csv`
+  - Valid file (this should have a column for the ID and the labels): `fake_data\fake_notes_valid.csv`
   - Label ID Column (column where ID is stored in Train and Valid file - this should be the same for both files): 0
   - Label First Row: 1
   - Rules Folder: `fake_data\rules` make sure you have write permissions for this folder

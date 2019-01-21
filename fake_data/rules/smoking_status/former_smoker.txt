@@ -1,0 +1,6 @@
+!Former smoker
+"previous.*smok",3
+"prior smok",3
+"smok",0,"(\bquit\b|\bwas\b)","r",3,"attempt","rb",-3
+"smoked",1,"(\bnever\b|\bnot\b)","rb",-2
+"smok",0,"history","rb",2,"\bnot\b","rb",-2
