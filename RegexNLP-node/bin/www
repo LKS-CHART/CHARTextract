@@ -7,6 +7,7 @@
 const electron = require('electron');
 const ElectronApp = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const electronLocalShortcut = require('electron-localshortcut');
 
 const debug = require('debug')('electrontest:server');
 const http = require('http');
@@ -124,6 +125,10 @@ function onElectronReady() {
         // Don't show the window until it's ready, this prevents any white flickering
         show: false,
         title: 'RegexNLP'
+    });
+
+    electronLocalShortcut.register(window, 'F12', () => {
+        window.openDevTools();
     });
 
     window.loadURL("http://localhost:" + port);

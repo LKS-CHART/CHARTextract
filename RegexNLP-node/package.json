@@ -19,7 +19,8 @@
     "pug": "2.0.0-beta11",
     "python-shell": "^0.5.0",
     "table-parser": "^1.0.1",
-    "windows-autoconf": "^1.11.1"
+    "windows-autoconf": "^1.11.1",
+    "electron-localshortcut": "^3.1.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
@@ -48,10 +49,18 @@
       "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
       "!**/dictionaries"
     ],
-    "extraFiles": [ {
-      "from": "../RegexNLP-py/dictionaries",
-      "to": "dictionaries" }
+    "extraFiles": [
+      {
+        "from": "../RegexNLP-py/dictionaries",
+        "to": "dictionaries"
+      }
     ],
-    "directories": { "output": "../Release" }
+    "directories": {
+      "output": "../Release"
+    }
+  },
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
   }
 }
