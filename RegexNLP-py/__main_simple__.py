@@ -12,6 +12,7 @@ import random
 import string
 from util.SpecialException import SpecialException
 
+np_orig_err_settings = np.seterr(divide='raise', over='raise', under='raise', invalid='raise')
 orig_stdout = sys.stdout
 f = open(os.devnull, 'w')
 sys.stdout = f
