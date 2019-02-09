@@ -22,7 +22,7 @@ def preprocess_data(data):
         modified_data {string} -- modified data
     """
     #print("HER")
-    data = data.replace(1, 2).replace("\n\n",".").replace('\n#\n', '.').replace('#', '\n').replace('\\n','\n')
+    data = data.replace('_x000D_', '').replace("\n\n",".").replace('\n#\n', '.').replace('#', '\n').replace('\\n','\n')
     #data, num_subs = re.subn(re.compile('nofilling',re.IGNORECASE), 'no filling', data)
     data, _ = re.subn(r'\bM.{1,2}\.', '', data)
     data, _ = re.subn(r'\bD.{1,2}\.', '', data)
