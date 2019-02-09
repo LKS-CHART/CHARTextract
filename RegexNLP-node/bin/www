@@ -7,11 +7,13 @@
 const electron = require('electron');
 const ElectronApp = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const dialog = electron.dialog;
 const electronLocalShortcut = require('electron-localshortcut');
 
 const debug = require('debug')('electrontest:server');
 const http = require('http');
 const app = require('../app');
+let pyshell_connector = require("../python_connector/connector");
 /**
  * Get port from environment and store in Express.
  */
@@ -139,7 +141,18 @@ function onElectronReady() {
         console.log("Launching Chromium");
         window.show()
     });
-
+    var curPromise = new Promise(function (resolve, reject){
+        pyshell_connector.on('error', function(message) {resolve(message)});
+    });
+    curPromise.then(function(result){
+        const messageBoxOptions = {
+            type: "error",
+            title: "Error in python process",
+            message: result['message']
+        };
+        dialog.showMessageBox(messageBoxOptions);
+        throw result['message'];
+    });
     window.on('closed', () => {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time

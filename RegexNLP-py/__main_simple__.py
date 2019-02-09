@@ -254,7 +254,7 @@ def paths():
 def get_cwd():
     respond(cwd)
 """
-
+import traceback
 
 respond({'app_ready': 'Ready'})
 for line in sys.stdin:
@@ -272,4 +272,4 @@ for line in sys.stdin:
     except SpecialException as e:
         respond({'status': 404, 'message': str(e)})
     except Exception as e1:
-        respond({'status': 404, 'message': str(e1)})
+        respond({'status': 404, 'message': str(traceback.format_exc())})

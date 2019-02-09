@@ -250,8 +250,6 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
     except SpecialException as e:
         raise SpecialException(str(e))
 
-    except Exception:
-        raise SpecialException("An error has occurred while reading the data")
 
     return data, labels, ids
 
@@ -267,20 +265,17 @@ def import_pwds(filenames, pwd_names=None):
     Returns:
         pwds {dict} -- Personal word dictionary which is a dictionary which maps pwd_name -> list of words
     """
+    pwds = {}
+    pwd_names = [(lambda f: f.split(os.sep)[-1].split(".")[0])(file) for file in filenames] if not pwd_names else pwd_names
 
-    try:
-        pwds = {}
-        pwd_names = [(lambda f: f.split(os.sep)[-1].split(".")[0])(file) for file in filenames] if not pwd_names else pwd_names
-
-        for file, pwd_name in zip(filenames, pwd_names):
-            pwds[pwd_name] = []
-            with open(file, 'r', encoding='utf8') as csv_file:
-                rows = csv.reader(csv_file, delimiter=',', quotechar='"')
-                pwds[pwd_name] = [word.strip() for row in rows for word in row]
-    except Exception:
-        raise SpecialException("An error occurred while parsing the dictionaries")
+    for file, pwd_name in zip(filenames, pwd_names):
+        pwds[pwd_name] = []
+        with open(file, 'r', encoding='utf8') as csv_file:
+            rows = csv.reader(csv_file, delimiter=',', quotechar='"')
+            pwds[pwd_name] = [word.strip() for row in rows for word in row]
 
     return pwds
+
 
 def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None,
                   preprocess_func=None, check_col=0):
@@ -329,10 +324,8 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
                         try:
                             data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
                                                      data, labels, ids, repeat_ids, lambda col: str(row[col]))
-                        except:
+                        except Exception as e:
                             raise(Exception("{}{}{}".format(data_cols, label_cols, id_cols)))
-
-
 
         if preprocess_func is not None:
             for i in range(len(data)):
@@ -341,9 +334,8 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
     except SpecialException as e:
         raise SpecialException(str(e))
 
-    except Exception as e1:
-        raise SpecialException(str(e1))
     return data, labels, ids
+
 
 #TODO: Probably shouldn't have default mutable args. Change later
 def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
@@ -423,13 +415,13 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
                 cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
                                   secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
 
-
                 regexes.append(cur_regex)
 
     except Exception:
         raise SpecialException("An error occurred while trying to read and parse the rules")
 
     return class_name, regexes
+
 
 #New json format -- deprecated (do not use)
 def regexes_from_json2(filename, use_custom_score=False):

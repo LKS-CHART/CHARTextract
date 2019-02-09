@@ -26,7 +26,13 @@ pyshell.on('message', function(message) {
         console.log("Python application ready");
         pyshell.send({'function': 'set_cwd', 'params': {'current_dir': path_helper.getAppRoot()}});
     } else {
-        pyshell.emit("response", message);
+        if (message['status'] !== 404) {
+            pyshell.emit('response', message);
+        } else {
+            console.log(message['message']);
+            pyshell.emit('error', message)
+        }
+
     }
 });
 
