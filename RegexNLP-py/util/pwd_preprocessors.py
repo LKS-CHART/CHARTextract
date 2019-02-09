@@ -51,30 +51,27 @@ class PwdPreprocessor2:
         return ngrams
 
     def preprocess(self, text, *args):
-        try:
-            output_dictionary = {"sentence": text, "dictionaries": {}}
+        output_dictionary = {"sentence": text, "dictionaries": {}}
 
-            required_categories = tuple(self.categories)
+        required_categories = tuple(self.categories)
 
-            if len(args) >= 1:
-                required_categories = tuple(args)
+        if len(args) >= 1:
+            required_categories = tuple(args)
 
-            matches = [False]*len(required_categories)
+        matches = [False]*len(required_categories)
 
-            for j, category in enumerate(required_categories):
-                output_dictionary["dictionaries"][category] = []
+        for j, category in enumerate(required_categories):
+            output_dictionary["dictionaries"][category] = []
 
-                ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,self._max_len, 1)}
+            ngrams = {i: self._create_ngram(text, k=i, to_lower=self.to_lower) for i in range(1,self._max_len, 1)}
 
-                for ngram in ngrams:
-                    for term in ngrams[ngram]:
-                        if term in self.pwds[category]:
-                            output_dictionary["dictionaries"][category].append(term)
-                            matches[j] = True
+            for ngram in ngrams:
+                for term in ngrams[ngram]:
+                    if term in self.pwds[category]:
+                        output_dictionary["dictionaries"][category].append(term)
+                        matches[j] = True
 
-            keep_data = any(matches)
-        except Exception:
-            raise SpecialException("Missing Dictionary")
+        keep_data = any(matches)
 
         if keep_data:
             return output_dictionary

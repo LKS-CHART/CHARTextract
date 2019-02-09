@@ -321,11 +321,8 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
                         count += 1
 
                         #getting data, label and ids from each row and concatenating it
-                        try:
-                            data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
+                        data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
                                                      data, labels, ids, repeat_ids, lambda col: str(row[col]))
-                        except Exception as e:
-                            raise(Exception("{}{}{}".format(data_cols, label_cols, id_cols)))
 
         if preprocess_func is not None:
             for i in range(len(data)):
@@ -359,66 +356,62 @@ def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=
         regexes {list} -- List of Regex objects
     """
 
-    try:
-        regexes = []
-        classifier_type = None
-        classifier_args = {}
-        class_name = None
+    regexes = []
+    classifier_type = None
+    classifier_args = {}
+    class_name = None
 
-        with open(filename, 'r', encoding='utf8') as f:
-            lines = csv.reader(f, delimiter=',', quotechar='"')
-            for i, line in enumerate(lines):
-                line = [token.strip().strip("\"") for token in line]
-                if i == 0:
-                    if not line[0].startswith("!"):
-                        raise Exception("Rule file requires label name at start of file. Specify as !label_name")
+    with open(filename, 'r', encoding='utf8') as f:
+        lines = csv.reader(f, delimiter=',', quotechar='"')
+        for i, line in enumerate(lines):
+            line = [token.strip().strip("\"") for token in line]
+            if i == 0:
+                if not line[0].startswith("!"):
+                    raise Exception("Rule file requires label name at start of file. Specify as !label_name")
 
-                    #Name of class
-                    class_name = line[0][1:]
-                    if len(line) > 1:
-                        #Type of classifier
-                        classifier_type = line[1]
-                        #Looping through remaining pairs of arg_name, arg_val and evaluating using ast.literal_eval
-                        for j in range(2, len(line) - 1, 2):
-                            print(line[j+1])
-                            classifier_args[line[j]] = ast.literal_eval(line[j+1])
+                #Name of class
+                class_name = line[0][1:]
+                if len(line) > 1:
+                    #Type of classifier
+                    classifier_type = line[1]
+                    #Looping through remaining pairs of arg_name, arg_val and evaluating using ast.literal_eval
+                    for j in range(2, len(line) - 1, 2):
+                        print(line[j+1])
+                        classifier_args[line[j]] = ast.literal_eval(line[j+1])
 
-                    continue
+                continue
 
-                #blank line check
-                if len(line) == 0:
-                    continue
+            #blank line check
+            if len(line) == 0:
+                continue
 
-                #comment code
-                if line[0].startswith("#"):
-                    continue
+            #comment code
+            if line[0].startswith("#"):
+                continue
 
-                #Reading primary score and primary regex
-                score = None if not use_custom_score else int(line[1])
-                regex = line[0]
+            #Reading primary score and primary regex
+            score = None if not use_custom_score else int(line[1])
+            regex = line[0]
 
-                secondary_regexes = []
+            secondary_regexes = []
 
-                #Creating list of secondary regexes for the primary regex
-                for j in range(2, len(line) - 2, 3):
-                    pattern = line[j]
-                    effect = line[j+1]
-                    secondary_score = None if not use_custom_score else int(line[j+2])
+            #Creating list of secondary regexes for the primary regex
+            for j in range(2, len(line) - 2, 3):
+                pattern = line[j]
+                effect = line[j+1]
+                secondary_score = None if not use_custom_score else int(line[j+2])
 
-                    secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), class_name),
-                                            regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
+                secondary_regex = Regex(name="sec_reg{}-{}-{}".format(len(regexes),len(secondary_regexes), class_name),
+                                        regex=pattern, effect=effect, score=secondary_score, all_matches=all_matches, flags=flags, secondary_regexes=[])
 
-                    secondary_regexes.append(secondary_regex)
+                secondary_regexes.append(secondary_regex)
 
 
-                #Creating regex
-                cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
-                                  secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
+            #Creating regex
+            cur_regex = Regex(name="reg{}-{}".format(len(regexes), class_name), regex=regex, score=score, effect='p',
+                              secondary_regexes=secondary_regexes, all_matches=all_matches, flags=flags)
 
-                regexes.append(cur_regex)
-
-    except Exception:
-        raise SpecialException("An error occurred while trying to read and parse the rules")
+            regexes.append(cur_regex)
 
     return class_name, regexes
 

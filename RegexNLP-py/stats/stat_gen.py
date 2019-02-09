@@ -91,7 +91,5 @@ def get_failures(classifier_runner, cur_dataset, conf_path, print_output=True):
             plot_confusion_matrix(cnf_matrix, cur_labels_list, conf_path)
     except SpecialException as e:
         raise SpecialException(e)
-    except Exception:
-        raise SpecialException("Some error occurred during stat generation. Verify data file and label file.")
 
     return failures_dict, error_data
