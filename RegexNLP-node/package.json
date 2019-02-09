@@ -20,7 +20,8 @@
     "python-shell": "^0.5.0",
     "table-parser": "^1.0.1",
     "windows-autoconf": "^1.11.1",
-    "electron-localshortcut": "^3.1.0"
+    "electron-localshortcut": "^3.1.0",
+    "electron-is-dev": "^1.0.1"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",

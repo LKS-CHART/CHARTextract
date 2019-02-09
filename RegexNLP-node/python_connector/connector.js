@@ -3,13 +3,21 @@ process.env.PATH = process.env.VIRTUAL_ENV + ";" + process.env.PATH;
 let path = require('path');
 let python_shell = require('python-shell');
 let path_helper = require("../path_helper/paths");
-python_shell.defaultOptions = { pythonPath: path.resolve(__dirname, "..", "RegexNLP-py", "RegexNLP.exe")};
+let scriptPath = null;
+const isDev = require('electron-is-dev');
 
-let pyshell = new python_shell("", {
-    mode: 'json'
-}, function (err, results){
-    console.log(results);
-});
+if (isDev) {
+	console.log('Running in development');
+	scriptPath = path.resolve(__dirname, "..", "..", "RegexNLP-py", "__main_simple__.py");
+	console.log("App Root: " + path_helper.getAppRoot());
+} else {
+    python_shell.defaultOptions = { pythonPath: path.resolve(__dirname, "..", "RegexNLP-py", "RegexNLP.exe")};
+    scriptPath = "";
+}
+
+let pyshell = new python_shell(scriptPath,
+        { mode: 'json' },
+        function (err, results){ console.log(results); });
 
 pyshell.on('message', function(message) {
     if (message['debug'] !== undefined) {
@@ -21,9 +29,5 @@ pyshell.on('message', function(message) {
         pyshell.emit("response", message);
     }
 });
-
-
-console.log("App Root: " + path_helper.getAppRoot());
-
 
 module.exports = pyshell;
