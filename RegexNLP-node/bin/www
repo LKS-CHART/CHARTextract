@@ -151,7 +151,7 @@ function onElectronReady() {
             message: result['message']
         };
         dialog.showMessageBox(messageBoxOptions);
-        throw result['message'];
+        console.log(result['message']);
     });
     window.on('closed', () => {
         // Dereference the window object, usually you would store windows
