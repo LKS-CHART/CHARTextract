@@ -1,26 +1,24 @@
-app.controller("LoaderController", ["LoaderService", "$http", "$uibModalInstance" , function(LoaderService, $http, $uibModalInstance) {
+app.controller("LoaderController", ["LoaderService", "SettingsService", "$http", "$uibModalInstance" , function(LoaderService, SettingsService, $http, $uibModalInstance) {
     var loaderController = this;
-    var loader_data = LoaderService.getInitialPath();
+    console.log("Get Working Object");
+    console.log(SettingsService.getCurWorkingObj().selected.last);
+    var loader_data = LoaderService.getInitialPath(SettingsService.getCurWorkingObj().selected);
 
+    loader_data.then(function(response){
+        console.log(response.data);
+        LoaderService.setCurPath(response.data);
+    });
 
-    loader_data.then(function(result) {
-        console.log("Loader data?")
-        console.log(result)
-
-//        if (LoaderService.getCurPath() === null) {
-            LoaderService.setCurPath(result)
-//        }
-    })
     loaderController.getCurPath = function() {
         return LoaderService.getCurPath();
-    }
+    };
 
     loaderController.save = function() {
         $uibModalInstance.close();
-    }
+    };
 
     loaderController.cancel = function() {
         $uibModalInstance.dismiss();
     }
 
-}])
+}]);

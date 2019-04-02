@@ -25,12 +25,8 @@ app.service("LoaderService", ["$http", "$q", function($http, $q) {
 
     }
 
-    $http.get(url).then(function (response) {
-        cur_path_obj = response.data
-        deferred.resolve(response.data)
-    })
-    var getInitialPath = function() {
-        return deferred.promise
+    var getInitialPath = function(path) {
+        return $http.post(url,{"path": path});
     }
 
     var getCurPath = function() {
