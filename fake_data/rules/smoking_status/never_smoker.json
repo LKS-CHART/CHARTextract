@@ -1,0 +1,35 @@
+{
+    "Name": "Never smoked",
+    "Dirty": false,
+    "Rules": [
+        {
+            "Primary": {
+                "Rule": [
+                    "smok"
+                ],
+                "Score": 0,
+                "Selected": false,
+                "type": "Primary",
+                "u_id": "485tr"
+            },
+            "Secondary": {
+                "Replace": [
+                    {
+                        "Rule": [
+                            "\\bnever\\b",
+                            "OR",
+                            "\\bnot\\b"
+                        ],
+                        "Score": 5,
+                        "Modifier": "b",
+                        "Selected": true,
+                        "type": "Replace",
+                        "u_id": "hrgpch"
+                    }
+                ],
+                "Ignore": [],
+                "Add": []
+            }
+        }
+    ]
+}
