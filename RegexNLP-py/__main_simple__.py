@@ -45,8 +45,8 @@ def respond(message, debug=False):
 
 
 # MAIN RUNNING CODE
-def create_regex_based_classifier(rule_path=None, additional_args=None):
-    classifier_type, classifier_args, regexes_dict = import_regexes3(rule_path) if os.path.isdir(rule_path) else None
+def create_regex_based_classifier(rule_path=None, mode="advanced", additional_args=None):
+    classifier_type, classifier_args, regexes_dict = import_regexes3(rule_path, mode=mode) if os.path.isdir(rule_path) else None
     classifier_args.update({"regexes": regexes_dict})
     if additional_args:
         classifier_args.update(additional_args)
@@ -120,6 +120,7 @@ def run_variable(variable, settings):
     cur_run = [variable]
 
     DEBUG_MODE = False
+    mode="advanced"
 
     if DEBUG_MODE:
         train_ids, train_data, train_labels = ["0","1","2"], ["This is a test", "This is not a Test", "Blob"], ["Yes", "No", "No"]
@@ -165,7 +166,7 @@ def run_variable(variable, settings):
 
         print("="*100)
         label_col, label_func, classifier_runtime_args, classifier_init_args = get_rule_properties(rule_file, rule_name, pwds)
-        classifier_runner = create_regex_based_classifier(rule_file, classifier_init_args)
+        classifier_runner = create_regex_based_classifier(rule_file, mode=mode, additional_args=classifier_init_args)
         available_datasets = ["train"]
 
         if not prediction_mode:

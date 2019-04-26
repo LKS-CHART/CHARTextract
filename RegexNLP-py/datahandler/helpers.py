@@ -127,27 +127,15 @@ def import_regexes2(regexes_directory):
 
     return classifier_type, classifier_args, regexes
 
-def import_regexes3(regexes_directory):
+def import_regexes3(regexes_directory, mode="advanced"):
     file_names = os.listdir(regexes_directory)
-    regex_filenames = [fname for fname in file_names if fname.endswith(".txt")]
-    valid_files = set(regex_filenames)
-
     settings_files = ["rule_settings.json", "rule_properties.json"]
 
-    json_files = [fname for fname in file_names if (fname.endswith(".json") and fname not in settings_files)]
+    ext = ".txt" if mode=="advanced" else ".json"
+    
+    regex_filenames = [fname for fname in file_names if fname.endswith(ext) and fname not in settings_files]
 
-    for file in json_files:
-        path = os.path.join(regexes_directory, file)
-        with open(path) as f:
-            json_f = json.load(f)
-
-        dirty = json_f["Dirty"] if "Dirty" in json_f else False
-        if not dirty:
-            text_file = ".".join(file.split(".")[0:-1]) + ".txt"
-            valid_files.discard(text_file)
-            valid_files.add(file)
-
-    regex_filenames = [os.path.join(regexes_directory, fname) for fname in file_names if fname in valid_files]
+    regex_filenames = [os.path.join(regexes_directory, fname) for fname in regex_filenames]
 
     regexes = {}
 
