@@ -1,5 +1,5 @@
-app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "$http", "$location", "$window", "$rootScope", "$controller", "$scope",
-    function($uibModal, $uibModalInstance, SettingsService, $http, $location, $window, $rootScope, $controller, $scope) {
+app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsService", "MainRuleService", "$http", "$location", "$window", "$rootScope", "$controller", "$scope",
+    function($uibModal, $uibModalInstance, SettingsService, MainRuleService, $http, $location, $window, $rootScope, $controller, $scope) {
 
     var settingsController = this;
     settingsController.dataFile = SettingsService.dataSettings.selected;
@@ -106,7 +106,9 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
     }
 
     settingsController.run = function() {
-        var url = "/run/" + SettingsService.getCurrentVariable();
+        //Add ?mode="advanced"
+        console.log("RUNNING MODE: " + MainRuleService.getMode())
+        var url = "/run/" + SettingsService.getCurrentVariable() + "?mode=" + MainRuleService.getMode();
 
         sessionStorage.setItem("dataset", "train")
 

@@ -81,6 +81,15 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
         })
     }
 
+    ruleController.toggleMode = function() {
+        ruleController.advancedMode = !ruleController.advancedMode;
+        var mode = ruleController.advancedMode ? "advanced" : "simple";
+        MainRuleService.setMode(mode);
+
+        console.log(MainRuleService.getMode());
+    
+    }
+
     ruleController.getNegativeLabel = function() {
         return SettingsService.getCurrentNegativeLabel();
     }

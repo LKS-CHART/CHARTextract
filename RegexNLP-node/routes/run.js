@@ -41,7 +41,14 @@ router.get('/:variable', function(req, res, next) {
     console.time("dbsave");
     //console.log(req.params);
     req.params["settings"] = settings_path;
-    req.params["mode"] = "advanced";
+
+    if (req.query == {} || !req.query.hasOwnProperty("mode")) {
+        var mode = "advanced";
+    } else {
+        var mode = req.query.mode;
+    }
+    console.log(req.query)
+    req.params["mode"] = mode;
 
     pyshell_connector.send({'function': 'run_variable', 'params': req.params});
     var curPromise = new Promise(function (resolve, reject) {

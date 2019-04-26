@@ -5,8 +5,8 @@
     <br/>
     <br/>
     <div ng-switch="ruleCtrl.advancedMode">
-        <button ng-switch-when=true class="btn btn-default" ng-click="ruleCtrl.advancedMode=false">Switch To Simple Mode</button>
-        <button ng-switch-when=false class="btn btn-default" ng-click="ruleCtrl.advancedMode=true">Switch To Advanced Mode</button>
+        <button ng-switch-when=true class="btn btn-default" ng-click="ruleCtrl.toggleMode()">Switch To Simple Mode</button>
+        <button ng-switch-when=false class="btn btn-default" ng-click="ruleCtrl.toggleMode()">Switch To Advanced Mode</button>
     </div>
     <br/>
     <br/>

@@ -2,6 +2,15 @@ app.service("MainRuleService", ["RuleService", function(RuleService) {
 
     console.log("MAIN RULE SERVICE LOADED")
     var allRulesets = {};
+    var currentMode = "simple";
+
+    var setMode = function(mode) {
+        currentMode = mode;
+    }
+
+    var getMode = function() {
+        return currentMode;
+    }
 
     var getRulesets = function() {
         return allRulesets;
@@ -42,7 +51,9 @@ app.service("MainRuleService", ["RuleService", function(RuleService) {
         clearRulesets: clearRulesets,
         setRulesetParam: setRulesetParam,
         getRulesetParam: getRulesetParam,
-        deleteRuleset: deleteRuleset
+        deleteRuleset: deleteRuleset,
+        setMode: setMode,
+        getMode: getMode
     }
 
 }])
