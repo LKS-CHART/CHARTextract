@@ -25,10 +25,13 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
 
     $http.get("/run/get_response_status").then(function(response) {
         var status = response.data[0];
-
-        if (status["status"] === 404) {
-            alert(status["message"])
+        if (status !== undefined)
+        {
+            if (status["status"] === 404) {
+                alert(status["message"])
+            }
         }
+        
 
     })
 

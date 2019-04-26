@@ -16,8 +16,12 @@ router.post('/:variable/:class', function(req, res, next) {
     console.log(req.body.filename);
     console.log(req.body);
     var filePath = path.join(save.rules_path, req.params['variable'], req.body.filename);
+    var index = req.body.filename.indexOf(".txt");
+    var jsonFileName = req.body.filename.substring(0,index) + ".json";
+    var jsonFilePath = path.join(save.rules_path, req.params["variable"], jsonFileName)
 
     fs.unlinkSync(filePath);
+    fs.unlinkSync(jsonFilePath);
 
     res.sendStatus(200);
 });

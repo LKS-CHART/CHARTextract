@@ -51,12 +51,19 @@ router.post('/save_variable_settings/:variable', function(req, res, next) {
                 }
 
                 fs.writeFile(path.join(save_var_path, "Yes.txt"), "!Yes\n#Don't forget to save the file to preserve the new name.", function(err) {
-
+                    
                     if(err) {
                         return console.log(err);
                     }
                     res.sendStatus(200);
                 })
+
+                var new_json = {"Name": "Yes", "Dirty": false, "Rules": []};
+                fs.writeFile(path.join(save_var_path, "Yes.json"), JSON.stringify(new_json, null, 4), function(err) {
+                    if(err) {
+                        return err
+                    }
+                })            
             })
         })
     }
@@ -90,6 +97,7 @@ router.post('/:variable/:class', function(req, res, next) {
 
     var index = filePath.indexOf(".txt");
     var jsonFilePath = filePath.substring(0,index) + ".json";
+    var name = req.body.regexes.split(/[,\n\r]+/,2)[0].substring(1)
     fs.writeFile(filePath, req.body.regexes, function(err) {
         if(err) {
             return err;
@@ -97,14 +105,12 @@ router.post('/:variable/:class', function(req, res, next) {
     });
 
 
-    if (req.body.regexesSimple.length > 0) {
-        var new_json = {"Name": req.params.class, "Dirty": false, "Rules": req.body.regexesSimple};
-        fs.writeFile(jsonFilePath, JSON.stringify(new_json, null, 4), function(err) {
-            if(err) {
-                return err
-            }
-        })
-    }
+    var new_json = {"Name": name, "Dirty": false, "Rules": req.body.regexesSimple};
+    fs.writeFile(jsonFilePath, JSON.stringify(new_json, null, 4), function(err) {
+        if(err) {
+            return err
+        }
+    })
 
 //    fs.writeFile(jsonFilePath, JSON.stringify(req.body.reg))
     console.log("Received save");
