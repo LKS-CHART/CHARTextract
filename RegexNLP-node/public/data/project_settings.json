@@ -1,24 +1,9 @@
 {
     "Data File": [
-        "C:\\",
-        "PycharmProjects",
-        "NgramRegexNLP",
-        "fake_data",
-        "TB_FakeNotes_2018_0705.xlsx"
     ],
     "Label File": [
-        "C:\\",
-        "PycharmProjects",
-        "NgramRegexNLP",
-        "fake_data",
-        "TB_FakeNotes_Train.xlsx"
     ],
     "Rules Folder": [
-        "C:\\",
-        "Users",
-        "Gatsby",
-        "Documents",
-        "Rules"
     ],
     "Dictionaries Folder": "dictionaries",
     "Data Id Cols": 0,
@@ -30,10 +15,5 @@
     "Create Train and Valid": false,
     "Prediction Mode": false,
     "Valid Label File": [
-        "C:\\",
-        "PycharmProjects",
-        "NgramRegexNLP",
-        "fake_data",
-        "TB_FakeNotes_Valid.xlsx"
     ]
 }
