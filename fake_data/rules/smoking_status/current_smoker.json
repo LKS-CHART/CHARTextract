@@ -1,0 +1,125 @@
+{
+    "Name": "Current smoker",
+    "Dirty": false,
+    "Rules": [
+        {
+            "Primary": {
+                "Rule": [
+                    "smok"
+                ],
+                "Score": 0,
+                "Selected": false,
+                "type": "Primary",
+                "u_id": "pq0kpu"
+            },
+            "Secondary": {
+                "Replace": [
+                    {
+                        "Rule": [
+                            "frequently",
+                            "OR",
+                            "occasional(ly)?",
+                            "OR",
+                            "sometimes"
+                        ],
+                        "Score": 1,
+                        "Modifier": "None",
+                        "Selected": false,
+                        "type": "Replace",
+                        "u_id": "s4bdjr"
+                    }
+                ],
+                "Ignore": [],
+                "Add": []
+            }
+        },
+        {
+            "Primary": {
+                "Rule": [
+                    "smok"
+                ],
+                "Score": 0,
+                "Selected": false,
+                "type": "Primary",
+                "u_id": "7wm62"
+            },
+            "Secondary": {
+                "Replace": [
+                    {
+                        "Rule": [
+                            "\\bnot\\b",
+                            "\\bwas\\b",
+                            "\\bnever\\b"
+                        ],
+                        "Score": -5,
+                        "Modifier": "b",
+                        "Selected": false,
+                        "type": "Replace",
+                        "u_id": "ccp7ya"
+                    }
+                ],
+                "Ignore": [],
+                "Add": []
+            }
+        },
+        {
+            "Primary": {
+                "Rule": [
+                    "smok",
+                    "cigarettes?",
+                    "OR",
+                    "packs?"
+                ],
+                "Score": 3,
+                "Selected": false,
+                "type": "Primary",
+                "u_id": "qx23ch"
+            },
+            "Secondary": {
+                "Replace": [
+                    {
+                        "Rule": [
+                            "\\bnot\\b",
+                            "OR",
+                            "\\bnever\\b"
+                        ],
+                        "Score": -5,
+                        "Modifier": "b",
+                        "Selected": false,
+                        "type": "Replace",
+                        "u_id": "9hx1"
+                    }
+                ],
+                "Ignore": [],
+                "Add": []
+            }
+        },
+        {
+            "Primary": {
+                "Rule": [
+                    "currently smok"
+                ],
+                "Score": 3,
+                "Selected": false,
+                "type": "Primary",
+                "u_id": "xzu5rw"
+            },
+            "Secondary": {
+                "Replace": [
+                    {
+                        "Rule": [
+                            "\\bnot\\b"
+                        ],
+                        "Score": -2,
+                        "Modifier": "b",
+                        "Selected": true,
+                        "type": "Replace",
+                        "u_id": "cp6c9"
+                    }
+                ],
+                "Ignore": [],
+                "Add": []
+            }
+        }
+    ]
+}
