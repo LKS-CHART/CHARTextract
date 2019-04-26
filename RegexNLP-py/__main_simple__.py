@@ -102,8 +102,13 @@ def run_variable(variable, settings):
     project_settings = get_project_settings(settings)
     rules_folder = os.path.join(*project_settings["Rules Folder"]) if type(project_settings["Rules Folder"]) == list \
         else project_settings["Rules Folder"]
-    pwds_folder = os.path.join(*project_settings["Dictionaries Folder"]) if type(project_settings["Dictionaries Folder"]) == list \
-        else project_settings["Dictionaries Folder"]
+
+    if not project_settings["Dictionaries Folder"]:
+        pwds_folder = None
+    else:
+        pwds_folder = os.path.join(*project_settings["Dictionaries Folder"]) if type(project_settings["Dictionaries Folder"]) == list \
+            else project_settings["Dictionaries Folder"]
+
     pwds = di.import_pwds([os.path.join(pwds_folder, dict_name) for dict_name in os.listdir(pwds_folder)]) if pwds_folder else None
 
     create_train_and_valid = False if ("Create Train and Valid" not in project_settings or not

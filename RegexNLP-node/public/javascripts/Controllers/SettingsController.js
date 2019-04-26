@@ -195,7 +195,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
                 "Data File": dataFileNorm,
                 "Label File": labelFileNorm,
                 "Rules Folder": ruleFolderNorm,
-                "Dictionaries Folder": "dictionaries",
+                "Dictionaries Folder": [],
                 "Data Id Cols" : settingsController.dataIdCol,
                 "Data First Row" : settingsController.dataFirstRow,
                 "Data Cols" : settingsController.dataCol,

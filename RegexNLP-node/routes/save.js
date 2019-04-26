@@ -4,12 +4,12 @@ var fs = require("fs");
 var path = require("path");
 var filePath = path.resolve(__dirname, "..", "public", "data", "project_settings.json");
 
-//let out_rules_path = "Z:\\LKS-CHART\\Projects\\NLP POC\\Study data\\TB\\dev\\rules\\tb_rules";
-//let rules_path = "Z:\\GEMINI-SYNCOPE\\NLP Validation Project\\training\\fixed set\\Regexes";
-
 router.post('/save_project_settings', function(req, res, next) {
+    var project_settings = req.body["Project Settings Data"]
+    project_settings["Dictionaries Folder"] = path.resolve(__dirname, "..", "dictionaries")
 
-    fs.writeFile(filePath, JSON.stringify(req.body["Project Settings Data"], null, 4), function(err) {
+    
+    fs.writeFile(filePath, JSON.stringify(project_settings, null, 4), function(err) {
 
         if(err) {
             return console.log(err)
