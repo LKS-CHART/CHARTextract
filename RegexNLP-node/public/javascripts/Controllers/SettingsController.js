@@ -142,7 +142,7 @@ app.controller("SettingsController", ["$uibModal", "LoaderService", "SettingsSer
 
     settingsController.hasMultipleDatasets = function() {
         if(sessionStorage.getItem('twoSets') === null) {
-            return false;
+            return true;
         } else {
             return sessionStorage.getItem('twoSets');
         }
