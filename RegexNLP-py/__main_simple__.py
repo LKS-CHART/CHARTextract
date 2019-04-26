@@ -93,7 +93,7 @@ def get_project_settings(project_settings_path=None):
 
 
 @exposed_function
-def run_variable(variable, settings):
+def run_variable(variable, settings, mode):
 
     effects = ["a", "aa", "ab", "r", "rb", "ra"]
     effect_colours = dict.fromkeys(["a", "aa", "ab"], "rgb(0,0,256)")
@@ -120,7 +120,6 @@ def run_variable(variable, settings):
     cur_run = [variable]
 
     DEBUG_MODE = False
-    mode="advanced"
 
     if DEBUG_MODE:
         train_ids, train_data, train_labels = ["0","1","2"], ["This is a test", "This is not a Test", "Blob"], ["Yes", "No", "No"]
