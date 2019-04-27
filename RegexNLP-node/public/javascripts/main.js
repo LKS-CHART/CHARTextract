@@ -290,7 +290,7 @@ app.directive('tagEditor', function(RuleService) {
         },
         link: function(scope, element, attrs) {
 
-            scope.availableTags = ["OR", "{test1}", "{test2}"]
+            scope.availableTags = ["OR", "{dictionary_name}"]
             scope.states = []
             scope.replay = false;
 
