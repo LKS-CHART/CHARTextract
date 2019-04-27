@@ -11,6 +11,7 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
     ruleController.availableClasses = {};
     ruleController.advancedMode = false;
 
+
     $scope.$on("run_variable", function() {
         console.log("EVENT RUN VAR - RULECONTROLLER")
         ruleController.saveFile(ruleController.currentTab)
@@ -88,6 +89,10 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
 
         console.log(MainRuleService.getMode());
     
+    }
+
+    if (localStorage.getItem("mode") === "advanced") {
+        ruleController.toggleMode();
     }
 
     ruleController.getNegativeLabel = function() {
@@ -186,7 +191,6 @@ app.controller("RuleController", ["DataService", "$http", "SettingsService", "Ma
             RuleService.setRuleset(MainRuleService.getRulesetParam(temp_class_name, "regexesSimple"));
             $scope.$broadcast("ruleSetUpdate",null)
         } else {
-            console.log("ASDDASD")
             var promise = ruleController.saveFile(ruleController.previousTab)
             promise.then(function() {
                 editor.session.setValue(MainRuleService.getRulesetParam(temp_class_name, "regexesText"))

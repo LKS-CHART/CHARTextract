@@ -6,6 +6,7 @@ app.service("MainRuleService", ["RuleService", function(RuleService) {
 
     var setMode = function(mode) {
         currentMode = mode;
+        localStorage.setItem("mode", mode);
     }
 
     var getMode = function() {
