@@ -1,8 +1,7 @@
 app.controller("ClassifierController", ["SettingsService", "$http", function(SettingsService, $http) {
     var classifierController = this;
 
-    classifierController.availableClassifiers = {"RegexClassifier": "biases", "CaptureClassifier":"capture_biases",
-    "TemporalRegexClassifier": "biases"}
+    classifierController.availableClassifiers = {"RegexClassifier": "biases", "CaptureClassifier":"capture_biases"}
 
     classifierController.currentClassifier = "RegexClassifier"
     classifierController.negativeLabel = "None"
