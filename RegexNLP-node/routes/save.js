@@ -6,8 +6,6 @@ var filePath = path.resolve(__dirname, "..", "public", "data", "project_settings
 
 router.post('/save_project_settings', function(req, res, next) {
     var project_settings = req.body["Project Settings Data"]
-    project_settings["Dictionaries Folder"] = path.resolve(__dirname, "..", "dictionaries")
-
     
     fs.writeFile(filePath, JSON.stringify(project_settings, null, 4), function(err) {
 

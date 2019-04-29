@@ -140,6 +140,20 @@
         </div>
         <span ng-click="settingsCtrl.ruleFolder = ['Computer']" class="close" style="color: red; float: left; margin-top: 4">&times</span>
     </div>
+    <div class="row vertical-align-flex">
+        <div class="col-xs-1">
+            <span>Dictionaries Folder:</span>
+        </div>
+        <div class="col-xs-4">
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" ng-value="settingsCtrl.dictionaryFolder | arrayNormalize | pathify" ng-model="settingsCtrl.dictionaryFolder" placeholder="Text input">
+                <span ng-click="settingsCtrl.setWorkingObj(settingsCtrl.getDictObj()); settingsCtrl.openFolderDialog()" id="open-dict-folder" class="btn input-group-addon">
+                        <span class="glyphicon glyphicon-folder-open"></span>
+                    </span>
+            </div>
+        </div>
+        <span ng-click="settingsCtrl.dictionaryFolder = ['Computer']" class="close" style="color: red; float: left; margin-top: 4">&times</span>
+    </div>
 
     <br/>
 

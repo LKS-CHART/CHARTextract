@@ -1,14 +1,15 @@
 app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http, DataService) {
-    var dataSettings = {"selected": null}
-    var labelSettings = {"selected": null}
-    var ruleSettings = {"selected": null}
-    var validLabelSettings = {"selected": null}
-    var dataIdCol = 0
-    var dataFirstRow = 1
-    var dataCol = 2
+    var dataSettings = {"selected": null};
+    var labelSettings = {"selected": null};
+    var ruleSettings = {"selected": null};
+    var validLabelSettings = {"selected": null};
+    var dictionarySettings = {"selected": null};
+    var dataIdCol = 0;
+    var dataFirstRow = 1;
+    var dataCol = 2;
     var concatenateData = true;
-    var labelIdCol = 0
-    var labelFirstRow = 1
+    var labelIdCol = 0;
+    var labelFirstRow = 1;
     var createTrainAndValid = true;
     var predictionMode = false;
 
@@ -111,6 +112,7 @@ app.service("SettingsService", ["$q", "$http", "DataService", function($q, $http
         labelSettings: labelSettings,
         ruleSettings: ruleSettings,
         validLabelSettings: validLabelSettings,
+        dictionarySettings: dictionarySettings,
         dataIdCol: dataIdCol,
         dataFirstRow: dataFirstRow,
         dataCol: dataCol,
