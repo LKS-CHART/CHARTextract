@@ -72,6 +72,7 @@ function get_directory(tokenized_path){
             })
         }
     } else {
+       
         if (!fs.statSync(cur_path).isDirectory()){
             return [];
         }
@@ -95,6 +96,7 @@ function get_directory(tokenized_path){
             console.log("Error reading " + cur_path + " : " + error);
             return "Error reading " + cur_path + " : " + error;
         })
+    
     }
 }
 
@@ -122,18 +124,37 @@ router.post('/', function(req, res, next) {
     } else {
         let cur_path = path.normalize(path.join(...req.body["path"].slice(1)));
         console.log(cur_path);
-        let res_json = {
-            "filename": req.body["path"][req.body["path"].length - 1],
-            "Root": req.body["path"].slice(req.body["path"].length - 1),
-            "filepath": req.body["path"],
-            "Type": fs.statSync(path.join(cur_path)).isDirectory() ? "Folder" : "File",
-        };
-        let cur_promise = new Promise(function (resolve, reject) {
-            resolve(get_directory(req.body["path"]))});
-        cur_promise.then(function(result){
-            res_json["Children"] = result;
-            res.send(JSON.stringify(res_json));
-        });
+
+        try {
+            let res_json = {
+                "filename": req.body["path"][req.body["path"].length - 1],
+                "Root": req.body["path"].slice(req.body["path"].length - 1),
+                "filepath": req.body["path"],
+                "Type": fs.statSync(path.join(cur_path)).isDirectory() ? "Folder" : "File",
+            };
+        
+            let cur_promise = new Promise(function (resolve, reject) {
+                resolve(get_directory(req.body["path"]))});
+            cur_promise.then(function(result){
+                res_json["Children"] = result;
+                res.send(JSON.stringify(res_json));
+            });
+        } catch(err) {
+            console.log("PATH ERROR");
+            let res_json = {
+                "filename": "Computer",
+                "Root": [],
+                "filepath": ["Computer"],
+                "Type": "Folder"
+            };
+            let cur_promise = new Promise(function (resolve, reject) {
+                resolve(get_directory(['Computer']))});
+            cur_promise.then(function(result){
+                res_json["Children"] = result;
+                res.send(JSON.stringify(res_json));
+            });
+        }
+        
     }
 
 });
