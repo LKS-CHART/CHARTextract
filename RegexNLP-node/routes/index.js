@@ -10,7 +10,7 @@ let public_data = path.resolve(__dirname, "..", "public", "data");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'RegexNLP' });
+  res.render('index', { title: 'CHARTextract' });
 });
 
 router.get("/get_project_settings", function(req, res, next) {

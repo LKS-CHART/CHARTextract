@@ -126,7 +126,7 @@ function onElectronReady() {
         backgroundColor: "##D0D0D0",
         // Don't show the window until it's ready, this prevents any white flickering
         show: false,
-        title: 'RegexNLP'
+        title: 'CHARTextract'
     });
 
     electronLocalShortcut.register(window, 'F12', () => {

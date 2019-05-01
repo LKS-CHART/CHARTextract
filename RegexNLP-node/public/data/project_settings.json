@@ -1,19 +1,51 @@
 {
     "Data File": [
+        "C:\\",
+        "Users",
+        "PouPromC",
+        "Projects",
+        "NLP_tool",
+        "nlp_tool",
+        "fake_data",
+        "fake_notes.csv"
     ],
     "Label File": [
+        "C:\\",
+        "Users",
+        "PouPromC",
+        "Projects",
+        "NLP_tool",
+        "nlp_tool",
+        "fake_data",
+        "fake_notes.csv"
     ],
     "Rules Folder": [
+        "C:\\",
+        "Users",
+        "PouPromC",
+        "Projects",
+        "NLP_tool",
+        "nlp_tool",
+        "fake_data",
+        "rules"
     ],
-    "Dictionaries Folder": [],
+    "Dictionaries Folder": [
+        "C:\\",
+        "Users",
+        "PouPromC",
+        "Projects",
+        "NLP_tool",
+        "nlp_tool",
+        "RegexNLP-py",
+        "dictionaries"
+    ],
     "Data Id Cols": 0,
     "Data First Row": 1,
     "Data Cols": 1,
     "Concatenate Data": true,
     "Label Id Col": 0,
     "Label First Row": 1,
-    "Create Train and Valid": false,
+    "Create Train and Valid": true,
     "Prediction Mode": false,
-    "Valid Label File": [
-    ]
+    "Valid Label File": []
 }
