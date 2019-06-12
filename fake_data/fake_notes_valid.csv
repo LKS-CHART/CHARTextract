@@ -1,11 +1,11 @@
-ID,Chart,Label
-1008,I met Josh Geiser today in the clinic. He is a current non-smoker with a history of marijuana use. He smokes marijuana 2 times a week. ,Never smoked
-1000,"John Doe is a 32 year old male, non-smoker. He previously smoked 2 packs a day, but quit 5 years ago and hasn't smoked since.",Former smoker
-1004,"Sam Baggins is a new client with the clinic. He smokes marijuana on weekends, but does not take any other drugs. ",Not dictated
-1011,Hunter Fish is a new gentleman with the clinic. He is a 39 year old male who is still living at home with his parents. He is a frequent drinker (3 drinks daily) and admitted to smoking crack cocaine every other weekend,Not dictated
-1006,"Today I met Fred Geller, a very nice gentleman. He is a non-smoker with no drug or alcohol history. He is 55 years old and married.",Never smoked
-1019,Danny Heat is 18 years old and living at home with his parents. His first visit with the clinic was today. He is a regular smoker (3 cigarettes a day) for the past year.,Current smoker
-1016,Toby Kieth is a new client at the clinic. He enjoys smoking a pack of cigarettes on weekends and does not smoke any drugs. ,Current smoker
-1018,Barbara Refed is a 78 year old female. She is a new client at the clinic and reported no prior smoking history. She enjoys the occasional drink on weekends.,Never smoked
-1010,"Terry Mappe came in for his 3rd visit with the clinic. He used to be a frequent smoker 3 years ago, smoking 1 pack a day for a 20 year period. He still smokes marijuana cigarettes on occasion.",Former smoker
-1013,"Hamish Granger is a 46 year old male. He smokes tobacco from a pipe twice daily, and has done so for the past 30 years.",Current smoker
+ID,Label
+1008,Never smoked
+1000,Former smoker
+1004,Not dictated
+1011,Not dictated
+1006,Never smoked
+1019,Current smoker
+1016,Current smoker
+1018,Never smoked
+1010,Former smoker
+1013,Current smoker
