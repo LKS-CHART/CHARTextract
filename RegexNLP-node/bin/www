@@ -13,6 +13,7 @@ const electronLocalShortcut = require('electron-localshortcut');
 const debug = require('debug')('electrontest:server');
 const http = require('http');
 const app = require('../app');
+const path = require('path');
 let pyshell_connector = require("../python_connector/connector");
 /**
  * Get port from environment and store in Express.
@@ -126,7 +127,8 @@ function onElectronReady() {
         backgroundColor: "##D0D0D0",
         // Don't show the window until it's ready, this prevents any white flickering
         show: false,
-        title: 'CHARTextract'
+        title: 'CHARTextract',
+        icon: path.join(__dirname, 'icon.png')
     });
 
     electronLocalShortcut.register(window, 'F12', () => {

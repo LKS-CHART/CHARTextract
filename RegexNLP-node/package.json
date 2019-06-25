@@ -1,8 +1,10 @@
 {
   "name": "CHARTextract",
-  "version": "0.0.1",
+  "version": "0.3.2",
   "private": true,
   "main": "bin/www",
+  "author": "LKS-CHART",
+  "description": "Tool for writing and refining rules for information extraction.",
   "scripts": {
     "start": "node ./bin/www",
     "start-electron": "electron ./bin/www",
@@ -33,7 +35,7 @@
     "semantic-release": "^15.10.8"
   },
   "build": {
-    "appId": "com.lks-chart.nlp-tool",
+    "appId": "com.lks-chart.chart-extract",
     "asar": false,
     "files": [
       "**/*",
@@ -48,7 +50,8 @@
       "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
       "!**/{appveyor.yml,.travis.yml,circle.yml}",
       "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
-      "!**/dictionaries"
+      "!**/dictionaries",
+      "icon.png"
     ],
     "extraFiles": [
       {
