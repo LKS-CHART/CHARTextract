@@ -6,6 +6,7 @@ from time import time
 import ast
 import os
 import json
+import pandas as pd
 from util.SpecialException import SpecialException
 from util.ASTOps import create_regex
 
@@ -277,32 +278,55 @@ def import_pwds(filenames, pwd_names=None):
     return pwds
 
 
-def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None,
-                  preprocess_func=None, check_col=0):
+def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None,
+                  repeat_ids=True, first_row=1, limit=None,
+                  preprocess_func=None, check_col=0, encoding=None):
+    """Reads data from CSV files
 
-    """Reads data from excel files
-    
     Arguments:
-        filenames {list of string} -- List of Excel filenames
-    
+        filenames {list of string} -- List of CSV filenames
+
     Keyword Arguments:
-        data_cols {list of int or int} -- List of location of data columns in each file (default: {None})
-        label_cols {list of int or int} -- List of location of label columns in each file (default: {None})
-        id_cols {list of int or int} -- List of location of id columns in each file (default: {None})
-        repeat_ids {bool} -- If False, data corresponding to already existing ids are concatenated (default: {True})
-        first_row {int} -- Starts reading from specified row number (default: {1})
-        limit {int} -- Stops reading after specified number of lines have been read (default: {None})
-        preprocess_func {function} -- Applies preprocess function to each row in a file (default: {None})
-        check_col {int} -- Data column to check whether to continue evaluation (default: {0})
-    
+        data_cols {list of int or int} -- List of location of data
+            columns in each file (default: {None})
+        label_cols {list of int or int} -- List of location of label
+            columns in each file (default: {None})
+        id_cols {list of int or int} -- List of location of id columns
+            in each file (default: {None})
+        repeat_ids {bool} -- If False, data corresponding to already
+            existing ids are concatenated (default: {True})
+        first_row {int} -- Starts reading from specified row number
+            (default: {1})
+        limit {int} -- Stops reading after specified number of lines
+            have been read (default: {None})
+        preprocess_func {function} -- Applies preprocess function to
+            each row in a file (default: {None})
+        check_col {int} -- Data column to check whether to continue
+            evaluation (default: {0})
+        encoding {str} -- Encoding of file - if not specified,
+            try "utf8" and then "latin-1"
+
     Returns:
         data {list} -- list of data
         labels {list} -- list of labels
         ids {list} -- list of ids
     """
 
+    # If encoding is not specified, try reading file with UTF-8
+    # encoding. If that fails, use latin-1 encoding
+    if not encoding:
+        try:
+            encoding = "utf8"
+            pd.read_csv(filenames[0])
+        except UnicodeDecodeError:
+            encoding = "latin-1"
+
     try:
-        data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
+        data, labels, ids, data_cols, \
+            label_cols, id_cols = _data_helper(len(filenames),
+                                               data_cols,
+                                               label_cols,
+                                               id_cols)
 
         print("Reading data from csv file...")
 
@@ -310,19 +334,24 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None, repe
         for file_num, filename in enumerate(filenames):
             if limit is not None and count == limit:
                 break
-            with open(filename, 'r', encoding='utf8') as csv_file:
-                rows = csv.reader(csv_file, delimiter=',', quotechar='"')
+            with open(filename, "r", encoding=encoding) as csv_file:
+                rows = csv.reader(csv_file, delimiter=",", quotechar='"')
                 for i, row in enumerate(rows):
                     if i >= first_row:
-                        #If label column is empty don't include it
+                        # If label column is empty don't include it
                         if row[check_col] == '':
                             continue
 
                         count += 1
 
-                        #getting data, label and ids from each row and concatenating it
-                        data, labels, ids = get_data(data_cols[file_num], label_cols[file_num], id_cols[file_num],
-                                                     data, labels, ids, repeat_ids, lambda col: str(row[col]))
+                        # getting data, label and ids from each row and
+                        # concatenating it
+                        data, labels, ids = get_data(data_cols[file_num],
+                                                     label_cols[file_num],
+                                                     id_cols[file_num],
+                                                     data, labels, ids,
+                                                     repeat_ids,
+                                                     lambda col: str(row[col]))
 
         if preprocess_func is not None:
             for i in range(len(data)):
