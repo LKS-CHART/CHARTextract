@@ -15,10 +15,10 @@ def _compile_tags_to_regex(tags):
 
 def preprocess_data(data):
     """Preprocesses data
-    
+
     Arguments:
         data {string} -- data to be preprocessed
-    
+
     Returns:
         modified_data {string} -- modified data
     """
@@ -35,7 +35,7 @@ def preprocess_data(data):
 
 
 def get_labeled_data(ids_list, data_list, label_file, l_id_col=1, l_label_col=None, l_first_row=3,
-                     label_func=None):
+                     label_func=None, encoding=None):
     """
     :param ids_list:
     :param data_list:
@@ -55,7 +55,7 @@ def get_labeled_data(ids_list, data_list, label_file, l_id_col=1, l_label_col=No
         local_data_loader = data_from_csv if label_file.endswith('.csv') else data_from_excel
         # TODO: accordingly increment/decrement l_id_col, l_label_col, l_first_row, check_col depending on filetype
         _, temp_labels, temp_ids = local_data_loader([label_file], id_cols=l_id_col, label_cols=l_label_col,
-                                              repeat_ids=False, first_row=l_first_row, check_col=1)
+                                              repeat_ids=False, first_row=l_first_row, check_col=1, encoding=encoding)
 
         new_list = []
         for i, data_id in enumerate(ids_list):
@@ -81,7 +81,7 @@ def get_labeled_data(ids_list, data_list, label_file, l_id_col=1, l_label_col=No
 
 def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_process_func):
     """Gets data, label and id from a row
-    
+
     Arguments:
         data_col {int} -- data column number
         label_col {int} -- label column number
@@ -91,7 +91,7 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
         ids {list} -- list of ids so far
         repeat_ids {boolean} -- if False, data is concatenated
         row_process_func {function} -- function that extracts a value from a row
-    
+
     Returns:
         data {list} -- list of data
         labels {list} -- list of labels
@@ -147,15 +147,15 @@ def get_data(data_col, label_col, id_col, data, labels, ids, repeat_ids, row_pro
 
 def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
     """Initializes data, labels, ids, data_cols, label_cols, id_cols as list
-    
+
     Arguments:
         num_files {int} -- number of files
-    
+
     Keyword Arguments:
         data_cols {int or list of int} -- location of data (default: {None})
         label_cols {int of list of ints} -- location of labels (default: {None})
         id_cols {int or list of ints} -- location of ids (default: {None})
-    
+
     Returns:
         data {list} -- empty data list
         labels {list} -- empty labels list
@@ -197,12 +197,12 @@ def _data_helper(num_files, data_cols=None, label_cols=None, id_cols=None):
     return data, labels, ids, data_cols, label_cols, id_cols
 
 
-def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0):
+def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, repeat_ids=True, first_row=1, limit=None, preprocess_func=None, check_col=0, encoding=None):
     """Reads data from excel files
-    
+
     Arguments:
         filenames {list of string} -- List of Excel filenames
-    
+
     Keyword Arguments:
         data_cols {list of int or int} -- List of location of data columns in each file (default: {None})
         label_cols {list of int or int} -- List of location of label columns in each file (default: {None})
@@ -212,12 +212,21 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
         limit {int} -- Stops reading after specified number of lines have been read (default: {None})
         preprocess_func {function} -- Applies preprocess function to each row in a file (default: {None})
         check_col {int} -- Data column to check whether to continue evaluation (default: {0})
-    
+
     Returns:
         data {list} -- list of data
         labels {list} -- list of labels
         ids {list} -- list of ids
     """
+
+    # If encoding is not specified, try reading file with UTF-8
+    # encoding. If that fails, use latin-1 encoding
+    if not encoding:
+        try:
+            encoding = "utf8"
+            pd.read_excel(filenames[0])
+        except UnicodeDecodeError:
+            encoding = "latin-1"
 
     try:
         data, labels, ids, data_cols, label_cols, id_cols = _data_helper(len(filenames), data_cols, label_cols, id_cols)
@@ -230,6 +239,7 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
                 break
 
             workbook = openpyxl.load_workbook(filename, data_only=True, read_only=True)
+            workbook.encoding = encoding
             sheet_names = workbook.get_sheet_names()
             for sheet_name in sheet_names:
                 #getting rows in worksheet
@@ -256,13 +266,13 @@ def data_from_excel(filenames, data_cols=None, label_cols=None, id_cols=None, re
 
 def import_pwds(filenames, pwd_names=None):
     """Imports personal word dictionaries
-    
+
     Arguments:
         filenames {list of str} -- list of filepaths
-    
+
     Keyword Arguments:
         pwd_names {string} -- personal word dictionary names (default: {None})
-    
+
     Returns:
         pwds {dict} -- Personal word dictionary which is a dictionary which maps pwd_name -> list of words
     """
@@ -363,21 +373,21 @@ def data_from_csv(filenames, data_cols=None, label_cols=None, id_cols=None,
     return data, labels, ids
 
 
-#TODO: Probably shouldn't have default mutable args. Change later
+# TODO: Probably shouldn't have default mutable args. Change later
 def regexes_from_csv(filename, use_custom_score=False, all_matches=False, flags=[re.IGNORECASE]):
     """Given a file containing regexes, returns the classifier name, its arguments, class name, list of Regex objects
-    
+
     Arguments:
         filename {string} -- Regex filename
-    
+
     Keyword Arguments:
         use_custom_score {bool} -- If True, use user defined score (default: {False})
         all_matches {bool} -- If True, regex will return all matches (default: {False})
         flags {list} -- List of regex flags (default: {[re.IGNORECASE]})
-    
+
     Raises:
         Exception -- Raises exception if label name not specified at the start of the file
-    
+
     Returns:
         classifier_type {String} -- The type of classifier specified in the file if any
         classifier_args {list} -- List of classifier arguments specified in the file if any
