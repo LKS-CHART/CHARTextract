@@ -46,6 +46,14 @@ Refer to the documentation for more details.
 
 - The [rule refinement documentation](https://lks-chart.github.io/CHARTextract-docs/05-rule-refinement/) provides information on the workflow.
 
+## Tests
+
+### Python testing
+
+From the `RegexNLP-py` folder, run the following: `python -m pytest ..\RegexNLP-py_tests\ --cov=.
+`
+
+To generate a HTML report of the code coverage:`python -m pytest ..\RegexNLP-py_tests\ --cov=. --cov-report=html` and then open up `htmlcov\index.html`.
 
 ## License
 
